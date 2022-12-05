@@ -33,15 +33,45 @@ def process_instruction(instruction_string: str, state=PUZZLE_STATE) -> None:
 
     times, from_row, to_row = split_instruction(instruction_string)
 
+    # zero_indexing
+    from_row = from_row - 1
+    to_row = to_row - 1
+
     for _ in range(times):
-        box = state[from_row - 1].pop()
-        state[to_row - 1].append(box)
+        box = state[from_row].pop()
+        state[to_row].append(box)
+
+
+def process_instruction_9001(instruction_string: str, state=PUZZLE_STATE) -> None:
+    """
+    >>> puz_state = [['Z','N'],['M','C','D'],['P']]
+    >>> process_instruction_9001('move 2 from 2 to 1', state=puz_state)
+    >>> print(puz_state)
+    [['Z', 'N', 'C', 'D'], ['M'], ['P']]
+    """
+
+    times, from_row, to_row = split_instruction(instruction_string)
+
+    # zero_indexing
+    from_row = from_row - 1
+    to_row = to_row - 1
+
+    start_slice = len(state[from_row]) - times
+    boxes = state[from_row][start_slice::]
+    for _ in range(times):
+        state[from_row].pop()
+    state[to_row].extend(boxes)
 
 
 if __name__ == '__main__':
+    machine = {
+        '9000': process_instruction,
+        '9001': process_instruction_9001
+    }
+
     with open('advent_05_input.txt', 'r') as infile:
         for line in infile:
             if line.startswith('move'):
-                process_instruction(line.strip())
+                machine['9001'](line.strip())
     for row in PUZZLE_STATE:
         print(row[-1], end='')
