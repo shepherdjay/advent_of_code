@@ -16,7 +16,8 @@ def test_range_section():
     (['3-7', '2-8'], True),
     (['2-5', '1-4'], False),
     (['1-4', '2-5'], False),
-    (['62-85', '62-85'], True)
+    (['62-85', '62-85'], True),
+    (['1-2', '3-3'], False)
 ])
 def test_fully_contained(input, result):
     assert result == check_fully_contained(input)
