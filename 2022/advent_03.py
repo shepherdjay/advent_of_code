@@ -32,15 +32,16 @@ def chunk(l, n=3):
         yield l[i:i + n]
 
 
-with open('input.txt', 'r') as infile:
-    rucksacks = [line.strip() for line in infile]
+if __name__ == '__main__':
+    with open('input.txt', 'r') as infile:
+        rucksacks = [line.strip() for line in infile]
 
-print(sum(process_rucksack(rucksack) for rucksack in rucksacks))
+    print(sum(process_rucksack(rucksack) for rucksack in rucksacks))
 
-groups = [x for x in chunk(rucksacks)]
+    groups = [x for x in chunk(rucksacks)]
 
-priorities = []
-for group in groups:
-    priorities.append(LETTERS.index(find_badge(group)) + 1)
+    priorities = []
+    for group in groups:
+        priorities.append(LETTERS.index(find_badge(group)) + 1)
 
-print(sum(priorities))
+    print(sum(priorities))
