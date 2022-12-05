@@ -2,9 +2,9 @@ from typing import List, Tuple
 
 
 def range_section(sections: str) -> range:
-    integers = [int(_) for _ in sections.split('-')]
-    min, max = integers
+    min, max = map(int, sections.split('-'))
     return range(min, max + 1)
+
 
 def check_overlaps(single_pair: List[str]) -> bool:
     a, b = single_pair
@@ -20,6 +20,7 @@ def check_overlaps(single_pair: List[str]) -> bool:
             return True
 
     return False
+
 
 def check_fully_contained(single_pair: List[str]) -> bool:
     a, b = single_pair
