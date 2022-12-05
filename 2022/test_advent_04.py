@@ -1,5 +1,5 @@
 import pytest
-from advent_04 import range_section, check_fully_contained, find_overlaps
+from advent_04 import range_section, check_fully_contained, find_overlaps, check_overlaps
 
 
 def test_range_section():
@@ -24,5 +24,12 @@ def test_fully_contained(input, result):
 
 
 def test_find_overlaps():
-    assert 2 == find_overlaps(
+    assert (2,4) == find_overlaps(
         [['2-4', '6-8'], ['2-3', '4-5'], ['5-7', '7-9'], ['2-8', '3-7'], ['6-6', '4-6'], ['2-6', '4-8']])
+
+@pytest.mark.parametrize('input,expected', [
+    (['5-7','7-9'], True)
+])
+def test_check_overlaps(input, expected):
+    assert check_overlaps(input) == expected
+
