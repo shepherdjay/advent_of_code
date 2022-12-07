@@ -1,8 +1,9 @@
 from typing import Dict, List
 import xml.etree.ElementTree as ET
+import xmltodict
 
 
-def construct_tree(terminal_output: List[str]):
+def construct_tree(terminal_output: List[str]) -> ET:
     root = ET.Element("root")
     tree = ET.ElementTree(root)
     position = tree.getroot()
@@ -22,12 +23,14 @@ def construct_tree(terminal_output: List[str]):
             new_dir = line[4::]
             ET.SubElement(position, new_dir)
         else:
-
             size, file = line.split()
-            ET.SubElement(position, file, attrib={'size': size})
+            file_elem = ET.SubElement(position, file, size=size)
 
-    return ET
+    tree_string = ET.tostring(tree.getroot(), encoding='unicode', method='xml')
+    print(tree_string)
+    return xmltodict.parse(tree_string, process_namespaces=True)["root"]
 
-def find_all_dir(terminal_output, maxsize: int) -> Dict:
+
+def find_all_dir(terminal_output: List[str], maxsize: int) -> Dict:
     directory_structure = construct_tree(terminal_output)
     pass
