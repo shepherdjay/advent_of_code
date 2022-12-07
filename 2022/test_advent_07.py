@@ -67,3 +67,5 @@ def test_construct_tree():
     simple_result = construct_tree(SIMPLE)
 
     assert simple_result == simple_tree
+
+#.//*[descendant::*[@size]]
