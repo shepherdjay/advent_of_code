@@ -1,18 +1,22 @@
 import pytest
+import numpy as np
+
 
 from advent_08 import extract_neighbors, is_visible, find_visible_trees, scenic_score, score_every_tree
 
-EXAMPLE_FOREST_MAP = [[3, 0, 3, 7, 3],
+EXAMPLE_FOREST_MAP = np.array([[3, 0, 3, 7, 3],
                       [2, 5, 5, 1, 2],
                       [6, 5, 3, 3, 2],
                       [3, 3, 5, 4, 9],
-                      [3, 5, 3, 9, 0]]
+                      [3, 5, 3, 9, 0]])
 
 
 def test_extract_neighbors():
     expected = {'left': [5, 6], 'right': [3, 2], 'up': [5, 3], 'down': [5, 3]}
+    extracted = extract_neighbors(EXAMPLE_FOREST_MAP, (2,2))
 
-    assert extract_neighbors(EXAMPLE_FOREST_MAP, (2, 2)) == expected
+    for key, value in expected.items():
+        assert list(extracted[key]) == value
 
 
 @pytest.mark.parametrize('value,neighbors,expected_result', [
