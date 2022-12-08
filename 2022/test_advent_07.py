@@ -1,6 +1,5 @@
-from advent_07 import find_all_dir, construct_tree
-from xml.etree import ElementTree as ET
-
+from advent_07 import find_all_dir_sizes, construct_tree, ElfDirectory
+import pytest
 
 SIMPLE = [
     "$ cd /",
@@ -11,29 +10,9 @@ SIMPLE = [
     "$ ls",
     "20 c.txt"]
 
-EXAMPLE_INPUT = """$ cd /
-$ ls
-dir a
-14848514 b.txt
-8504156 c.dat
-dir d
-$ cd a
-$ ls
-dir e
-29116 f
-2557 g
-62596 h.lst
-$ cd e
-$ ls
-584 i
-$ cd ..
-$ cd ..
-$ cd d
-$ ls
-4060174 j
-8033020 d.log
-5626152 d.ext
-7214296 k"""
+with open('test_advent_07_input.txt', 'r') as testfile:
+    EXAMPLE_INPUT = [line.strip() for line in testfile]
+
 EXAMPLE_TREE = {
     'a': {
         'e': {
@@ -54,18 +33,34 @@ EXAMPLE_TREE = {
 }
 
 
-def test_find_all_dir():
-    example_input = SIMPLE
-    expected_simple = {'a': 20, 'c': 20}
+@pytest.mark.parametrize('test_input,result', [
+    (EXAMPLE_INPUT, {'a': 94853, 'e': 584}),
+    (SIMPLE, {'a': 20, 'b': 0, '/': 20})
+])
+def test_find_all_dir(test_input, result):
+    assert find_all_dir_sizes(test_input, maxsize=100_000) == result
 
-    assert find_all_dir(example_input, maxsize=10000) == expected_simple
+
+@pytest.mark.parametrize('test_input,expected_tree', [
+    (SIMPLE, {'a': {'c.txt': 20}, 'b': {}}),
+    (EXAMPLE_INPUT, EXAMPLE_TREE)
+])
+def test_construct_tree(test_input, expected_tree):
+    result_dirs = construct_tree(test_input)
+    assert result_dirs[0].to_dict() == expected_tree
 
 
-def test_construct_tree():
-    simple_tree = {'a': {'c.txt': 20}, 'b': {}}
+def test_elf_directory_nested_size():
+    elfdir = ElfDirectory(name='test')
+    elfdir.add_directory('childdir').add_file('childdirfile', size=100)
+    elfdir.add_file('file1', size=200)
 
-    simple_result = construct_tree(SIMPLE)
+    assert elfdir.get_size() == 300
 
-    assert simple_result == simple_tree
 
-#.//*[descendant::*[@size]]
+def test_elf_directory_multiple_files():
+    elfdir = ElfDirectory(name='test')
+    elfdir.add_file('file1', 500)
+    elfdir.add_file('file2', 1000)
+
+    assert elfdir.get_size() == 1500
