@@ -4,7 +4,7 @@ import math
 from collections import deque
 
 
-def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, List[int]]:
+def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, deque]:
     neighbors = {
         "left": deque(),
         "right": deque(),
