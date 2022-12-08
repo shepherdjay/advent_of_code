@@ -1,14 +1,15 @@
 from typing import List, Tuple, Dict
 import numpy as np
 import math
+from collections import deque
 
 
 def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, List[int]]:
     neighbors = {
-        "left": [],
-        "right": [],
-        "up": [],
-        "down": []
+        "left": deque(),
+        "right": deque(),
+        "up": deque(),
+        "down": deque()
     }
     x, y = coordinates
     # Extract the neighbors in the same row as the current element
@@ -16,7 +17,7 @@ def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> D
         if col_index == y:
             pass
         elif col_index < y:
-            neighbors["left"].insert(0, value)
+            neighbors["left"].appendleft(value)
         elif col_index > y:
             neighbors["right"].append(value)
 
@@ -26,7 +27,7 @@ def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> D
         if row_index == x:
             pass
         elif row_index < x:
-            neighbors["up"].insert(0, value)
+            neighbors["up"].appendleft(value)
         elif row_index > x:
             neighbors["down"].append(value)
     return neighbors
@@ -83,6 +84,7 @@ def find_visible_trees(forest_map: np.ndarray) -> List[Tuple]:
 
     return visible_int_points
 
+
 def score_every_tree(forest_map: np.ndarray) -> List[int]:
     scores = []
 
@@ -94,6 +96,7 @@ def score_every_tree(forest_map: np.ndarray) -> List[int]:
             scores.append(scenic_score(height, neighbors))
 
     return scores
+
 
 if __name__ == '__main__':
     with open('day_08_input.txt', 'r') as elf_file:
