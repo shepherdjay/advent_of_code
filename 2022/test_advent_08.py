@@ -12,7 +12,7 @@ EXAMPLE_FOREST_MAP = [[3, 0, 3, 7, 3],
 def test_extract_neighbors():
     expected = {'left': [3], 'right': [3, 7, 3], 'up': [], 'down': [5, 5, 3, 5]}
 
-    assert expected == extract_neighbors(EXAMPLE_FOREST_MAP, (0, 1))
+    assert extract_neighbors(EXAMPLE_FOREST_MAP, (0, 1)) == expected
 
 
 @pytest.mark.parametrize('value,neighbors,expected_result', [
@@ -24,4 +24,4 @@ def test_is_visible(value, neighbors, expected_result):
     assert is_visible(height=value, neighbor_map=neighbors) == expected_result
 
 def test_find_visible_trees():
-    assert 21 == len(find_visible_trees(EXAMPLE_FOREST_MAP))
+    assert len(find_visible_trees(EXAMPLE_FOREST_MAP)) == 21
