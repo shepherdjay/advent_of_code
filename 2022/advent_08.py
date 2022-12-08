@@ -1,7 +1,8 @@
 from typing import List, Tuple, Dict
+import numpy as np
 
 
-def extract_neighbors(forest_map: List[List[int]], coordinates: Tuple[int, int]) -> Dict[str, List[int]]:
+def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, List[int]]:
     neighbors = {
         "left": [],
         "right": [],
@@ -30,7 +31,7 @@ def extract_neighbors(forest_map: List[List[int]], coordinates: Tuple[int, int])
     return neighbors
 
 
-def is_visible(height, neighbor_map):
+def is_visible(height: int, neighbor_map: dict):
     """
     Given a height x, and a neighbor map "up, "down, "left", "right" return True if all values of a key are < x
     An empty list is considered 0
@@ -50,7 +51,7 @@ def is_visible(height, neighbor_map):
     return False
 
 
-def find_visible_trees(forest_map: List[List[int]]) -> List[Tuple]:
+def find_visible_trees(forest_map: np.ndarray) -> List[Tuple]:
     """
     Given a 2-dimensional array, find all 'visible' points on that array and return as a list of (x,y) Tuples
     A point is visible if there are no higher values in its row and column, including no other points.
@@ -64,7 +65,6 @@ def find_visible_trees(forest_map: List[List[int]]) -> List[Tuple]:
             if is_visible(value, neighbors):
                 visible_int_points.append(point_coord)
 
-    print(visible_int_points)
     return visible_int_points
 
 
@@ -75,5 +75,7 @@ if __name__ == '__main__':
             new_row = [int(char) for char in line.strip()]
             array.append(new_row)
 
-    visible_trees = find_visible_trees(forest_map=array)
+    forest_map = np.array(array)
+
+    visible_trees = find_visible_trees(forest_map=forest_map)
     print(len(visible_trees))
