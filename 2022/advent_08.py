@@ -9,18 +9,24 @@ def extract_neighbors(forest_map: List[List[int]], coordinates: Tuple[int, int])
         "down": []
     }
     x, y = coordinates
+    # Extract the neighbors in the same row as the current element
+    for col_index, value in enumerate(forest_map[x]):
+        if col_index == y:
+            pass
+        elif col_index < y:
+            neighbors["left"].append(value)
+        elif col_index > y:
+            neighbors["right"].append(value)
+
+    # Extract the neighbors in the same column as the current element
     for row_index, row in enumerate(forest_map):
-        for col_index, value in enumerate(row):
-            if row_index == x and col_index == y:
-                pass
-            elif row_index == x and col_index < y:
-                neighbors["left"].append(value)
-            elif row_index == x and col_index > y:
-                neighbors["right"].append(value)
-            elif row_index < x and col_index == y:
-                neighbors["up"].append(value)
-            elif row_index > x and col_index == y:
-                neighbors["down"].append(value)
+        value = row[y]
+        if row_index == x:
+            pass
+        elif row_index < x:
+            neighbors["up"].append(value)
+        elif row_index > x:
+            neighbors["down"].append(value)
     return neighbors
 
 
@@ -60,6 +66,7 @@ def find_visible_trees(forest_map: List[List[int]]) -> List[Tuple]:
 
     print(visible_int_points)
     return visible_int_points
+
 
 if __name__ == '__main__':
     with open('day_08_input.txt', 'r') as elf_file:
