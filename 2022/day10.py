@@ -26,7 +26,7 @@ class CommunicationsDevice:
         self.reg_history.append(self.X)
         pixel_x, pixel_y = self._pixel_gen.__next__()
 
-        if self.X - 1 == pixel_x or self.X == pixel_x or self.X + 1 == pixel_x:
+        if pixel_x in range(self.X - 1, self.X + 2):
             char = '#'
         else:
             char = '.'
