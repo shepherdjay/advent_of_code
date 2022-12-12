@@ -1,5 +1,5 @@
 import pytest
-from day10 import process_instruction_set, CPU
+from day10 import process_instruction_set, CommunicationsDevice
 
 with open('test_day10_input.txt', 'r') as elf_file:
     EXAMPLE_INSTRUCTIONS = [line.strip() for line in elf_file]
@@ -10,7 +10,7 @@ with open('test_day10_input.txt', 'r') as elf_file:
     (100, 18, 1800)]
 )
 def test_day10_with_example(cycle, register, signal):
-    prototype = CPU()
+    prototype = CommunicationsDevice()
 
     inst_indx = 0
     while prototype.cycles < cycle:
@@ -23,12 +23,12 @@ def test_day10_with_example(cycle, register, signal):
 
 
 def test_CPU_initialization():
-    prototype = CPU()
+    prototype = CommunicationsDevice()
     assert prototype.X == 1
     assert prototype.reg_history == [1]
 
 def test_CPU_addx():
-    prototype = CPU()
+    prototype = CommunicationsDevice()
 
     prototype.addx(5)
 
