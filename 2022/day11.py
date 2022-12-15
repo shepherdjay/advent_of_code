@@ -79,13 +79,12 @@ class Monkey:
 
         monkey_test = MonkeyTest(divisor=divisor, true=true_idx, false=false_idx)
 
-
-
         return Monkey(
             items=starting_items,
             operator=(operation, modifier),
             test=monkey_test
         )
+
 
 def process_monkey_file(filename):
     with open(filename, 'r') as monkeyfile:
