@@ -1,5 +1,6 @@
 from typing import Tuple, NamedTuple
 import re
+import math
 
 
 class MonkeyTest(NamedTuple):
@@ -24,6 +25,9 @@ class Monkey:
 
         self.monkeys.append(self)
 
+    def common_mod(self):
+        return math.prod([x.test.divisor for x in Monkey.monkeys])
+
     def receive_item(self, item: int):
         self.items.append(item)
 
@@ -32,17 +36,19 @@ class Monkey:
             self.items_inspected += 1
             new_worry = self.modify_worry(item) // worry_divisor
 
-            if new_worry % self.test.divisor == 0:
-                new_monkey = self.test.true
-            else:
-                new_monkey = self.test.false
 
-            self.monkeys[new_monkey].receive_item(new_worry)
+            if new_worry % self.test.divisor == 0:
+                new_monkey = self.monkeys[self.test.true]
+            else:
+                new_monkey = self.monkeys[self.test.false]
+
+            new_monkey.receive_item(new_worry)
+
         self.items = []
 
     def modify_worry(self, current_worry):
         operation, modifier = self.operator
-        return self.monkey_ops[operation](current_worry, modifier)
+        return self.monkey_ops[operation](current_worry, modifier) % self.common_mod()
 
     @staticmethod
     def add(a, b):
@@ -87,6 +93,9 @@ class Monkey:
 
 
 def process_monkey_file(filename, num_rounds=20, worry_divisor=3):
+    # Make sure we cleanup the monkeys before each process
+    Monkey.monkeys = []
+
     with open(filename, 'r') as monkeyfile:
         monkey_blocks = monkeyfile.read().split('\n\n')
 
@@ -106,5 +115,11 @@ def process_monkey_file(filename, num_rounds=20, worry_divisor=3):
 
 if __name__ == '__main__':
     monkey_business = process_monkey_file('day11_input.txt')
+
+    print(f'{len(Monkey.monkeys)} monkeys caused {monkey_business} worth of monkey business.')
+
+    print("Whew... that wasn't so bad.... oh no! They are throwing again")
+
+    monkey_business = process_monkey_file('day11_input.txt', num_rounds=10_000, worry_divisor=1)
 
     print(f'{len(Monkey.monkeys)} monkeys caused {monkey_business} worth of monkey business.')
