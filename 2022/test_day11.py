@@ -1,10 +1,12 @@
 import pytest
 from day11 import Monkey, MonkeyTest, process_monkey_file
 
+
 @pytest.fixture(autouse=True, scope='function')
 def cleanup_monkey():
     yield
     Monkey.monkeys = []
+
 
 def test_process_a_monkey():
     with open('day11_single_monkey.txt', 'r') as infile:
@@ -17,6 +19,7 @@ def test_process_a_monkey():
     assert expected.test.divisor == 23
     assert expected.test.true == 2
     assert expected.test.false == 3
+
 
 def test_monkey_takes_turn():
     throwing_monkey = Monkey(items=[79, 98], operator=('*', 19), test=MonkeyTest(23, 1, 2))
@@ -32,5 +35,13 @@ def test_monkey_takes_turn():
 
 
 def test_process_example_monkey_file():
-
     assert process_monkey_file('test_day11_input.txt') == 10605
+
+
+def test_process_example_monkey_file_lots_of_rounds():
+    process_monkey_file('test_day11_input.txt', num_rounds=5_000, worry_divisor=1)
+
+    assert Monkey.monkeys[0].inspected_items == 26075
+    assert Monkey.monkeys[1].inspected_items == 23921
+    assert Monkey.monkeys[2].inspected_items == 974
+    assert Monkey.monkeys[3].inspected_items == 26000

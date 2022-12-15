@@ -27,10 +27,10 @@ class Monkey:
     def receive_item(self, item: int):
         self.items.append(item)
 
-    def take_turn(self):
+    def take_turn(self, worry_divisor=3):
         for item in self.items:
             self.items_inspected += 1
-            new_worry = self.modify_worry(item) // 3
+            new_worry = self.modify_worry(item) // worry_divisor
 
             if new_worry % self.test.divisor == 0:
                 new_monkey = self.test.true
@@ -86,7 +86,7 @@ class Monkey:
         )
 
 
-def process_monkey_file(filename):
+def process_monkey_file(filename, num_rounds=20, worry_divisor=3):
     with open(filename, 'r') as monkeyfile:
         monkey_blocks = monkeyfile.read().split('\n\n')
 
@@ -95,9 +95,9 @@ def process_monkey_file(filename):
 
     assert len(Monkey.monkeys) > 0
 
-    for _ in range(20):
+    for _ in range(num_rounds):
         for monkey in Monkey.monkeys:
-            monkey.take_turn()
+            monkey.take_turn(worry_divisor=worry_divisor)
 
     top_performers = sorted(Monkey.monkeys, key=lambda x: x.items_inspected, reverse=True)
 
