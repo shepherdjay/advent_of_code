@@ -27,22 +27,36 @@ def get_candidate_neighbors(elev_map: Elev, current_idx):
         if 0 <= a < len(elev_map) and 0 <= b < len(elev_map[0]):
             neighbor_indexes.append((a,b))
 
-    cur_char_value = ascii_letters.find(elev_map[row_idx][col_idx])
+    cur_char = elev_map[row_idx][col_idx]
+    if cur_char == 'S':
+        cur_char_value = 0
+    else:
+        cur_char_value = ascii_letters.find(cur_char)
     candidates = []
     for neighbor in neighbor_indexes:
         neigh_row_idx, neigh_col_idx = neighbor
-        if elev_map[neigh_row_idx][neigh_col_idx] == 'S' or elev_map[neigh_row_idx][neigh_col_idx] == 'E': # we need to make sure to always include these neighbors
-            candidates.append(neighbor)
+        neigh_char = elev_map[neigh_row_idx][neigh_col_idx]
+        if neigh_char == 'S':
+            neigh_char_value = 0
+        elif neigh_char == 'E':
+            neigh_char_value = 25
         else:
-            neigh_char_value = ascii_letters.find(elev_map[neigh_row_idx][neigh_col_idx])
-            if neigh_char_value <= cur_char_value + 1:
-                candidates.append(neighbor)
+            neigh_char_value = ascii_letters.find(neigh_char)
+        if neigh_char_value in [cur_char_value, cur_char_value - 1, cur_char_value + 1]:
+            candidates.append(neighbor)
 
     return candidates
 
-def flatten_to_lists(super_nested):
-    pass
-
+def flatten_paths(super_nests):
+    items = []
+    
+    for x in super_nests:
+        if isinstance(x, list):
+            items.extend(flatten_paths(x))
+        else:
+            items.append(x)
+    
+    return items
 
 
 def traverse_path(elev_map, starting_index, goal_index, visited=None) -> List[List[Tuple[int, int]]]:
@@ -69,6 +83,15 @@ def process_elev_map(elev_map: Elev):
     ending_index = find_index(elev_map, 'E')
 
     paths = traverse_path(elev_map, starting_index=starting_index, goal_index=ending_index)
-    by_length = sorted(paths, key=len)
+    paths = flatten_paths(paths)
 
+    unflatten = []
+    for k, g in itertools.groupby(paths, lambda x: x == ending_index):
+        if not k:
+            g_list = list(g)
+            g_list.append(ending_index)
+            unflatten.append(g_list)
+
+    by_length = sorted(unflatten, key=len)
+    print(by_length[0])
     return len(by_length[0]) - 1
