@@ -42,7 +42,7 @@ def transform_elev_map(elev_map: Elev):
     return new_elev_map
 
 
-def get_candidate_neighbors(elev_map: HeightMap, current_idx):
+def get_candidate_neighbors(elev_map: HeightMap, current_idx, visited):
     row_idx, col_idx = current_idx
 
     up_idx = row_idx - 1, col_idx
@@ -59,6 +59,8 @@ def get_candidate_neighbors(elev_map: HeightMap, current_idx):
     candidates = []
     cur_value = elev_map[row_idx][col_idx]
     for neighbor in neighbor_indexes:
+        if neighbor in visited:
+            continue
         neigh_row_idx, neigh_col_idx = neighbor
         neigh_value = elev_map[neigh_row_idx][neigh_col_idx]
 
@@ -80,23 +82,22 @@ def flatten_paths(super_nests):
     return items
 
 
-def traverse_path(elev_map, starting_index, goal_index, visited=None) -> List:
-    paths = []
-    if visited is None:
-        visited = [starting_index]
-    else:
-        visited = deepcopy(visited)
-        visited.append(starting_index)
+def traverse_path(elev_map, starting_index, goal_index) -> List:
+    stack = [(starting_index, [starting_index])]
+    min_path = None
 
-    neighbors = [x for x in get_candidate_neighbors(elev_map, starting_index) if x not in visited]
-
-    for neighbor in neighbors:
-        if neighbor == goal_index:
-            visited.append(neighbor)
-            return visited
+    while stack:
+        current_index, path = stack.pop()
+        if current_index == goal_index:
+            if not min_path or len(path) < len(min_path):
+                min_path = path
         else:
-            paths.append(traverse_path(elev_map, neighbor, goal_index, visited=visited))
-    return paths
+            neighbors = get_candidate_neighbors(elev_map, current_index, path)
+            for neighbor in neighbors:
+                new_path = path + [neighbor]
+                stack.append((neighbor, new_path))
+
+    return min_path
 
 
 def process_elev_map(elev_map: Elev):
