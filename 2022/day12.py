@@ -96,8 +96,8 @@ def get_candidate_neighbors(elev_map: HeightMap, current_idx, visited, goal=None
         if neigh_value <= cur_value + 1:
             candidates.append(neighbor)
 
-    if goal is not None:
-        candidates.sort(key=lambda x: distance_to_goal(x, goal), reverse=True)
+    # if goal is not None:
+    #     candidates.sort(key=lambda x: distance_to_goal(x, goal), reverse=True)
 
     return candidates
 
@@ -105,25 +105,25 @@ def get_candidate_neighbors(elev_map: HeightMap, current_idx, visited, goal=None
 def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
     stack = deque()
     stack.append((starting_index, [starting_index]))
+    visited_nodes = []
     min_path = None
-    min_successful_path_length = float('inf')
 
     while stack:
         current_index, path = stack.pop()
         if terminal:
             terminal.draw(path)
-        if len(path) >= min_successful_path_length:
-            continue
         if current_index == goal_index:
             print(f'Found a path of length {len(path)}')
             if not min_path or len(path) < len(min_path):
                 min_path = path
                 min_successful_path_length = len(path)
         else:
-            neighbors = get_candidate_neighbors(elev_map, current_index, visited=path, goal=goal_index)
-            for neighbor in neighbors:
-                new_path = path + [neighbor]
-                stack.append((neighbor, new_path))
+            if current_index not in visited_nodes:
+                neighbors = get_candidate_neighbors(elev_map, current_index, visited=path, goal=goal_index)
+                for neighbor in neighbors:
+                    new_path = path + [neighbor]
+                    stack.appendleft((neighbor, new_path))
+                visited_nodes.append(current_index)
 
     return min_path
 
