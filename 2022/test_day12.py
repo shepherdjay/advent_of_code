@@ -32,7 +32,7 @@ def test_get_candidate_neighbors():
     current_idx = (2, 1)
     expected_neighbors = [(1, 1), (3, 1), (2, 0), (2, 2)]
 
-    actual = get_candidate_neighbors(elev_map=height_map, current_idx=current_idx)
+    actual = get_candidate_neighbors(elev_map=height_map, current_idx=current_idx, visited=[])
 
     assert set(actual) == set(expected_neighbors)
 
