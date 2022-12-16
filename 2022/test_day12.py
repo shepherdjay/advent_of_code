@@ -1,4 +1,5 @@
-from day12 import process_elev_map, find_index, get_candidate_neighbors, traverse_path, transform_elev_map
+from day12 import process_elev_map, process_elev_map_v2, find_index, get_candidate_neighbors, traverse_path, \
+    transform_elev_map
 import pytest
 
 SUPER_SIMPLE_MAP = [
@@ -31,7 +32,7 @@ def test_find_index():
 def test_get_candidate_neighbors():
     height_map = transform_elev_map(EXAMPLE_ELEV_MAP)
     current_idx = (4, 1)
-    expected_neighbors = [(4,0), (3,1)]
+    expected_neighbors = [(4, 0), (3, 1)]
 
     actual = get_candidate_neighbors(elev_map=height_map, current_idx=current_idx, visited=[])
 
@@ -47,7 +48,7 @@ def test_get_candidate_neighbors():
 def test_traverse_paths(elev_map, possible_paths):
     height_map = transform_elev_map(elev_map)
 
-    actual_path = traverse_path(elev_map=height_map, starting_index=(0, 0), goal_index=(1, 1))
+    actual_path = traverse_path(elev_map=height_map, starting_index=(0, 0), goal_index=(1, 1)).result()
 
     assert actual_path in possible_paths
 
@@ -58,3 +59,7 @@ def test_process_simple_map():
 
 def test_process_example_map():
     assert process_elev_map(EXAMPLE_ELEV_MAP) == 31
+
+
+def test_process_example_map_v2():
+    assert process_elev_map_v2(EXAMPLE_ELEV_MAP)[0] == 29
