@@ -3,12 +3,16 @@ import itertools
 
 Packet = List[Union[List, int]]
 
+class Comparable:
+    def __init__(self, x):
+        self.x = x
 
-class Var:
-    pass
+    def __lt__(self, other):
+        if not isinstance(other, Comparable):
+            raise TypeError
 
+        return comparator(self.x, other.x)
 
-var = Var()
 
 
 def comparator(a: Packet, b: Packet):
@@ -52,6 +56,24 @@ def process_file(filename):
 
     return sum_correct(pairs)
 
+def process_file_v2(filename):
+    with open(filename, 'r') as elf_file:
+        raw_lines = [line.strip() for line in elf_file if line]
+
+    lines = [eval(x) for x in raw_lines if x != '']
+    lines.append([[2]])
+    lines.append([[6]])
+
+    comparable = [Comparable(x) for x in lines]
+    comparable.sort()
+
+    back_to_list = [x.x for x in comparable]
+    decode_a = back_to_list.index([[2]]) + 1
+    decode_b = back_to_list.index([[6]]) + 1
+
+    return decode_a * decode_b
+
 
 if __name__ == '__main__':
     print(process_file('day13_input.txt'))
+    print(process_file_v2('day13_input.txt'))
