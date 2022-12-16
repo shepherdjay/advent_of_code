@@ -5,6 +5,7 @@ from os import system
 from colorama import Fore, Back, Style
 import math
 from collections import deque
+import unsync
 
 Elev = List[List[str]]
 HeightMap = List[List[int]]
@@ -101,7 +102,7 @@ def get_candidate_neighbors(elev_map: HeightMap, current_idx, visited, goal=None
 
     return candidates
 
-
+@unsync.unsync(cpu_bound=True)
 def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
     stack = deque()
     stack.append((starting_index, [starting_index]))
@@ -113,7 +114,6 @@ def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
         if terminal:
             terminal.draw(path)
         if current_index == goal_index:
-            print(f'Found a path of length {len(path)}')
             if not min_path or len(path) < len(min_path):
                 min_path = path
                 min_successful_path_length = len(path)
@@ -134,9 +134,35 @@ def process_elev_map(elev_map: Elev, terminal=None):
 
     height_map = transform_elev_map(elev_map)
 
-    path = traverse_path(height_map, starting_index=starting_index, goal_index=ending_index, terminal=terminal)
+    path = traverse_path(height_map, starting_index=starting_index, goal_index=ending_index, terminal=terminal).result()
 
     return len(path) - 1
+
+def process_elev_map_v2(elev_map: Elev, terminal=None):
+    ending_index = find_index(elev_map, 'E')
+
+    height_map = transform_elev_map(elev_map)
+    starting_points = []
+    for row_idx, row in enumerate(height_map):
+        for col_idx, value in enumerate(row):
+            if value == 0:
+                starting_points.append((row_idx, col_idx))
+
+    print(f"Finding number of steps from {len(starting_points)} different starting points")
+
+    tasks = [
+        traverse_path(height_map, starting_index=starting_point, goal_index=ending_index, terminal=terminal)
+        for starting_point in starting_points
+    ]
+
+    step_map = [(len(task.result()) - 1, task.result()) for task in tasks if task.result() is not None]
+
+    step_map.sort(key=lambda x: x[0])
+
+    steps, scenic_path = step_map[0]
+
+    return steps, scenic_path
+
 
 
 if __name__ == '__main__':
@@ -150,4 +176,8 @@ if __name__ == '__main__':
     terminal = Terminal(problem_input)
     terminal = None
     num_of_steps = process_elev_map(problem_input, terminal=terminal)
-    print(num_of_steps)
+    print(f"The number of steps from starting point S to E is {num_of_steps}")
+
+    # part2
+    steps, scenic_path = process_elev_map_v2(problem_input, terminal=terminal)
+    print(f'The number of steps is {steps}, and the path if your interested is:\n\n {scenic_path}')
