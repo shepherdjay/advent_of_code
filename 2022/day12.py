@@ -1,6 +1,5 @@
 from typing import List, Tuple
 from string import ascii_letters
-from copy import deepcopy
 import itertools
 
 Elev = List[List[str]]
@@ -69,19 +68,6 @@ def get_candidate_neighbors(elev_map: HeightMap, current_idx, visited):
 
     return candidates
 
-
-def flatten_paths(super_nests):
-    items = []
-
-    for x in super_nests:
-        if isinstance(x, list):
-            items.extend(flatten_paths(x))
-        else:
-            items.append(x)
-
-    return items
-
-
 def traverse_path(elev_map, starting_index, goal_index) -> List:
     stack = [(starting_index, [starting_index])]
     min_path = None
@@ -106,19 +92,9 @@ def process_elev_map(elev_map: Elev):
 
     height_map = transform_elev_map(elev_map)
 
-    paths = traverse_path(height_map, starting_index=starting_index, goal_index=ending_index)
-    paths = flatten_paths(paths)
+    path = traverse_path(height_map, starting_index=starting_index, goal_index=ending_index)
 
-    unflatten = []
-    for k, g in itertools.groupby(paths, lambda x: x == ending_index):
-        if not k:
-            g_list = list(g)
-            g_list.append(ending_index)
-            unflatten.append(g_list)
-
-    by_length = sorted(unflatten, key=len)
-    print(by_length[0])
-    return len(by_length[0]) - 1
+    return len(path) - 1
 
 
 if __name__ == '__main__':
