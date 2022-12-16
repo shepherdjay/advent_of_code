@@ -13,6 +13,7 @@ with open('test_day12_input.txt', 'r') as infile:
     for row in rows:
         EXAMPLE_ELEV_MAP.append([char for char in row])
 
+
 def test_transform_elev_map():
     expected = [
         [0, 0],
@@ -37,21 +38,23 @@ def test_get_candidate_neighbors():
     assert set(actual) == set(expected_neighbors)
 
 
-def test_traverse_paths():
-    super_simple = transform_elev_map(SUPER_SIMPLE_MAP)
+@pytest.mark.parametrize('elev_map,possible_paths', [
+    (SUPER_SIMPLE_MAP, [[(0, 0), (1, 0), (2, 0), (2, 1), (1, 1)]]),
+    ([['S', 'a'],
+      ['a', 'E']], [[(0, 0), (0, 1), (1, 1)],
+                    [(0, 0), (1, 0), (1, 1)]])
+])
+def test_traverse_paths(elev_map, possible_paths):
+    height_map = transform_elev_map(elev_map)
 
-    expected_paths = [
-        [(0, 0), (0, 1), (1, 1)],
-        [(0, 0), (1, 0), (1, 1)],
-    ]
+    actual_path = traverse_path(elev_map=height_map, starting_index=(0, 0), goal_index=(1, 1))
 
-    actual_paths = traverse_path(elev_map=super_simple, starting_index=(0, 0), goal_index=(1, 1))
+    assert actual_path in possible_paths
 
-    for path in expected_paths:
-        assert path in actual_paths
 
 def test_process_simple_map():
     assert process_elev_map(SUPER_SIMPLE_MAP) == 4
+
 
 def test_process_example_map():
     assert process_elev_map(EXAMPLE_ELEV_MAP) == 31
