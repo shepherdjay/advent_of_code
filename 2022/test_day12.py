@@ -30,8 +30,8 @@ def test_find_index():
 
 def test_get_candidate_neighbors():
     height_map = transform_elev_map(EXAMPLE_ELEV_MAP)
-    current_idx = (2, 1)
-    expected_neighbors = [(1, 1), (3, 1), (2, 0), (2, 2)]
+    current_idx = (4, 1)
+    expected_neighbors = [(4,0), (3,1)]
 
     actual = get_candidate_neighbors(elev_map=height_map, current_idx=current_idx, visited=[])
 
