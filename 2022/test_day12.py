@@ -1,4 +1,5 @@
-from day12 import process_elev_map, find_index, get_candidate_neighbors, traverse_path, flatten_to_lists
+from day12 import process_elev_map, find_index, get_candidate_neighbors, traverse_path
+import pytest
 
 SUPER_SIMPLE_MAP = [
     ['S', 'a'],
@@ -7,7 +8,7 @@ SUPER_SIMPLE_MAP = [
 ]
 
 EXAMPLE_ELEV_MAP = []
-with open('test_day12_input.txt', 'r') as infile:
+with open('2022/test_day12_input.txt', 'r') as infile:
     rows = [line.strip() for line in infile]
     for row in rows:
         EXAMPLE_ELEV_MAP.append([char for char in row])
@@ -40,19 +41,11 @@ def test_traverse_paths():
     for path in expected_paths:
         assert path in actual_paths
 
-def test_flatten_to_lists():
-    super_nested = [
-        [[[[1,2,3,4]]]],
-        [1,2,3,4,[1,2,3,4]],
-    ]
-    expected = [
-        [1,2,3,4], [1,2,3,4], [1,2,3,4]
-    ]
-
-    assert flatten_to_lists(super_nested) == expected
-
 def test_process_simple_map():
     assert process_elev_map(SUPER_SIMPLE_MAP) == 2
 
 def test_process_example_map():
     assert process_elev_map(EXAMPLE_ELEV_MAP) == 31
+
+if __name__ == '__main__':
+    pytest.main(['2022/test_day12.py'])
