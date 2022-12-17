@@ -52,10 +52,9 @@ def expand_coordinates(input_str: str) -> set:
     return set(expanded_range)
 
 
-def simulate_sand(rock_positions):
+def simulate_sand(rock_positions, max_y: int):
     """ Drops a unit of sand until it stops and returns rest position or None """
     cur_position = (500, 0)
-    max_y = max([y for _, y in rock_positions])
 
     while True:
         new_position = can_fall(cur_position, rock_positions)
@@ -67,10 +66,10 @@ def simulate_sand(rock_positions):
             cur_position = new_position
 
 
-def cave_in(rock_positions: set, floor = False):
-    rock_positions = copy.deepcopy(rock_positions)
+def cave_in(rock_positions: set, floor=False):
     start_position = (500, 0)
     grains_of_sand = 0
+
 
     if floor:
         # Populate initial floor
@@ -80,6 +79,8 @@ def cave_in(rock_positions: set, floor = False):
         floor = between_two_slates((floor_x_min, floor_y), (floor_x_max, floor_y))
         rock_positions.update(floor)
 
+    max_y = max([y for _, y in rock_positions])
+
     while True:
         if floor:
             floor_x_min -= 1
@@ -87,7 +88,7 @@ def cave_in(rock_positions: set, floor = False):
             rock_positions.add((floor_x_min, floor_y))
             rock_positions.add((floor_x_max, floor_y))
 
-        sand_rest = simulate_sand(rock_positions)
+        sand_rest = simulate_sand(rock_positions, max_y=max_y)
         if sand_rest is None:
             return grains_of_sand
         elif sand_rest == start_position:
@@ -100,6 +101,6 @@ def cave_in(rock_positions: set, floor = False):
 if __name__ == '__main__':
     with open('day14_input.txt', 'r') as rock_file:
         rock_positions = set().union(*[expand_coordinates(line) for line in rock_file])
-    
-    print(cave_in(rock_positions))
+
+    # print(cave_in(rock_positions))
     print(cave_in(rock_positions, floor=True))
