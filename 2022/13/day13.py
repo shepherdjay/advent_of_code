@@ -1,7 +1,7 @@
-from typing import List, Union
+from typing import TypeAlias
 import itertools
 
-Packet = List[Union[List, int]]
+Packet: TypeAlias = list[list | int]
 
 
 class Comparable:
