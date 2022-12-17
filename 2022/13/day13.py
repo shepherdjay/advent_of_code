@@ -14,6 +14,12 @@ class Comparable:
 
         return comparator(self.x, other.x)
 
+    def __str__(self):
+        return str(self.x)
+
+    def __repr__(self):
+        return f'Comparable(x={self.x}'
+
 
 def comparator(a: Packet, b: Packet):
     for pair in itertools.zip_longest(a, b):
