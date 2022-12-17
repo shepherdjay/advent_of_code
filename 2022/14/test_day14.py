@@ -31,10 +31,13 @@ def test_simulate_sand():
 
     assert simulate_sand(rock_positions) == (500, 8)
 
-
-def test_cave_in():
+@pytest.mark.parametrize('floor,expected',[
+    (False, 24),
+    (True, 93)
+])
+def test_cave_in(floor, expected):
     rock_positions = expand_coordinates(
         "498,4 -> 498,6 -> 496,6") | expand_coordinates("503,4 -> 502,4 -> 502,9 -> 494,9")
 
-    assert cave_in(rock_positions) == 24
-    assert cave_in(rock_positions, floor=True) == 93
+    assert cave_in(rock_positions, floor) == expected
+    
