@@ -37,3 +37,4 @@ def test_cave_in():
         "498,4 -> 498,6 -> 496,6") | expand_coordinates("503,4 -> 502,4 -> 502,9 -> 494,9")
 
     assert cave_in(rock_positions) == 24
+    assert cave_in(rock_positions, floor=True) == 93
