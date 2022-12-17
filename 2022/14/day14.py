@@ -16,14 +16,14 @@ def can_fall(cur_position, rock_positions):
 
 
 def between_two_slates(a, b):
-    a_x, a_y = a
-    b_x, b_y = b
+    """
+    Given two (x,y) coordinates where only x or y varies
+    Return the set of those coordinates as well as all points between them.
+    """
+    a, b = sorted([a, b])
 
-    a_x, b_x = sorted([a_x, b_x])
-    a_y, b_y = sorted([a_y, b_y])
-
-    x_range = range(a_x, b_x + 1)
-    y_range = range(a_y, b_y + 1)
+    x_range = range(a[0], b[0] + 1)
+    y_range = range(a[1], b[1] + 1)
 
     return set(itertools.product(x_range, y_range))
 
