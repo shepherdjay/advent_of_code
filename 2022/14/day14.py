@@ -1,5 +1,6 @@
 import re
 import itertools
+import copy
 
 
 def can_fall(cur_position, rock_positions):
@@ -31,8 +32,6 @@ def expand_coordinates(input_str: str) -> set:
     """
     Takes coordinates in form (498,4) -> (498, 6) and
     returns all cords as set of coordinates
-    >>> expand_coordinates("498,4 -> 498,6")
-    {(498, 5), (498, 6), (498, 4)}
     """
 
     parent_coords_raw = re.findall(r'\d+,\d+', input_str)
@@ -56,7 +55,7 @@ def expand_coordinates(input_str: str) -> set:
 def simulate_sand(rock_positions):
     """ Drops a unit of sand until it stops and returns rest position or None """
     cur_position = (500, 0)
-    max_y = max([y for x, y in rock_positions])
+    max_y = max([y for _, y in rock_positions])
 
     while True:
         new_position = can_fall(cur_position, rock_positions)
@@ -68,13 +67,31 @@ def simulate_sand(rock_positions):
             cur_position = new_position
 
 
-def cave_in(rock_positions: set):
+def cave_in(rock_positions: set, floor = False):
+    rock_positions = copy.deepcopy(rock_positions)
+    start_position = (500, 0)
     grains_of_sand = 0
 
+    if floor:
+        # Populate initial floor
+        floor_y = max([y for _, y in rock_positions]) + 2
+        floor_x_min = min([x for x, _ in rock_positions]) - 1
+        floor_x_max = max([x for x, _ in rock_positions]) + 1
+        floor = between_two_slates((floor_x_min, floor_y), (floor_x_max, floor_y))
+        rock_positions.update(floor)
+
     while True:
+        if floor:
+            floor_x_min -= 1
+            floor_x_max += 1
+            rock_positions.add((floor_x_min, floor_y))
+            rock_positions.add((floor_x_max, floor_y))
+
         sand_rest = simulate_sand(rock_positions)
         if sand_rest is None:
             return grains_of_sand
+        elif sand_rest == start_position:
+            return grains_of_sand + 1
         else:
             grains_of_sand += 1
             rock_positions.add(sand_rest)
@@ -85,3 +102,4 @@ if __name__ == '__main__':
         rock_positions = set().union(*[expand_coordinates(line) for line in rock_file])
     
     print(cave_in(rock_positions))
+    print(cave_in(rock_positions, floor=True))
