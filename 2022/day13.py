@@ -3,6 +3,7 @@ import itertools
 
 Packet = List[Union[List, int]]
 
+
 class Comparable:
     def __init__(self, x):
         self.x = x
@@ -14,34 +15,33 @@ class Comparable:
         return comparator(self.x, other.x)
 
 
-
 def comparator(a: Packet, b: Packet):
-    zipped = itertools.zip_longest(a, b)
-    for left, right in zipped:
-        if left is None:
-            return True
-        if right is None:
-            return False
-        if all(map(lambda x: isinstance(x, list), [left, right])):
-            sub_search = comparator(left, right)
-            if sub_search is not None:
-                return sub_search
-            else:
-                continue
-        elif any(map(lambda x: isinstance(x, list), [left, right])):
-            if isinstance(left, int):
-                left = [left]
-            else:
-                right = [right]
-            sub_search = comparator(left, right)
-            if sub_search is not None:
-                return sub_search
-            else:
-                continue
-        else:
-            if left == right:
-                continue
-            return left < right
+    for pair in itertools.zip_longest(a, b):
+        match pair:
+            case list(), list():
+                sub_search = comparator(*pair)
+                if sub_search is not None:
+                    return sub_search
+                else:
+                    continue
+            case int(), int():
+                if pair[0] == pair[1]:
+                    continue
+                return pair[0] < pair[1]
+            case None, _:
+                return True
+            case _, None:
+                return False
+            case left, right:
+                if isinstance(left, int):
+                    left = [left]
+                else:
+                    right = [right]
+                sub_search = comparator(left, right)
+                if sub_search is not None:
+                    return sub_search
+                else:
+                    continue
 
 
 def sum_correct(pairs):
@@ -56,20 +56,19 @@ def process_file(filename):
 
     return sum_correct(pairs)
 
+
 def process_file_v2(filename):
     with open(filename, 'r') as elf_file:
         raw_lines = [line.strip() for line in elf_file if line]
 
-    lines = [eval(x) for x in raw_lines if x != '']
-    lines.append([[2]])
-    lines.append([[6]])
+    divider_a = Comparable([[2]])
+    divider_b = Comparable([[6]])
 
-    comparable = [Comparable(x) for x in lines]
+    comparable = [Comparable(eval(x)) for x in raw_lines if x != '']
+    comparable.extend([divider_a, divider_b])
     comparable.sort()
 
-    back_to_list = [x.x for x in comparable]
-    decode_a = back_to_list.index([[2]]) + 1
-    decode_b = back_to_list.index([[6]]) + 1
+    decode_a, decode_b = map(lambda x: comparable.index(x) + 1, [divider_a, divider_b])
 
     return decode_a * decode_b
 
