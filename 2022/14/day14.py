@@ -9,7 +9,6 @@ def can_fall(cur_position, rock_positions):
         (x - 1, y + 1),  # down-left
         (x + 1, y + 1),  # down-right
     ]
-    print(cur_position, neighbors)
     for neighbor in neighbors:
         if neighbor not in rock_positions:
             return neighbor
@@ -82,4 +81,7 @@ def cave_in(rock_positions: set):
 
 
 if __name__ == '__main__':
-    pass
+    with open('day14_input.txt', 'r') as rock_file:
+        rock_positions = set().union(*[expand_coordinates(line) for line in rock_file])
+    
+    print(cave_in(rock_positions))
