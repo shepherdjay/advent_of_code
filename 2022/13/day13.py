@@ -28,8 +28,6 @@ def comparator(a: Packet, b: Packet):
                 sub_search = comparator(*pair)
                 if sub_search is not None:
                     return sub_search
-                else:
-                    continue
             case int(), int():
                 if pair[0] == pair[1]:
                     continue
@@ -46,8 +44,6 @@ def comparator(a: Packet, b: Packet):
                 sub_search = comparator(left, right)
                 if sub_search is not None:
                     return sub_search
-                else:
-                    continue
 
 
 def sum_correct(pairs):
