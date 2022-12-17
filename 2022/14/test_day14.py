@@ -63,7 +63,8 @@ def test_simulate_sand():
     rock_positions = expand_coordinates(
         "498,4 -> 498,6 -> 496,6") | expand_coordinates("503,4 -> 502,4 -> 502,9 -> 494,9")
 
-    assert simulate_sand(rock_positions) == (500, 8)
+    max_y = max([y for _, y in rock_positions])
+    assert simulate_sand(rock_positions, max_y=max_y) == (500, 8)
 
 @pytest.mark.parametrize('floor,expected',[
     (False, 24),
