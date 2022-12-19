@@ -1,6 +1,6 @@
 import re
 import itertools
-import unsync
+from tqdm import tqdm
 
 
 class Sensor:
@@ -39,6 +39,57 @@ class Sensor:
         pruned_set = set(
             x for x in grid_coordinates if self.not_beacon(x))
         return pruned_set
+
+    @staticmethod
+    def _between_two_points(a, b):
+        """
+        Given two (x,y) coordinates where only x or y varies
+        Return the set of those coordinates as well as all points between them.
+        """
+        a, b = sorted([a, b])
+
+        x_range = range(a[0], b[0] + 1)
+        y_range = range(a[1], b[1] + 1)
+
+        return set(itertools.product(x_range, y_range))
+
+    def return_outside_edges(self):
+        orig_x, orig_y = self.location
+
+        top = orig_x, self.y_min - 1
+        right = self.x_max + 1, orig_y
+        bottom = orig_x, self.y_max + 1
+        left = self.x_min - 1, orig_y
+
+        top_right = Sensor.rotate_45_cw(top)
+        top_left = Sensor.rotate_45_cw(left)
+        bottom_left = Sensor.rotate_45_cw(bottom)
+        bottom_right = Sensor.rotate_45_cw(right)
+
+        upper_edge = self._between_two_points(top_left, top_right)
+        bottom_edge = self._between_two_points(bottom_left, bottom_right)
+        right_edge = self._between_two_points(top_right, bottom_right)
+        left_edge = self._between_two_points(top_left, bottom_left)
+
+        edges = set().union(upper_edge, bottom_edge, left_edge, right_edge)
+
+        return {self.rotate_45_ccw(edge) for edge in edges}
+
+    @staticmethod
+    def rotate_45_cw(coord: tuple[int, int], center=(0, 0)):
+        x, y = coord
+        x_rotated = x - y
+        y_rotated = x + y
+
+        return round(x_rotated), round(y_rotated)
+
+    @staticmethod
+    def rotate_45_ccw(coord: tuple[int, int], center=(0, 0)):
+        x, y = coord
+        x_rotated = (x + y) / 2
+        y_rotated = (y - x) / 2
+
+        return round(x_rotated), round(y_rotated)
 
     def __eq__(self, other: 'Sensor'):
         if not isinstance(other, Sensor):
@@ -86,14 +137,19 @@ def rule_out_row(y: int, sensors: list[Sensor]) -> set[tuple[int, int]]:
 def find_beacon(sensors: list[Sensor], search_min, search_max) -> tuple[tuple[int, int], int]:
     """ Given a search space, and a list of sensors, return the beacon location and tuning freq"""
 
-    x_range = range(search_min, search_max + 1)
-    y_range = range(search_min, search_max + 1)
+    print('Finding Edges')
+    edges = set()
+    for sensor in tqdm(sensors):
+        edges.update(sensor.return_outside_edges())
 
-    for x in x_range:
-        for y in y_range:
-            results = [sensor.in_sensor_net((x, y)) for sensor in sensors]
+    print('Finding Beacon')
+    for coord in tqdm(edges):
+        x = coord[0]
+        y = coord[1]
+        if search_min <= x <= search_max and search_min <= y <= search_max:
+            results = [sensor.in_sensor_net(coord) for sensor in sensors]
             if not any(results):
-                return ((x, y), x * 4000000 + y)
+                return ((x, y), (x * 4000000 + y))
 
 
 if __name__ == '__main__':
