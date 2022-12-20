@@ -2,6 +2,8 @@ import copy
 import heapq
 import re
 from collections import namedtuple, deque
+import pprint
+import itertools
 
 Valve = namedtuple('Valve', 'id,flow,neighbors')
 
@@ -79,17 +81,19 @@ class ValveTree(list):
         z_node = self[z_node_id]
         return self.spt[a_node][z_node][0]
 
-    def depth_limited_search(self, starting_node, cost_limit):
+    def depth_limited_search(self, starting_node, cost_limit, visited = None):
         relief_matrix = self.construct_relief_node_tree(starting_node)
         stack = deque()
-        stack.append((starting_node, cost_limit, 0, set()))
+        if visited is None:
+            visited = set()
+        else:
+            visited = set(visited)
+        stack.append((starting_node, cost_limit, 0, visited))
         max_relief = None
 
         while stack:
             node, cost_limit, relief, visited = stack.pop()
 
-            if cost_limit < 0:
-                continue
             if not max_relief or relief > max_relief:
                 max_relief = relief
             if node not in visited:
@@ -98,10 +102,38 @@ class ValveTree(list):
                     neighbor_set.add(node)
                     neighbor_relief = relief + (node.flow * cost_limit)
                     neighbor_limit = cost_limit - cost
-                    if neighbor_relief < max_relief:
+
+                    if neighbor_limit <= 0:
                         continue
                     stack.appendleft((neighbor, neighbor_limit, neighbor_relief, neighbor_set))
         return max_relief
+
+    def depth_limited_search_v2(self, starting_node, cost_limit):
+        relief_matrix = self.construct_relief_node_tree(starting_node)
+        max_relief = 0
+
+        all_nodes_minus_a = {k:v for k,v in relief_matrix.items() if k is not starting_node}
+        for sets in self.powerset(all_nodes_minus_a.keys()):
+            try:
+                me, eleph = sets
+            except ValueError:
+                me = sets
+                eleph = all_nodes_minus_a
+            max_relief = max(max_relief,
+                             self.depth_limited_search(starting_node, cost_limit, visited=me) +
+                             self.depth_limited_search(starting_node, cost_limit, visited=eleph))
+
+        return max_relief
+
+    def yield_two_keys(self, dictionary: dict):
+        keys = dictionary.keys()
+
+    @staticmethod
+    def powerset(iterable):
+        s = list(iterable)
+        return itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(1, len(s)))
+
+
 
 def relieve_pressure(tree: ValveTree, timer: int, starting_node_id: str = 'A'):
     starting_node = tree[starting_node_id]
@@ -121,4 +153,6 @@ if __name__ == '__main__':
 
     tree = ValveTree(valves)
 
-    print(tree.depth_limited_search(starting_node=tree['AA'], cost_limit=30))
+    # print(tree.depth_limited_search(starting_node=tree['AA'], cost_limit=30))
+
+    print(tree.depth_limited_search_v2(starting_node=tree['AA'], cost_limit=26))
