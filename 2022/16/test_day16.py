@@ -1,5 +1,5 @@
 import pytest
-from day16 import Valve, ValveTree, relieve_pressure, parse_line
+from day16 import Valve, ValveTree, parse_line
 
 
 @pytest.fixture(scope='function')
@@ -22,11 +22,16 @@ def example_valve_tree():
 
 def test_simple_valve_tree(simple_valve_tree):
     """ GIVEN: The simple_valve_tree and 10 Minutes """
-    assert relieve_pressure(tree=simple_valve_tree, timer=10, starting_node_id='A') == 144
+    tree = simple_valve_tree
+    starting_node = tree['A']
+    relief_tree = tree.construct_relief_node_tree(starting_node)
+    assert simple_valve_tree.dfs(tree=relief_tree, node=starting_node, time=10) == 144
+
 
 def test_simple_valve_tree_v2(simple_valve_tree):
     """ GIVEN: The simple_valve_tree and 10 Minutes """
-    assert simple_valve_tree.depth_limited_search_v2(starting_node=simple_valve_tree['A'], cost_limit=10) == 192
+    assert simple_valve_tree.dfs_part2(starting_node=simple_valve_tree['A'], cost_limit=10) == 192
+
 
 def test_parse_line():
     assert parse_line('Valve AA has flow rate=0; tunnels lead to valves DD, II, BB') \
@@ -34,13 +39,18 @@ def test_parse_line():
 
 
 def test_example_valve_tree(example_valve_tree):
-    pressure = relieve_pressure(tree=example_valve_tree, timer=30, starting_node_id='AA')
+    tree = example_valve_tree
+    starting_node = tree['AA']
+    relief_tree = tree.construct_relief_node_tree(starting_node)
+    pressure = tree.dfs(tree=relief_tree, node=starting_node, time=30)
 
     assert pressure == 1651
+
 
 def test_example_valve_tree_v2(example_valve_tree):
     tree = example_valve_tree
-    pressure = tree.depth_limited_search_v2(starting_node=tree['AA'], cost_limit=26)
+    starting_node = tree['AA']
+    relief_tree = tree.construct_relief_node_tree(starting_node)
+    pressure = tree.dfs_part2(starting_node=starting_node, cost_limit=26)
 
-    assert pressure == 1651
-
+    assert pressure == 1707
