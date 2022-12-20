@@ -91,7 +91,7 @@ class ValveTree:
             relief = 0
 
         max_relief = relief
-        cache_key = (node, time, relief)
+        cache_key = (node, time, relief, str(sorted((x.id for x in visited))))
         if cache_key in self._dfs_cache:
             return self._dfs_cache[cache_key]
 
@@ -150,7 +150,8 @@ if __name__ == '__main__':
     starting_node = tree['AA']
     relief_tree = tree.construct_relief_node_tree(starting_node)
 
-    print(tree.dfs(tree=relief_tree, node=starting_node, time=30))
-    print(len(tree._dfs_cache))
+    # print(tree.dfs(tree=relief_tree, node=starting_node, time=30))
+    # print(len(tree._dfs_cache))
 
-    # print(tree.dfs_part2(starting_node=tree['AA'], cost_limit=26))
+    print(tree.dfs_part2(starting_node=tree['AA'], cost_limit=26))
+    print(len(tree._dfs_cache))
