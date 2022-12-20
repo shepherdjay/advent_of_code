@@ -1,5 +1,6 @@
 import pytest
 from day16 import Valve, ValveTree, parse_line
+from unittest.mock import patch
 
 
 @pytest.fixture(scope='function')
@@ -26,7 +27,6 @@ def test_simple_valve_tree(simple_valve_tree):
     starting_node = tree['A']
     relief_tree = tree.construct_relief_node_tree(starting_node)
     assert simple_valve_tree.dfs(tree=relief_tree, node=starting_node, time=10) == 144
-
 
 def test_simple_valve_tree_v2(simple_valve_tree):
     """ GIVEN: The simple_valve_tree and 10 Minutes """

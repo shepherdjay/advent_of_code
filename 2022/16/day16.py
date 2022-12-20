@@ -5,6 +5,9 @@ from collections import namedtuple
 import itertools
 import tqdm
 import functools
+import p_tqdm
+from multiprocessing import Pool, Manager
+
 
 Valve = namedtuple('Valve', 'id,flow,neighbors')
 
@@ -81,7 +84,12 @@ class ValveTree:
         z_node = self[z_node_id]
         return self.spt[a_node][z_node][0]
 
-    def dfs(self, tree, node, time, relief=None, visited=None):
+    def dfs(self, tree, node, time, relief=None, visited=None, shared_cache=None):
+
+        if shared_cache is None:
+            cache = self._dfs_cache
+        else:
+            cache = shared_cache
 
         if visited is None:
             visited = set()
@@ -92,8 +100,8 @@ class ValveTree:
 
         max_relief = relief
         cache_key = (node, time, relief, str(sorted((x.id for x in visited))))
-        if cache_key in self._dfs_cache:
-            return self._dfs_cache[cache_key]
+        if cache_key in cache:
+            return cache[cache_key]
 
         visited.add(node)
         for neighbor, cost in tree[node]:
@@ -105,28 +113,41 @@ class ValveTree:
 
             neighbor_relief = relief + (neighbor.flow * rem_time)
             neighbor_set = copy.deepcopy(visited)
-            max_relief = max(max_relief, self.dfs(tree, neighbor, rem_time, neighbor_relief, neighbor_set))
-        self._dfs_cache[cache_key] = max_relief
+            max_relief = max(max_relief, self.dfs(tree, neighbor, rem_time, neighbor_relief, neighbor_set, shared_cache=cache))
+
+        cache[cache_key] = max_relief
         return max_relief
+
+    def p2_worker(self, visit_set, relief_matrix, cost_limit, starting_node, shared_cache):
+        my_no_visit = set(visit_set)
+        eleph_no_visit = set()
+        for key in relief_matrix.keys():
+            if key not in my_no_visit:
+                eleph_no_visit.add(key)
+
+        my_relief = self.dfs(tree=relief_matrix, node=starting_node, visited=my_no_visit, time=cost_limit, shared_cache=shared_cache)
+        eleph_relief = self.dfs(tree=relief_matrix, node=starting_node, visited=eleph_no_visit, time=cost_limit, shared_cache=shared_cache)
+
+        return my_relief + eleph_relief
 
     def dfs_part2(self, starting_node, cost_limit):
         relief_matrix = self.construct_relief_node_tree(starting_node)
-        max_relief = 0
 
         all_nodes_minus_a = set([k for k in relief_matrix.keys() if k is not starting_node])
         visiting_sets = list(self.powerset(all_nodes_minus_a))
-        for visit_set in tqdm.tqdm(visiting_sets):
-            my_no_visit = set(visit_set)
 
-            eleph_no_visit = set()
-            for key in relief_matrix.keys():
-                if key not in my_no_visit:
-                    eleph_no_visit.add(key)
+        # MultiProcessing
+        with Manager() as manager:
+            shared_cache = manager.dict()
+            with Pool() as pool:
+                results = pool.map(
+                    functools.partial(self.p2_worker,
+                                      relief_matrix=relief_matrix,
+                                      cost_limit=cost_limit, starting_node=starting_node,
+                                      shared_cache=shared_cache),
+                    visiting_sets)
 
-            my_relief = self.dfs(tree=relief_matrix, node=starting_node, visited=my_no_visit, time=cost_limit)
-            eleph_relief = self.dfs(tree=relief_matrix, node=starting_node, visited=eleph_no_visit, time=cost_limit)
-            max_relief = max(max_relief, my_relief + eleph_relief)
-
+                max_relief = max(results)
         return max_relief
 
     @staticmethod
