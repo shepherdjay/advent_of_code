@@ -1,11 +1,14 @@
-from dataclasses import dataclass, field
+import copy
 import heapq
-import itertools
 import re
+from collections import namedtuple, deque
+
+Valve = namedtuple('Valve', 'id,flow,neighbors')
 
 
 class ValveTree(list):
     """ This exists to support easy index reference by string """
+
     def __init__(self, valves: list):
         self.valves = valves
         self._spt = None
@@ -44,7 +47,6 @@ class ValveTree(list):
         self._spt = shortest_tree
         return shortest_tree
 
-
     def __getitem__(self, item: str | int):
         if isinstance(item, int):
             return super().__getitem__(item)
@@ -52,93 +54,71 @@ class ValveTree(list):
             if valve.id == item:
                 return valve
 
+    def get_relief_nodes(self):
+        return [node for node in self if node.flow > 0]
 
-@dataclass(order=True)
-class Valve:
-    id: str = field()
-    flow: int = field()
-    neighbors: set[str] | None = field(default_factory=set)
+    def construct_relief_node_tree(self, start_node):
+        """
+        Using the full valve tree and the spt algorithm construct a dictionary whose keys are the start node and all relief
+        nodes. The value is a tuple of all other nodes and their cost from that node
+        """
+        interesting_nodes = self.get_relief_nodes()
+        interesting_nodes.insert(0, start_node)
 
-    def __hash__(self):
-        return hash(self.__repr__())
+        new_tree = {}
+        for node_a in interesting_nodes:
+            new_tree[node_a] = {}
+            for node_z in interesting_nodes:
+                if node_a == node_z:
+                    continue
+                new_tree[node_a][node_z] = self.cost_between_nodes(node_a.id, node_z.id) + 1
+        return new_tree
 
-class Erupt(Exception):
-    pass
+    def cost_between_nodes(self, a_node_id: str, z_node_id: str):
+        a_node = self[a_node_id]
+        z_node = self[z_node_id]
+        return self.spt[a_node][z_node][0]
 
-class Volcano:
-    def __init__(self, timer):
-        self.timer = timer
-        self.relief = 0
-        self.open_valves = list()
+    def depth_limited_search(self, starting_node, cost_limit):
+        relief_matrix = self.construct_relief_node_tree(starting_node)
+        stack = deque()
+        stack.append((starting_node, cost_limit, 0, set()))
+        max_relief = None
 
-    def _tick(self):
-        self.relief += sum((valve.flow for valve in self.open_valves))
-        self.timer -= 1
-        if self.timer == 0:
-            raise Erupt
+        while stack:
+            node, cost_limit, relief, visited = stack.pop()
 
-    def move(self, i):
-        for _ in range(i):
-            self._tick()
-
-    def open_valve(self, valve: Valve):
-        self._tick()
-        self.open_valves.append(valve)
-
-
-
-def get_relief_nodes(tree):
-    return [node for node in tree if node.flow > 0]
-
-def simulate_path(path, relief_nodes, timer):
-    volcano = Volcano(timer=timer)
-    try:
-        for valve in path:
-            volcano.move()
-            if valve in relief_nodes:
-                volcano.open_valve(valve)
-        for i in range(timer - volcano.timer):
-            volcano.move()
-    except Erupt:
-        return volcano.relief, path
-
-def relieve_pressure(valve_tree, timer: int, starting_node_id: str='A'):
-    relief_nodes = get_relief_nodes(valve_tree)
-    paths = generate_possible_paths(starting_node_id=starting_node_id, valve_tree=valve_tree)
-
-    relief_paths = [simulate_path(path, relief_nodes=relief_nodes, timer=timer) for path in paths]
-
-
-    relief_paths.sort(reverse=True)
-    best_path = relief_paths[0]
-    return best_path[0], [valve.id for valve in best_path[1]]
-
-def cost_between_nodes(a_node_id: str, z_node_id: str, tree: ValveTree):
-    a_node = tree[a_node_id]
-    z_node = tree[z_node_id]
-    return tree.spt[a_node][z_node][0]
-
-def generate_possible_paths(starting_node_id, valve_tree: ValveTree):
-    relief_nodes = get_relief_nodes(valve_tree)
-    relief_node_ordering = map(list, itertools.permutations(relief_nodes))
-
-    paths = []
-    for path in relief_node_ordering:
-        path.insert(0, valve_tree[starting_node_id])
-        full_path = []
-        for index, valve in enumerate(path):
-            try:
-                next_valve = path[index + 1]
-                node_path = valve_tree.spt[valve][next_valve][1][1:]
-                full_path.extend(node_path)
-            except IndexError:
+            if cost_limit < 0:
                 continue
-        paths.append(full_path)
+            if not max_relief or relief > max_relief:
+                max_relief = relief
+            if node not in visited:
+                for neighbor, cost in relief_matrix[node].items():
+                    neighbor_set = copy.deepcopy(visited)
+                    neighbor_set.add(node)
+                    neighbor_relief = relief + (node.flow * cost_limit)
+                    neighbor_limit = cost_limit - cost
+                    if neighbor_relief < max_relief:
+                        continue
+                    stack.appendleft((neighbor, neighbor_limit, neighbor_relief, neighbor_set))
+        return max_relief
 
-    return paths
+def relieve_pressure(tree: ValveTree, timer: int, starting_node_id: str = 'A'):
+    starting_node = tree[starting_node_id]
+    return tree.depth_limited_search(starting_node, cost_limit=timer)
 
-def parse_line(line:str):
+
+def parse_line(line: str):
     valve_regex = re.compile(r'Valve (.+) has flow rate=(\d+); tunnels? leads? to valves? (.+)')
     valve_id, flow_rate, neighbors_raw = valve_regex.search(line).groups()
-    neighbors = neighbors_raw.split(', ')
-    return Valve(id=valve_id, flow=int(flow_rate), neighbors=set(neighbors))
+    neighbors = tuple(neighbors_raw.split(', '))
+    return Valve(id=valve_id, flow=int(flow_rate), neighbors=neighbors)
+
+
+if __name__ == '__main__':
+    with open('day16_input.txt', 'r') as elf_file:
+        valves = [parse_line(line.strip()) for line in elf_file]
+
+    tree = ValveTree(valves)
+
+    print(tree.depth_limited_search(starting_node=tree['AA'], cost_limit=30))
