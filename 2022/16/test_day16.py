@@ -24,6 +24,9 @@ def test_simple_valve_tree(simple_valve_tree):
     """ GIVEN: The simple_valve_tree and 10 Minutes """
     assert relieve_pressure(tree=simple_valve_tree, timer=10, starting_node_id='A') == 144
 
+def test_simple_valve_tree_v2(simple_valve_tree):
+    """ GIVEN: The simple_valve_tree and 10 Minutes """
+    assert simple_valve_tree.depth_limited_search_v2(starting_node=simple_valve_tree['A'], cost_limit=10) == 192
 
 def test_parse_line():
     assert parse_line('Valve AA has flow rate=0; tunnels lead to valves DD, II, BB') \
@@ -32,6 +35,12 @@ def test_parse_line():
 
 def test_example_valve_tree(example_valve_tree):
     pressure = relieve_pressure(tree=example_valve_tree, timer=30, starting_node_id='AA')
+
+    assert pressure == 1651
+
+def test_example_valve_tree_v2(example_valve_tree):
+    tree = example_valve_tree
+    pressure = tree.depth_limited_search_v2(starting_node=tree['AA'], cost_limit=26)
 
     assert pressure == 1651
 
