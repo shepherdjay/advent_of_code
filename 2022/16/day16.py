@@ -9,12 +9,11 @@ import functools
 Valve = namedtuple('Valve', 'id,flow,neighbors')
 
 
-class ValveTree(list):
+class ValveTree:
     """ This exists to support easy index reference by string """
 
     def __init__(self, valves: list):
         self.valves = frozenset(valves)
-        super().__init__(valves)
         self._dfs_cache = {}
 
     def __hash__(self):
@@ -47,19 +46,18 @@ class ValveTree(list):
             shortest_tree[valve] = node_map
         return shortest_tree
 
-
     def __getitem__(self, item: str | int):
         if isinstance(item, int):
-            return super().__getitem__(item)
+            raise TypeError
         for valve in self.valves:
             if valve.id == item:
                 return valve
 
-    @functools.lru_cache()
+    @functools.lru_cache
     def get_relief_nodes(self):
-        return [node for node in self if node.flow > 0]
+        return [valve for valve in self.valves if valve.flow > 0]
 
-    @functools.lru_cache()
+    @functools.lru_cache
     def construct_relief_node_tree(self, start_node):
         """
         Using the full valve tree and the spt algorithm construct a dictionary whose keys are the start node and all relief
@@ -77,6 +75,7 @@ class ValveTree(list):
                 new_tree[node_a].append((node_z, self.cost_between_nodes(node_a.id, node_z.id) + 1))
         return new_tree
 
+    @functools.lru_cache
     def cost_between_nodes(self, a_node_id: str, z_node_id: str):
         a_node = self[a_node_id]
         z_node = self[z_node_id]
@@ -88,14 +87,13 @@ class ValveTree(list):
             visited = set()
         else:
             visited = visited
-
-        cache_key = (node, time, relief, tuple(visited))
-        if cache_key in self._dfs_cache:
-            return self._dfs_cache[cache_key]
         if relief is None:
             relief = 0
 
         max_relief = relief
+        cache_key = (node, time, relief)
+        if cache_key in self._dfs_cache:
+            return self._dfs_cache[cache_key]
 
         visited.add(node)
         for neighbor, cost in tree[node]:
@@ -149,7 +147,10 @@ if __name__ == '__main__':
         valves = [parse_line(line.strip()) for line in elf_file]
 
     tree = ValveTree(valves)
+    starting_node = tree['AA']
+    relief_tree = tree.construct_relief_node_tree(starting_node)
 
-    # print(tree.depth_limited_search(starting_node=tree['AA'], cost_limit=30))
+    print(tree.dfs(tree=relief_tree, node=starting_node, time=30))
+    print(len(tree._dfs_cache))
 
-    print(tree.dfs_part2(starting_node=tree['AA'], cost_limit=26))
+    # print(tree.dfs_part2(starting_node=tree['AA'], cost_limit=26))
