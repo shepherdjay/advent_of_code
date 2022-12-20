@@ -1,9 +1,10 @@
 import copy
 import heapq
 import re
-from collections import namedtuple, deque
-import pprint
+from collections import namedtuple
 import itertools
+import tqdm
+import functools
 
 Valve = namedtuple('Valve', 'id,flow,neighbors')
 
@@ -12,17 +13,15 @@ class ValveTree(list):
     """ This exists to support easy index reference by string """
 
     def __init__(self, valves: list):
-        self.valves = valves
-        self._spt = None
+        self.valves = frozenset(valves)
         super().__init__(valves)
+        self._dfs_cache = {}
 
-    @property
+    def __hash__(self):
+        return hash(self.valves)
+
+    @functools.cached_property
     def spt(self):
-        if self._spt is None:
-            self.generate_spt()
-        return self._spt
-
-    def generate_spt(self):
         shortest_tree = {}
         for valve in self.valves:
             starting = valve
@@ -46,8 +45,8 @@ class ValveTree(list):
                         node_map[neighbor] = (this_dist, node_map[cur][1] + [neighbor])
                         heapq.heappush(min_dist, (this_dist, neighbor))
             shortest_tree[valve] = node_map
-        self._spt = shortest_tree
         return shortest_tree
+
 
     def __getitem__(self, item: str | int):
         if isinstance(item, int):
@@ -56,9 +55,11 @@ class ValveTree(list):
             if valve.id == item:
                 return valve
 
+    @functools.lru_cache()
     def get_relief_nodes(self):
         return [node for node in self if node.flow > 0]
 
+    @functools.lru_cache()
     def construct_relief_node_tree(self, start_node):
         """
         Using the full valve tree and the spt algorithm construct a dictionary whose keys are the start node and all relief
@@ -69,11 +70,11 @@ class ValveTree(list):
 
         new_tree = {}
         for node_a in interesting_nodes:
-            new_tree[node_a] = {}
+            new_tree[node_a] = []
             for node_z in interesting_nodes:
                 if node_a == node_z:
                     continue
-                new_tree[node_a][node_z] = self.cost_between_nodes(node_a.id, node_z.id) + 1
+                new_tree[node_a].append((node_z, self.cost_between_nodes(node_a.id, node_z.id) + 1))
         return new_tree
 
     def cost_between_nodes(self, a_node_id: str, z_node_id: str):
@@ -81,63 +82,59 @@ class ValveTree(list):
         z_node = self[z_node_id]
         return self.spt[a_node][z_node][0]
 
-    def depth_limited_search(self, starting_node, cost_limit, visited = None):
-        relief_matrix = self.construct_relief_node_tree(starting_node)
-        stack = deque()
+    def dfs(self, tree, node, time, relief=None, visited=None):
+
         if visited is None:
             visited = set()
         else:
-            visited = set(visited)
-        stack.append((starting_node, cost_limit, 0, visited))
-        max_relief = None
+            visited = visited
 
-        while stack:
-            node, cost_limit, relief, visited = stack.pop()
+        cache_key = (node, time, relief, tuple(visited))
+        if cache_key in self._dfs_cache:
+            return self._dfs_cache[cache_key]
+        if relief is None:
+            relief = 0
 
-            if not max_relief or relief > max_relief:
-                max_relief = relief
-            if node not in visited:
-                for neighbor, cost in relief_matrix[node].items():
-                    neighbor_set = copy.deepcopy(visited)
-                    neighbor_set.add(node)
-                    neighbor_relief = relief + (node.flow * cost_limit)
-                    neighbor_limit = cost_limit - cost
+        max_relief = relief
 
-                    if neighbor_limit <= 0:
-                        continue
-                    stack.appendleft((neighbor, neighbor_limit, neighbor_relief, neighbor_set))
+        visited.add(node)
+        for neighbor, cost in tree[node]:
+            if neighbor in visited:
+                continue
+            rem_time = time - cost
+            if rem_time <= 0:
+                continue
+
+            neighbor_relief = relief + (neighbor.flow * rem_time)
+            neighbor_set = copy.deepcopy(visited)
+            max_relief = max(max_relief, self.dfs(tree, neighbor, rem_time, neighbor_relief, neighbor_set))
+        self._dfs_cache[cache_key] = max_relief
         return max_relief
 
-    def depth_limited_search_v2(self, starting_node, cost_limit):
+    def dfs_part2(self, starting_node, cost_limit):
         relief_matrix = self.construct_relief_node_tree(starting_node)
         max_relief = 0
 
-        all_nodes_minus_a = {k:v for k,v in relief_matrix.items() if k is not starting_node}
-        for sets in self.powerset(all_nodes_minus_a.keys()):
-            try:
-                me, eleph = sets
-            except ValueError:
-                me = sets
-                eleph = all_nodes_minus_a
-            max_relief = max(max_relief,
-                             self.depth_limited_search(starting_node, cost_limit, visited=me) +
-                             self.depth_limited_search(starting_node, cost_limit, visited=eleph))
+        all_nodes_minus_a = set([k for k in relief_matrix.keys() if k is not starting_node])
+        visiting_sets = list(self.powerset(all_nodes_minus_a))
+        for visit_set in tqdm.tqdm(visiting_sets):
+            my_no_visit = set(visit_set)
+
+            eleph_no_visit = set()
+            for key in relief_matrix.keys():
+                if key not in my_no_visit:
+                    eleph_no_visit.add(key)
+
+            my_relief = self.dfs(tree=relief_matrix, node=starting_node, visited=my_no_visit, time=cost_limit)
+            eleph_relief = self.dfs(tree=relief_matrix, node=starting_node, visited=eleph_no_visit, time=cost_limit)
+            max_relief = max(max_relief, my_relief + eleph_relief)
 
         return max_relief
-
-    def yield_two_keys(self, dictionary: dict):
-        keys = dictionary.keys()
 
     @staticmethod
     def powerset(iterable):
         s = list(iterable)
-        return itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(1, len(s)))
-
-
-
-def relieve_pressure(tree: ValveTree, timer: int, starting_node_id: str = 'A'):
-    starting_node = tree[starting_node_id]
-    return tree.depth_limited_search(starting_node, cost_limit=timer)
+        return itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(1, len(s) + 1))
 
 
 def parse_line(line: str):
@@ -155,4 +152,4 @@ if __name__ == '__main__':
 
     # print(tree.depth_limited_search(starting_node=tree['AA'], cost_limit=30))
 
-    print(tree.depth_limited_search_v2(starting_node=tree['AA'], cost_limit=26))
+    print(tree.dfs_part2(starting_node=tree['AA'], cost_limit=26))
