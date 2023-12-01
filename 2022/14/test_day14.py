@@ -8,6 +8,7 @@ from day14 import (
     simulate_sand,
     cave_in,
 )
+import os
 
 
 @st.composite

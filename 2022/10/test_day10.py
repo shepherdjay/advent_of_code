@@ -1,7 +1,8 @@
 import pytest
 from day10 import process_instruction_set, CommunicationsDevice
+import os
 
-with open("test_day10_input.txt", "r") as elf_file:
+with open(os.path.join(os.path.dirname(__file__), "test_day10_input.txt"), "r") as elf_file:
     EXAMPLE_INSTRUCTIONS = [line.strip() for line in elf_file]
 
 
