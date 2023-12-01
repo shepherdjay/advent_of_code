@@ -1,9 +1,10 @@
 from advent_07 import find_all_dir_sizes, construct_tree, ElfDirectory
 import pytest
+import os
 
 SIMPLE = ["$ cd /", "$ ls", "dir a", "dir b", "$ cd a", "$ ls", "20 c.txt"]
 
-with open("test_advent_07_input.txt", "r") as testfile:
+with open(os.path.join(os.path.dirname(__file__), "test_advent_07_input.txt"), "r") as testfile:
     EXAMPLE_INPUT = [line.strip() for line in testfile]
 
 EXAMPLE_TREE = {

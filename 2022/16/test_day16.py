@@ -1,6 +1,7 @@
 import pytest
 from day16 import Valve, ValveTree, parse_line
 from unittest.mock import patch
+import os
 
 
 @pytest.fixture(scope="function")
@@ -18,7 +19,7 @@ def simple_valve_tree():
 
 @pytest.fixture(scope="function")
 def example_valve_tree():
-    with open("day16_example_input.txt", "r") as infile:
+    with open(os.path.join(os.path.dirname(__file__), "day16_example_input.txt"), "r") as infile:
         valves = [parse_line(line.strip()) for line in infile]
     return ValveTree(valves)
 
