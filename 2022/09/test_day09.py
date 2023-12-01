@@ -1,13 +1,15 @@
 from day09 import follow_the_leader, Point
 
-EXAMPLE_INPUT = [("R", 4),
-                 ("U", 4),
-                 ("L", 3),
-                 ("D", 1),
-                 ("R", 4),
-                 ("D", 1),
-                 ("L", 5),
-                 ("R", 2)]
+EXAMPLE_INPUT = [
+    ("R", 4),
+    ("U", 4),
+    ("L", 3),
+    ("D", 1),
+    ("R", 4),
+    ("D", 1),
+    ("L", 5),
+    ("R", 2),
+]
 
 
 def test_follow_the_leader():

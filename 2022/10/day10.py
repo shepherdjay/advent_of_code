@@ -11,7 +11,7 @@ class CommunicationsDevice:
         for _ in range(6):
             new_row = list()
             for _ in range(40):
-                new_row.append('.')
+                new_row.append(".")
             self.display.append(new_row)
 
         self._pixel_gen = self._yield_pixel()
@@ -27,9 +27,9 @@ class CommunicationsDevice:
         pixel_x, pixel_y = self._pixel_gen.__next__()
 
         if pixel_x in range(self.X - 1, self.X + 2):
-            char = '#'
+            char = "#"
         else:
-            char = '.'
+            char = "."
         self.display[pixel_y][pixel_x] = char
 
         self.cycles += 1
@@ -37,7 +37,7 @@ class CommunicationsDevice:
     def draw(self):
         for row in self.display:
             for char in row:
-                print(char, end='')
+                print(char, end="")
             print()
 
     def addx(self, value: int):
@@ -62,21 +62,19 @@ def process_instruction_set(instructions: List[str], cpu: CommunicationsDevice):
     """
     for instruction in instructions:
         match instruction.split():
-            case ['noop']:
+            case ["noop"]:
                 cpu.noop()
-            case ['addx', value]:
+            case ["addx", value]:
                 cpu.addx(value=int(value))
 
 
-if __name__ == '__main__':
-    with open('day10_input.txt', 'r') as elf_file:
+if __name__ == "__main__":
+    with open("day10_input.txt", "r") as elf_file:
         instructions = [line.strip() for line in elf_file]
 
     walkie_talkie = CommunicationsDevice()
     process_instruction_set(instructions, walkie_talkie)
 
-    print(sum([
-        walkie_talkie.signal_strength(x) for x in [20, 60, 100, 140, 180, 220]]
-    ))
+    print(sum([walkie_talkie.signal_strength(x) for x in [20, 60, 100, 140, 180, 220]]))
 
     walkie_talkie.draw()
