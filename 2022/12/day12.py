@@ -16,18 +16,18 @@ class Terminal:
         self.starting_map = starting_map
 
     def draw(self, coordinates):
-        system('cls')
+        system("cls")
         print()
         print()
         for row_idx, row in enumerate(self.starting_map):
             for col_idx, char in enumerate(row):
                 if (row_idx, col_idx) in coordinates:
-                    print(Fore.RED + char, end='')
+                    print(Fore.RED + char, end="")
                 else:
-                    print(Fore.LIGHTWHITE_EX + char, end='')
+                    print(Fore.LIGHTWHITE_EX + char, end="")
             print()
         print()
-        print(f'Path Length: {len(coordinates)}')
+        print(f"Path Length: {len(coordinates)}")
 
 
 def find_index(elev_map: Elev, search: str) -> Tuple[int, int]:
@@ -53,9 +53,9 @@ def transform_elev_map(elev_map: Elev):
         new_row = []
         for char in row:
             match char:
-                case 'S':
+                case "S":
                     char_value = 0
-                case 'E':
+                case "E":
                     char_value = e_value
                 case other:
                     char_value = ascii_letters.find(char)
@@ -102,6 +102,7 @@ def get_candidate_neighbors(elev_map: HeightMap, current_idx, visited, goal=None
 
     return candidates
 
+
 @unsync.unsync(cpu_bound=True)
 def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
     stack = deque()
@@ -119,7 +120,9 @@ def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
                 min_successful_path_length = len(path)
         else:
             if current_index not in visited_nodes:
-                neighbors = get_candidate_neighbors(elev_map, current_index, visited=path, goal=goal_index)
+                neighbors = get_candidate_neighbors(
+                    elev_map, current_index, visited=path, goal=goal_index
+                )
                 for neighbor in neighbors:
                     new_path = path + [neighbor]
                     stack.appendleft((neighbor, new_path))
@@ -129,17 +132,23 @@ def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
 
 
 def process_elev_map(elev_map: Elev, terminal=None):
-    starting_index = find_index(elev_map, 'S')
-    ending_index = find_index(elev_map, 'E')
+    starting_index = find_index(elev_map, "S")
+    ending_index = find_index(elev_map, "E")
 
     height_map = transform_elev_map(elev_map)
 
-    path = traverse_path(height_map, starting_index=starting_index, goal_index=ending_index, terminal=terminal).result()
+    path = traverse_path(
+        height_map,
+        starting_index=starting_index,
+        goal_index=ending_index,
+        terminal=terminal,
+    ).result()
 
     return len(path) - 1
 
+
 def process_elev_map_v2(elev_map: Elev, terminal=None):
-    ending_index = find_index(elev_map, 'E')
+    ending_index = find_index(elev_map, "E")
 
     height_map = transform_elev_map(elev_map)
     starting_points = []
@@ -148,14 +157,25 @@ def process_elev_map_v2(elev_map: Elev, terminal=None):
             if value == 0:
                 starting_points.append((row_idx, col_idx))
 
-    print(f"Finding number of steps from {len(starting_points)} different starting points")
+    print(
+        f"Finding number of steps from {len(starting_points)} different starting points"
+    )
 
     tasks = [
-        traverse_path(height_map, starting_index=starting_point, goal_index=ending_index, terminal=terminal)
+        traverse_path(
+            height_map,
+            starting_index=starting_point,
+            goal_index=ending_index,
+            terminal=terminal,
+        )
         for starting_point in starting_points
     ]
 
-    step_map = [(len(task.result()) - 1, task.result()) for task in tasks if task.result() is not None]
+    step_map = [
+        (len(task.result()) - 1, task.result())
+        for task in tasks
+        if task.result() is not None
+    ]
 
     step_map.sort(key=lambda x: x[0])
 
@@ -164,10 +184,9 @@ def process_elev_map_v2(elev_map: Elev, terminal=None):
     return steps, scenic_path
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     problem_input = []
-    with open('day12_input.txt', 'r') as infile:
+    with open("day12_input.txt", "r") as infile:
         rows = [line.strip() for line in infile]
         for row in rows:
             problem_input.append([char for char in row])
@@ -180,4 +199,6 @@ if __name__ == '__main__':
 
     # part2
     steps, scenic_path = process_elev_map_v2(problem_input, terminal=terminal)
-    print(f'The number of steps is {steps}, and the path if your interested is:\n\n {scenic_path}')
+    print(
+        f"The number of steps is {steps}, and the path if your interested is:\n\n {scenic_path}"
+    )

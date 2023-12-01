@@ -20,8 +20,8 @@ def find_marker(datastream: str, marker_distinction: int = 4) -> int:
     return marker
 
 
-if __name__ == '__main__':
-    with open('advent_06_input.txt', 'r') as infile:
+if __name__ == "__main__":
+    with open("advent_06_input.txt", "r") as infile:
         datastream = infile.read().strip()
 
     print(find_marker(datastream, marker_distinction=4))

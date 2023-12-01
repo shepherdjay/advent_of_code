@@ -2,7 +2,7 @@ import math
 
 
 class Point:
-    def __init__(self, x, y, head: 'Point' = None):
+    def __init__(self, x, y, head: "Point" = None):
         self.x = x
         self.y = y
         self.head = head
@@ -15,7 +15,9 @@ class Point:
 
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
-        if distance == 0:  # They are already in the same place so no need to calculate a vector
+        if (
+            distance == 0
+        ):  # They are already in the same place so no need to calculate a vector
             unit_vector = (0, 0)
         else:
             unit_vector = ((x2 - x1) / distance, (y2 - y1) / distance)
@@ -30,13 +32,13 @@ def follow_the_leader(instructions, head, tails):
     for direction, steps in instructions:
         steps = int(steps)
         for _ in range(steps):
-            if direction == 'R':
+            if direction == "R":
                 head.x += 1
-            elif direction == 'L':
+            elif direction == "L":
                 head.x -= 1
-            elif direction == 'U':
+            elif direction == "U":
                 head.y += 1
-            elif direction == 'D':
+            elif direction == "D":
                 head.y -= 1
 
             for tail in tails:
@@ -62,8 +64,8 @@ def play_follow_the_leader(num_of_tails: int = 1):
     return follow_the_leader(instructions, head=head, tails=tails)
 
 
-if __name__ == '__main__':
-    with open('day09_input.txt', 'r') as elf_file:
+if __name__ == "__main__":
+    with open("day09_input.txt", "r") as elf_file:
         instructions = [line.strip().split() for line in elf_file]
 
     # PART 1

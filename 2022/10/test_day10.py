@@ -1,13 +1,12 @@
 import pytest
 from day10 import process_instruction_set, CommunicationsDevice
 
-with open('test_day10_input.txt', 'r') as elf_file:
+with open("test_day10_input.txt", "r") as elf_file:
     EXAMPLE_INSTRUCTIONS = [line.strip() for line in elf_file]
 
-@pytest.mark.parametrize('cycle,register,signal',[
-    (20, 21, 420),
-    (60, 19, 1140),
-    (100, 18, 1800)]
+
+@pytest.mark.parametrize(
+    "cycle,register,signal", [(20, 21, 420), (60, 19, 1140), (100, 18, 1800)]
 )
 def test_day10_with_example(cycle, register, signal):
     prototype = CommunicationsDevice()
@@ -26,6 +25,7 @@ def test_CPU_initialization():
     prototype = CommunicationsDevice()
     assert prototype.X == 1
     assert prototype.reg_history == [1]
+
 
 def test_CPU_addx():
     prototype = CommunicationsDevice()

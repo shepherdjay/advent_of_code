@@ -21,23 +21,24 @@ class Sensor:
         return abs(loc_x - beac_x) + abs(loc_y - beac_y)
 
     def not_beacon(self, x: tuple[int, int]) -> bool:
-        """ Given a location return True if it can't be a beacon according to this sensor """
+        """Given a location return True if it can't be a beacon according to this sensor"""
         if x != self.beacon and self.in_sensor_net(x):
             return True
         return False
 
     def in_sensor_net(self, x: tuple[int, int]) -> bool:
-        """ Given a location return True if location is inside sensor net """
+        """Given a location return True if location is inside sensor net"""
         return self.m_dist(x, self.location) <= self.beacon_mdist
 
     def non_beacon_locations(self) -> set[tuple[int, int]]:
-        """ Returns a set of coordinates that definitely don't contain a beacon """
-        grid_coordinates = set(itertools.product(
-            range(self.x_min, self.x_max + 1), range(self.y_min, self.y_max + 1)
-        ))
+        """Returns a set of coordinates that definitely don't contain a beacon"""
+        grid_coordinates = set(
+            itertools.product(
+                range(self.x_min, self.x_max + 1), range(self.y_min, self.y_max + 1)
+            )
+        )
 
-        pruned_set = set(
-            x for x in grid_coordinates if self.not_beacon(x))
+        pruned_set = set(x for x in grid_coordinates if self.not_beacon(x))
         return pruned_set
 
     @staticmethod
@@ -91,35 +92,32 @@ class Sensor:
 
         return round(x_rotated), round(y_rotated)
 
-    def __eq__(self, other: 'Sensor'):
+    def __eq__(self, other: "Sensor"):
         if not isinstance(other, Sensor):
             raise TypeError
 
-        return all([
-            self.location == other.location,
-            self.beacon == other.beacon
-        ])
+        return all([self.location == other.location, self.beacon == other.beacon])
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.location}, {self.beacon})"
 
     @classmethod
     def from_string(cls, sensor_string: str):
-        parse = re.compile(r'-*\d+')
+        parse = re.compile(r"-*\d+")
         loc_x, loc_y, beac_x, beac_y = (int(x) for x in parse.findall(sensor_string))
 
         return Sensor(location=(loc_x, loc_y), beacon=(beac_x, beac_y))
 
     @classmethod
-    def from_file(cls, filename: str) -> list['Sensor']:
-        with open(filename, 'r') as infile:
+    def from_file(cls, filename: str) -> list["Sensor"]:
+        with open(filename, "r") as infile:
             lines = [line.strip() for line in infile]
 
         return [Sensor.from_string(line) for line in lines]
 
 
 def rule_out_row(y: int, sensors: list[Sensor]) -> set[tuple[int, int]]:
-    """ Given list of Sensors and a row number return the set of coordinates on that row that don't contain beacon """
+    """Given list of Sensors and a row number return the set of coordinates on that row that don't contain beacon"""
     min_x = min(sensor.x_min for sensor in sensors)
     max_x = max(sensor.x_max for sensor in sensors)
 
@@ -134,15 +132,17 @@ def rule_out_row(y: int, sensors: list[Sensor]) -> set[tuple[int, int]]:
     return no_beacons
 
 
-def find_beacon(sensors: list[Sensor], search_min, search_max) -> tuple[tuple[int, int], int]:
-    """ Given a search space, and a list of sensors, return the beacon location and tuning freq"""
+def find_beacon(
+    sensors: list[Sensor], search_min, search_max
+) -> tuple[tuple[int, int], int]:
+    """Given a search space, and a list of sensors, return the beacon location and tuning freq"""
 
-    print('Finding Edges')
+    print("Finding Edges")
     edges = set()
     for sensor in tqdm(sensors):
         edges.update(sensor.return_outside_edges())
 
-    print('Finding Beacon')
+    print("Finding Beacon")
     for coord in tqdm(edges):
         x = coord[0]
         y = coord[1]
@@ -152,8 +152,8 @@ def find_beacon(sensors: list[Sensor], search_min, search_max) -> tuple[tuple[in
                 return ((x, y), (x * 4000000 + y))
 
 
-if __name__ == '__main__':
-    sensors = Sensor.from_file('day15_input.txt')
+if __name__ == "__main__":
+    sensors = Sensor.from_file("day15_input.txt")
 
     # print(len(rule_out_row(2_000_000, sensors)))
 
