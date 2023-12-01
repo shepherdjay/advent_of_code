@@ -3,6 +3,7 @@ import hypothesis.strategies as st
 from unittest.mock import patch
 import os
 
+
 class TestSensor:
     def setup_method(self):
         self.simple_sensor = Sensor(location=(0, 0), beacon=(1, 0))
@@ -35,7 +36,9 @@ class TestSensor:
 
 
 def test_example_input():
-    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), "test_day15_input.txt"))
+    sensors = Sensor.from_file(
+        os.path.join(os.path.dirname(__file__), "test_day15_input.txt")
+    )
     non_beacons = rule_out_row(10, sensors)
 
     assert len(non_beacons) == 26
@@ -48,7 +51,9 @@ def return_to_sender(caller):
 @patch("day15.tqdm")
 def test_find_beacon(fake_tqdm):
     fake_tqdm.side_effect = return_to_sender
-    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), "test_day15_input.txt"))
+    sensors = Sensor.from_file(
+        os.path.join(os.path.dirname(__file__), "test_day15_input.txt")
+    )
     expected_beacon_location = (14, 11)
     expected_tuning_freq = 56000011
 

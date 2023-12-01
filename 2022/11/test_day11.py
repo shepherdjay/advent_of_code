@@ -2,6 +2,7 @@ import pytest
 from day11 import Monkey, MonkeyTest, process_monkey_file
 import os
 
+
 @pytest.fixture(autouse=True, scope="function")
 def cleanup_monkey():
     yield
@@ -9,7 +10,9 @@ def cleanup_monkey():
 
 
 def test_process_a_monkey():
-    with open(os.path.join(os.path.dirname(__file__), "day11_single_monkey.txt"), "r") as infile:
+    with open(
+        os.path.join(os.path.dirname(__file__), "day11_single_monkey.txt"), "r"
+    ) as infile:
         single_monkey = infile.read()
 
     actual = Monkey.from_monkey_block(single_monkey)
@@ -37,11 +40,20 @@ def test_monkey_takes_turn():
 
 
 def test_process_example_monkey_file():
-    assert process_monkey_file(os.path.join(os.path.dirname(__file__), "test_day11_input.txt")) == 10605
+    assert (
+        process_monkey_file(
+            os.path.join(os.path.dirname(__file__), "test_day11_input.txt")
+        )
+        == 10605
+    )
 
 
 def test_process_example_monkey_file_lots_of_rounds():
-    process_monkey_file(os.path.join(os.path.dirname(__file__), "test_day11_input.txt"), num_rounds=5_000, worry_divisor=1)
+    process_monkey_file(
+        os.path.join(os.path.dirname(__file__), "test_day11_input.txt"),
+        num_rounds=5_000,
+        worry_divisor=1,
+    )
 
     assert Monkey.monkeys[0].items_inspected == 26075
     assert Monkey.monkeys[1].items_inspected == 23921

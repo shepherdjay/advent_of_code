@@ -2,6 +2,7 @@ import pytest
 from day13 import comparator, process_file, process_file_v2
 import os
 
+
 @pytest.mark.parametrize(
     "a,b,expected",
     [
@@ -24,8 +25,14 @@ def test_comparator(a, b, expected):
 
 
 def test_process_file():
-    assert process_file(os.path.join(os.path.dirname(__file__), "test_day13_input.txt")) == 13
+    assert (
+        process_file(os.path.join(os.path.dirname(__file__), "test_day13_input.txt"))
+        == 13
+    )
 
 
 def test_process_file_v2():
-    assert process_file_v2(os.path.join(os.path.dirname(__file__), "test_day13_input.txt")) == 140
+    assert (
+        process_file_v2(os.path.join(os.path.dirname(__file__), "test_day13_input.txt"))
+        == 140
+    )
