@@ -15,6 +15,10 @@ NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 
 def parse_line(line):
+    """
+    >>> parse_line('123')
+    13
+    """
     first = False
     for char in line:
         if char.isnumeric() and first is False:
@@ -28,6 +32,10 @@ def parse_line(line):
 
 
 def parse_line_v2(line):
+    """
+    >>> parse_line_v2('aone23')
+    13
+    """
     index_map = {}
 
     re_number_words = [re.compile(word) for word in NUMBERED_WORDS.keys()]
