@@ -40,17 +40,17 @@ class ElfDirectory:
             if isinstance(item, ElfDirectory) and item.name == search_name:
                 return item
 
-    def __lt__(self, other: 'ElfDirectory'):
+    def __lt__(self, other: "ElfDirectory"):
         if not isinstance(other, ElfDirectory):
             raise TypeError
         if self.get_size() < other.get_size():
             return True
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
     def __repr__(self):
-        return f'Directory(name={self.name}, parent={self.parent})'
+        return f"Directory(name={self.name}, parent={self.parent})"
 
 
 @dataclass
@@ -64,20 +64,20 @@ class ElfFile:
 
 
 def construct_tree(terminal_output: List[str]) -> List[ElfDirectory]:
-    directories = [ElfDirectory('/')]
+    directories = [ElfDirectory("/")]
     cwd = directories[0]
     for line in terminal_output:
-        if line.startswith('$ cd'):
+        if line.startswith("$ cd"):
             match line[5::]:
-                case '/':
+                case "/":
                     cwd = directories[0]
-                case '..':
+                case "..":
                     cwd = cwd.parent
                 case other:
                     cwd = cwd.search_dir(other)
-        elif line.startswith('$ ls'):
+        elif line.startswith("$ ls"):
             pass
-        elif line.startswith('dir'):
+        elif line.startswith("dir"):
             new_dir_name = line[4::]
             directories.append(cwd.add_directory(name=new_dir_name))
         else:
@@ -87,7 +87,7 @@ def construct_tree(terminal_output: List[str]) -> List[ElfDirectory]:
     return directories
 
 
-def find_all_dir_sizes(terminal_output: List[str], maxsize: int = float('inf')) -> Dict:
+def find_all_dir_sizes(terminal_output: List[str], maxsize: int = float("inf")) -> Dict:
     all_dirs = construct_tree(terminal_output)
 
     sizes = {}
@@ -98,8 +98,8 @@ def find_all_dir_sizes(terminal_output: List[str], maxsize: int = float('inf')) 
     return sizes
 
 
-if __name__ == '__main__':
-    with open('advent_07_input.txt', 'r') as elf_file:
+if __name__ == "__main__":
+    with open("advent_07_input.txt", "r") as elf_file:
         commands = [line.strip() for line in elf_file]
 
     max_100k = find_all_dir_sizes(commands, maxsize=100_000)
@@ -120,9 +120,8 @@ if __name__ == '__main__':
 
     for candidate_dir in candidate_dirs:
         if candidate_dir.get_size() >= needed_space:
-            print(f'Unused Space: {unused_space}, Needed Space: {needed_space}')
-            print(f'Should delete {candidate_dir.parent}/{candidate_dir} with size {candidate_dir.get_size()}')
+            print(f"Unused Space: {unused_space}, Needed Space: {needed_space}")
+            print(
+                f"Should delete {candidate_dir.parent}/{candidate_dir} with size {candidate_dir.get_size()}"
+            )
             break
-
-
-
