@@ -1,5 +1,4 @@
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     with open("advent_01_input.txt", "r") as infile:
         raw_lines = infile.readlines()
 

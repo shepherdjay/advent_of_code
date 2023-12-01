@@ -1,6 +1,4 @@
-if __name__ == '__main__':
-
-
+if __name__ == "__main__":
     with open("advent_02_input.txt", "r") as infile:
         cheat_sheet = []
         for line in infile:
@@ -32,7 +30,6 @@ if __name__ == '__main__':
 
     WIN_MAP = {"Rock": "Scissors", "Paper": "Rock", "Scissors": "Paper"}
 
-
     def decide_winner(opponent, response):
         if WIN_MAP[opponent] == response:
             return "LOSE"
@@ -40,7 +37,6 @@ if __name__ == '__main__':
             return "WIN"
         else:
             return "TIE"
-
 
     def calculate_round(opponent_key, response_key):
         """
@@ -57,9 +53,7 @@ if __name__ == '__main__':
         result_value = SCORES[decide_winner(opponent, response)]
         return selection_value + result_value
 
-
     print(sum([calculate_round(x, y) for x, y in cheat_sheet]))
-
 
     def find_the_right_response(opponent_key, response_key):
         opponent = UPDATED_KEY[opponent_key]
@@ -67,7 +61,6 @@ if __name__ == '__main__':
         for shape in WIN_MAP.keys():
             if decide_winner(opponent, shape) == result_needed:
                 return UPDATED_KEY[shape]
-
 
     new_scores = []
     for opponent_key, response_key in cheat_sheet:

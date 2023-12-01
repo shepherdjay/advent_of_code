@@ -19,7 +19,26 @@ EXAMPLE_TREE = {
 
 @pytest.mark.parametrize(
     "test_input,result",
-    [(EXAMPLE_INPUT, {"a": 94853, "e": 584}), (SIMPLE, {"a": 20, "b": 0, "/": 20})],
+    [
+        (
+            EXAMPLE_INPUT,
+            {
+                ElfDirectory(name="a", parent=ElfDirectory(name="/")): 94853,
+                ElfDirectory(
+                    name="e",
+                    parent=ElfDirectory(name="a", parent=ElfDirectory(name="/")),
+                ): 584,
+            },
+        ),
+        (
+            SIMPLE,
+            {
+                ElfDirectory(name="a", parent=ElfDirectory(name="/")): 20,
+                ElfDirectory(name="b", parent=ElfDirectory(name="/")): 0,
+                ElfDirectory(name="/"): 20,
+            },
+        ),
+    ],
 )
 def test_find_all_dir(test_input, result):
     assert find_all_dir_sizes(test_input, maxsize=100_000) == result
