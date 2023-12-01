@@ -1,7 +1,4 @@
-
-
-
-with open('advent_01_input.txt', 'r') as infile:
+with open("advent_01_input.txt", "r") as infile:
     raw_lines = infile.readlines()
 
 all_sets = []
@@ -9,7 +6,7 @@ all_sets = []
 while True:
     index = 0
     for entry in raw_lines:
-        if entry.strip() == '':
+        if entry.strip() == "":
             break
         else:
             index += 1
@@ -19,7 +16,7 @@ while True:
         break
     an_elf_inventory = [int(x.strip()) for x in raw_lines[0:index]]
     all_sets.append(an_elf_inventory)
-    raw_lines = raw_lines[index+1::]
+    raw_lines = raw_lines[index + 1 : :]
 
 sums = []
 

@@ -4,13 +4,10 @@ import math
 from collections import deque
 
 
-def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, deque]:
-    neighbors = {
-        "left": deque(),
-        "right": deque(),
-        "up": deque(),
-        "down": deque()
-    }
+def extract_neighbors(
+    forest_map: np.ndarray, coordinates: Tuple[int, int]
+) -> Dict[str, deque]:
+    neighbors = {"left": deque(), "right": deque(), "up": deque(), "down": deque()}
     x, y = coordinates
     # Extract the neighbors in the same row as the current element
     for col_index, value in enumerate(forest_map[x]):
@@ -40,7 +37,7 @@ def is_visible(height: int, neighbor_map: dict):
     """
     for direction, neighbors in neighbor_map.items():
         if len(neighbors) == 0:
-            neighbor_map[direction] = [float('-inf')]
+            neighbor_map[direction] = [float("-inf")]
 
     visible_results = [
         all(x < height for x in neighbor_map["left"]),
@@ -98,8 +95,8 @@ def score_every_tree(forest_map: np.ndarray) -> List[int]:
     return scores
 
 
-if __name__ == '__main__':
-    with open('day_08_input.txt', 'r') as elf_file:
+if __name__ == "__main__":
+    with open("day_08_input.txt", "r") as elf_file:
         array = []
         for line in elf_file:
             new_row = [int(char) for char in line.strip()]

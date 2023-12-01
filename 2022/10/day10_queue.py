@@ -21,8 +21,8 @@ class Display:
 
     def _draw_pixel(self, sprite_loc):
         if self.cursor % self.width in range(sprite_loc - 1, sprite_loc + 2):
-            return '#'
-        return ' '
+            return "#"
+        return " "
 
     async def draw(self):
         while True:
@@ -30,9 +30,7 @@ class Display:
             sprite_loc = await self.display_queue.get()
             if self.cursor % self.width == 0:
                 print()
-            print(
-                self._draw_pixel(sprite_loc=sprite_loc), end=''
-            )
+            print(self._draw_pixel(sprite_loc=sprite_loc), end="")
             self.cursor += 1
 
 
@@ -59,7 +57,7 @@ class CommunicationsDevice:
             case ["noop"]:
                 await self.queue.put(0)
 
-            case ['addx', value]:
+            case ["addx", value]:
                 await self.queue.put(0)
                 await self.queue.put(int(value))
 
@@ -68,7 +66,7 @@ class CommunicationsDevice:
 
 
 async def main():
-    with open('day10_input.txt', 'r') as elf_file:
+    with open("day10_input.txt", "r") as elf_file:
         instructions = [line.strip() for line in elf_file]
 
     walkie_talkie = CommunicationsDevice()
@@ -80,10 +78,8 @@ async def main():
 
     await asyncio.gather(*futures)
 
-    print(sum([
-        walkie_talkie.signal_strength(x) for x in [20, 60, 100, 140, 180, 220]]
-    ))
+    print(sum([walkie_talkie.signal_strength(x) for x in [20, 60, 100, 140, 180, 220]]))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())

@@ -1,11 +1,24 @@
 from collections import deque, namedtuple
 
-EXAMPLE_CUBES = [(2, 2, 2), (1, 2, 2), (3, 2, 2), (2, 1, 2), (2, 3, 2), (2, 2, 1), (2, 2, 3), (2, 2, 4), (2, 2, 6),
-                 (1, 2, 5), (3, 2, 5), (2, 1, 5), (2, 3, 5)]
+EXAMPLE_CUBES = [
+    (2, 2, 2),
+    (1, 2, 2),
+    (3, 2, 2),
+    (2, 1, 2),
+    (2, 3, 2),
+    (2, 2, 1),
+    (2, 2, 3),
+    (2, 2, 4),
+    (2, 2, 6),
+    (1, 2, 5),
+    (3, 2, 5),
+    (2, 1, 5),
+    (2, 3, 5),
+]
 
 Coord = tuple[int, int, int]
 
-Dimensions = namedtuple('Dimensions', 'x_min,x_max,y_min,y_max,z_min,z_max')
+Dimensions = namedtuple("Dimensions", "x_min,x_max,y_min,y_max,z_min,z_max")
 
 
 def surface_area(cubes):
@@ -51,10 +64,12 @@ def explore_exterior(cubes):
     cubes_dim = get_dimensions(cubes)
 
     # Create a 3D box one larger than the dimensions of the object
-    box = [(x, y, z)
-           for z in range(cubes_dim.z_min - 1, cubes_dim.z_max + 2)
-           for y in range(cubes_dim.y_min - 1, cubes_dim.y_max + 2)
-           for x in range(cubes_dim.x_min - 1, cubes_dim.x_max + 2)]
+    box = [
+        (x, y, z)
+        for z in range(cubes_dim.z_min - 1, cubes_dim.z_max + 2)
+        for y in range(cubes_dim.y_min - 1, cubes_dim.y_max + 2)
+        for x in range(cubes_dim.x_min - 1, cubes_dim.x_max + 2)
+    ]
 
     # Find the bottom left corner of the 3D box
     box_dim = get_dimensions(box)
@@ -94,18 +109,17 @@ def calculate_neighbors(cube):
     return ((x + dx, y + dy, z + dz) for dx, dy, dz in offsets)
 
 
-if __name__ == '__main__':
-    with open('day18_input.txt', 'r') as cube_file:
+if __name__ == "__main__":
+    with open("day18_input.txt", "r") as cube_file:
         puzzle = []
         for line in cube_file:
-            clean_line = line.strip().split(',')
+            clean_line = line.strip().split(",")
             x, y, z = clean_line
-            puzzle.append(
-                (int(x), int(y), int(z))
-            )
+            puzzle.append((int(x), int(y), int(z)))
 
         for cubes in [EXAMPLE_CUBES, puzzle]:
             total_surface_area = surface_area(cubes)
             exposed = explore_exterior(cubes)
             print(
-                f"For {len(cubes)} cubes. The total surface area is {total_surface_area}. The exposed surface area is {exposed}")
+                f"For {len(cubes)} cubes. The total surface area is {total_surface_area}. The exposed surface area is {exposed}"
+            )
