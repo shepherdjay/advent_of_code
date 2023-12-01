@@ -1,8 +1,6 @@
 attrs==22.1.0
-black==23.11.0
 click==8.1.7
 colorama==0.4.6
-coverage==6.5.0
 dill==0.3.6
 hypothesis==6.61.0
 iniconfig==1.1.1
@@ -17,8 +15,6 @@ platformdirs==4.0.0
 pluggy==1.0.0
 pox==0.3.2
 ppft==1.7.6.6
-pytest==7.2.0
-pytest-cov==4.1.0
 six==1.16.0
 sortedcontainers==2.4.0
 tqdm==4.64.1
