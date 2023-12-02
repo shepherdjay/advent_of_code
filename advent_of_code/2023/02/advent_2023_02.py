@@ -45,7 +45,7 @@ def sum_powers(allgames: list[str]) -> int:
     return summed_index
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     with open("advent_2023_02_input.txt", "r") as infile:
         games = infile.readlines()
     print(sum_of_possible(games, hypothesis={"red": 12, "green": 13, "blue": 14}))
