@@ -43,7 +43,36 @@ def process_schematic(schematic: list[str]) -> int:
     return total
 
 
+def process_gears(schematic: list[str]) -> int:
+    all_values = []
+    for row_id, row in enumerate(schematic):
+        all_values.append(extract_numbers_start_end(row))
+
+    total = 0
+    for row_id, row in enumerate(schematic):
+        for col_id, char in enumerate(row):
+            if char == "*":
+                star_neighbors = find_neighbors((row_id, col_id))
+                count = 0
+                gear_one = 0
+                gear_two = 0
+                for row_id, values in enumerate(all_values):
+                    for value, start_pos, end_pos in values:
+                        for col_value in range(start_pos, end_pos):
+                            if (row_id, col_value) in star_neighbors:
+                                count += 1
+                                if gear_one == 0:
+                                    gear_one += value
+                                else:
+                                    gear_two += value
+                                break
+                if count == 2:
+                    total += gear_one * gear_two
+    return total
+
+
 if __name__ == "__main__":  # pragma: no cover
     with open("advent_2023_03_input.txt", "r") as infile:
         schematic = infile.read().splitlines()
     print(process_schematic(schematic))
+    print(process_gears(schematic))
