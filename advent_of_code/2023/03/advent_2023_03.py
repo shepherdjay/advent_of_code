@@ -56,10 +56,10 @@ def process_gears(schematic: list[str]) -> int:
                 count = 0
                 gear_one = 0
                 gear_two = 0
-                for row_id, values in enumerate(all_values):
+                for val_row_id, values in enumerate(all_values):
                     for value, start_pos, end_pos in values:
-                        for col_value in range(start_pos, end_pos):
-                            if (row_id, col_value) in star_neighbors:
+                        for val_col_id in range(start_pos, end_pos):
+                            if (val_row_id, val_col_id) in star_neighbors:
                                 count += 1
                                 if gear_one == 0:
                                     gear_one += value
