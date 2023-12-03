@@ -1,5 +1,5 @@
 from advent_2023_03 import process_schematic, find_neighbors, extract_numbers_start_end
-
+import pytest
 
 EXAMPLE_SCHEMATIC = """467..114..
 ...*......
@@ -12,9 +12,14 @@ EXAMPLE_SCHEMATIC = """467..114..
 ...$.*....
 .664.598.."""
 
-
-def test_process_schematic():
-    assert process_schematic(EXAMPLE_SCHEMATIC.splitlines()) == 4361
+@pytest.mark.parametrize('schematic,result', [
+    (EXAMPLE_SCHEMATIC, 4361),
+    (".1.\r1*1\r.1.", 4),
+    ('1.1\r.*.\r1.1''', 4),
+    ('111\r1@1\r111', 224)
+])
+def test_process_schematic(schematic, result):
+    assert process_schematic(schematic.splitlines()) == result
 
 
 def test_find_neighbors():
