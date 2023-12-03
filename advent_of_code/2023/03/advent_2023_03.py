@@ -15,11 +15,7 @@ def find_neighbors(coord: Tuple) -> set[Tuple]:
     neighbors = set()
     row_orig, col_orig = coord
     for row in range(row_orig - 1, row_orig + 2):
-        if row < 0:
-            continue
         for col in range(col_orig - 1, col_orig + 2):
-            if col < 0:
-                continue
             neighbors.add((row, col))
     neighbors.remove(coord)
     return neighbors
