@@ -45,5 +45,5 @@ def process_schematic(schematic: list[str]) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     with open("advent_2023_03_input.txt", "r") as infile:
-        schematic = infile.readlines()
+        schematic = infile.read().splitlines()
     print(process_schematic(schematic))
