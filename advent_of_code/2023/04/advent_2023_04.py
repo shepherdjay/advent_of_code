@@ -5,9 +5,9 @@ def count_card(winning_numbers: set, player_numbers: set) -> Tuple[int, int]:
     """
     Returns winnings, first match is worth 1 point for each subsequent its 2x
     >>> count_card({41, 48, 83, 86, 17}, {83, 86, 6, 31, 17, 9, 48, 53})
-    8
+    (8, 4)
     >>> count_card({41, 92, 73, 84, 69}, {59, 84, 76, 51, 58,  5, 54, 83})
-    1
+    (1, 1)
     """
     matches = len(winning_numbers.intersection(player_numbers))
     return 2**matches // 2, matches
@@ -24,8 +24,6 @@ def process_cards(card_list: list[str]) -> int:
         'Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11']
     >>> process_cards(cards_example)
     13
-    >>> process_cards(cards_example)
-    (13, 30)
     """
     total = 0
     for idx, line in enumerate(card_list):
