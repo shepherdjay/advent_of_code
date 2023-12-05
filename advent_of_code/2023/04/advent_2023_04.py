@@ -24,7 +24,7 @@ def process_cards(card_list: list[str]) -> int:
         'Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11']
     >>> process_cards(cards_example)
     13
-    >>> process_cards(cards_example, part2=True)
+    >>> process_cards(cards_example)
     (13, 30)
     """
     total = 0
