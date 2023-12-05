@@ -35,10 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code 
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    - uses: actions/checkout@v3
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
@@ -48,20 +45,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Run ATS
-      uses: codecov/codecov-ats@v0
-      env:
-        CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        
+
     - name: Test with pytest
       run: |
-        pytest --cov=advent_of_code --cov-branch ${{ env.CODECOV_ATS_TESTS }}
+        pytest --cov=advent_of_code --cov-branch
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4-beta
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      with:
-        flags: smart-tests
-        plugins: pycoverage,compress-pycoverage
