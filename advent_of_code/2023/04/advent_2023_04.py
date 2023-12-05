@@ -11,17 +11,9 @@ def count_card(winning_numbers: set, player_numbers: set) -> Tuple[int,int]:
     matches = len(winning_numbers.intersection(player_numbers))
     return 2**matches // 2, matches
 
-def update_for_matches(idx, matches, my_list):
-    """
-    updates a list in place with copy of elements
-    """
-    right_idx = idx + matches
-    for _ in range(matches):
-        my_list.insert(right_idx, my_list[right_idx])
-        right_idx -= 1
 
 
-def process_cards(card_list: list[str], part2=False) -> Tuple[int, int]|int:
+def process_cards(card_list: list[str]) -> int:
     """
     >>> cards_example = [\
         'Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53', \
@@ -43,13 +35,36 @@ def process_cards(card_list: list[str], part2=False) -> Tuple[int, int]|int:
         player = set(player.split())
         card_value, matches = count_card(winning, player)
         total += card_value
-        if part2:
-            update_for_matches(idx, matches, card_list)
-    if part2:
-        return total, len(card_list)
     return total
+
+def process_cards_v2(card_list: list[str]) -> int:
+    card_dict = {}
+    for idx, card in enumerate(card_list):
+        _, details = card.split(':')
+        winning, player = details.split('|')
+        winning = set(winning.split())
+        player = set(player.split())
+        card_dict[idx] = {
+            'winning': winning,
+            'player': player,
+            'copies': 1
+        }
+
+    total_cards = len(card_dict)
+    for card_number, card in card_dict.items():
+        for _ in range(card['copies']):
+            card_value, matches = count_card(card['winning'], card['player'])
+            total_cards += matches
+            shift = 1
+            for _ in range(matches):
+                card_dict[card_number+shift]['copies'] += 1
+                shift += 1
+
+    return total_cards
+
 
 if __name__ == '__main__': # pragma: no cover
     with open("advent_2023_04_input.txt", "r") as infile:
         card_string = infile.read().splitlines()
     print(process_cards(card_string))
+    print(process_cards_v2(card_string))
