@@ -53,6 +53,8 @@ jobs:
       env:
         CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        verbose: true
         
     - name: Test with pytest
       run: |
