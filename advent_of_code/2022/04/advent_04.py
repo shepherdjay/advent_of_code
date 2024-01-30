@@ -19,7 +19,7 @@ def check_overlaps(single_pair: List[str]) -> bool:
         if section in a_range:
             return True
 
-    return True
+    return False
 
 
 def check_fully_contained(single_pair: List[str]) -> bool:
