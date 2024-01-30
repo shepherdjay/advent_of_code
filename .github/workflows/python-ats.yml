@@ -58,7 +58,7 @@ jobs:
         
     - name: Test with pytest
       run: |
-        pytest --cov=advent_of_code --cov-branch ${{ env.CODECOV_ATS_TESTS }}
+        cat codecov_ats/tests_to_run.txt | xargs pytest --cov=advent_of_code --cov-branch
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4-beta
