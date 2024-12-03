@@ -16,6 +16,6 @@ pox==0.3.2
 ppft==1.7.6.6
 six==1.16.0
 sortedcontainers==2.4.0
-tqdm==4.64.1
+tqdm==4.66.3
 unsync==1.4.0
 xmltodict==0.13.0
