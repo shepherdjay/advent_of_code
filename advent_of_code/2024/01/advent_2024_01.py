@@ -35,7 +35,7 @@ def calculate_similarity(list_a, list_b):
     return total
 
 
-if __name__ == "__main__": # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     list_a, list_b = get_lists("advent_2024_01_input.txt")
     print(find_total_distance(list_a, list_b))
     print(calculate_similarity(list_a, list_b))

@@ -1,7 +1,7 @@
 import re
 import math
 
-GAME_REGEX = re.compile("(?P<value>\d+)\s(?P<color>\w+)")
+GAME_REGEX = re.compile(r"(?P<value>\d+)\s(?P<color>\w+)")
 
 
 def process_game_data(game: str) -> dict:

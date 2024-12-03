@@ -2,7 +2,7 @@ from typing import List, Tuple
 from string import ascii_letters
 import itertools
 from os import system
-from colorama import Fore, Back, Style
+from colorama import Fore
 import math
 from collections import deque
 import unsync

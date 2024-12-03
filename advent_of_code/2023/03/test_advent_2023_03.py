@@ -1,5 +1,4 @@
 from advent_2023_03 import (
-    process_schematic,
     find_neighbors,
     extract_numbers_start_end,
     process_schematic,
