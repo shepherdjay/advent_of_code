@@ -40,20 +40,29 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
     - name: Set up Python 3.13
       uses: actions/setup-python@v3
       with:
         python-version: "3.13"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install -r requirements.txt
+
+    - name: Install Pytest
+      run: |
+        pip install pytest-cov
+
     - name: Run ATS
       uses: codecov/codecov-ats@v0
       env:
         CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Echo expected tests
+      run: cat codecov_ats/tests_to_run.txt
         
     - name: Test with pytest
       run: |
