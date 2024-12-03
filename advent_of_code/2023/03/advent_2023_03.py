@@ -3,7 +3,7 @@ import re
 
 
 def extract_numbers_start_end(row_string: str) -> list[tuple[int, int, int]]:
-    number_re = re.compile("\d+")
+    number_re = re.compile(r"\d+")
 
     values = []
     for match in number_re.finditer(row_string):

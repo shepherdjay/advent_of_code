@@ -3,9 +3,7 @@ import heapq
 import re
 from collections import namedtuple
 import itertools
-import tqdm
 import functools
-import p_tqdm
 from multiprocessing import Pool, Manager
 
 

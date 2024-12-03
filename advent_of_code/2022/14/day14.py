@@ -1,6 +1,5 @@
 import re
 import itertools
-import copy
 
 
 def can_fall(cur_position, rock_positions):
