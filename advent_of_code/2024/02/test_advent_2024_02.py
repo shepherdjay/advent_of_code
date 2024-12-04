@@ -1,34 +1,51 @@
 import pytest
 
-from advent_2024_02 import check_level_safety, safe_level_count
+from advent_2024_02 import check_level_safety, safe_level_count, analyze_row
 
 
 @pytest.mark.parametrize(
-    "level,safe",
+    "level,safe_result",
     [
+        # PROVIDED EXAMPLES
         ([7, 6, 4, 2, 1], True),
         ([1, 2, 7, 8, 9], False),
+        ([9, 7, 6, 2, 1], False),
         ([1, 3, 2, 4, 5], False),
-        ([1, 2, 4, 5], True),
+        ([8, 6, 4, 4, 1], False),
+        ([1, 3, 6, 7, 9], True),
+
+        # CUSTOM
+        ([10, 11, 10, 9, 8], False)
     ],
 )
-def test_check_level_safety(level, safe):
-    assert check_level_safety(level) == safe
+def test_check_level_safety(level, safe_result):
+    assert check_level_safety(level) == safe_result
 
 
 @pytest.mark.parametrize(
-    "level,safe",
+    "level,dampen_result",
     [
+        # PROVIDED EXAMPLES
         ([7, 6, 4, 2, 1], True),
         ([1, 2, 7, 8, 9], False),
-        ([9,7,6,2,1], False),
+        ([9, 7, 6, 2, 1], False),
         ([1, 3, 2, 4, 5], True),
         ([8, 6, 4, 4, 1], True),
+        ([1, 3, 6, 7, 9], True),
+
+        # CUSTOM
+        ([10, 11, 10, 9, 8], True)
     ],
 )
-def test_check_level_safety_dampen(level, safe):
-    assert check_level_safety(level, dampen=True) == safe
+def test_check_level_safety_dampen(level, dampen_result):
+    assert check_level_safety(level, dampen=True) == dampen_result
 
+
+def test_analyze_row_constrained():
+    row = [7, 6, 4, 2, 1]
+
+    assert analyze_row(row, increasing = True) is False
+    assert analyze_row(row, increasing = False) is True
 
 def test_check_full_example_report():
     example = [

@@ -1,43 +1,45 @@
+def analyze_row(row, increasing, max_diff = 3):
+    prev_value = row[0]
+
+    for index, value in enumerate(row):
+        if index == 0:
+            continue
+
+        if prev_value == value:
+            return False
+        elif increasing and value < prev_value:
+            return False
+        elif not increasing and value > prev_value:
+            return False
+        elif abs(prev_value - value) > max_diff:
+            return False
+        
+        prev_value = value
+            
+    return True
+
 def check_level_safety(level: list, dampen=False) -> bool:
     """
     Given a level return a bool of True if safe
     """
-    prev_value = level[0]
-    increasing = None
-    fault = False
 
-    if level[1] > prev_value:
-        increasing = True
-    elif level[1] < prev_value:
+    if level[0] > level[1]:
         increasing = False
+    elif level[0] < level[1]:
+        increasing = True
     else:
-        fault = True
+        return False
+    
+    if not dampen:
+        return analyze_row(level, increasing=increasing)
+    else:
+        available_lists = []
+        for i in range(len(level)):
+            available_lists.append(level[:i] + level[i+1:])
 
-    for index, value in enumerate(level[1::]):
-        # early exit
-        if prev_value == value:
-            fault = True
-        elif increasing and value < prev_value:
-            fault = True
-        elif not increasing and value > prev_value:
-            fault = True
-        elif abs(prev_value - value) > 3:
-            fault = True
-        else:
-            pass
-
-        if fault and dampen:
-            recheck_list = level[:index] + level[index + 1 : :]
-            if check_level_safety(recheck_list, dampen=False) is False:
-                return False
-
-        if fault and not dampen:
-            return False
-
-        fault = False
-        prev_value = value
-
-    return True
+        results = [check_level_safety(row) for row in available_lists]
+        
+        return any(results)
 
 
 def safe_level_count(report: list[list[int]], dampen=False) -> int:
