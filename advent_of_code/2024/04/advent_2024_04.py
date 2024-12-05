@@ -29,11 +29,22 @@ def get_neighbors(coord: tuple[int, int], grid: list[list[str]]):
         )
     return neighbors
 
-def search(initial_coord: tuple[int,int], grid: list[list[str]], word='XMAS') -> bool:
+def search(initial_coord: tuple[int,int], grid: list[list[str]], original, word='XMAS', ) -> int:
     try:
         target_letter = word[1]
     except IndexError: #hit the end
-        return 1
+        init_row, init_col = initial_coord
+        orig_row, orig_col = original
+
+        row_distance = abs(init_row - orig_row)
+        col_distance = abs(init_col - orig_col)
+        if row_distance == col_distance and row_distance == 3:
+            return 1
+        if row_distance == 3 and init_col == orig_col:
+            return 1
+        if col_distance == 3 and init_row == orig_row:
+            return 1
+        return 0
     
     neighbors = get_neighbors(coord=initial_coord, grid=grid)
     candidates = []
@@ -45,7 +56,7 @@ def search(initial_coord: tuple[int,int], grid: list[list[str]], word='XMAS') ->
         return 0
     else:
         return sum(
-            [search(initial_coord=coord, grid=grid, word=word[1::]) for coord in candidates]
+            [search(initial_coord=coord, grid=grid, word=word[1::], original=original) for coord in candidates]
         )
 
 
@@ -56,6 +67,7 @@ def solve_puzzle(puzzle_str: str) -> int:
     for r_index, row in enumerate(grid):
         for col_index, char in enumerate(row):
             if char == 'X':
-                successes += search((r_index,col_index), grid=grid)
+                result = search((r_index,col_index), grid=grid, original=(r_index,col_index))
+                successes += result
 
     return successes
