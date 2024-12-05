@@ -84,9 +84,7 @@ class Monkey:
 
         monkey_test = MonkeyTest(divisor=divisor, true=true_idx, false=false_idx)
 
-        return Monkey(
-            items=starting_items, operator=(operation, modifier), test=monkey_test
-        )
+        return Monkey(items=starting_items, operator=(operation, modifier), test=monkey_test)
 
 
 def process_monkey_file(filename, num_rounds=20, worry_divisor=3):
@@ -105,9 +103,7 @@ def process_monkey_file(filename, num_rounds=20, worry_divisor=3):
         for monkey in Monkey.monkeys:
             monkey.take_turn(worry_divisor=worry_divisor)
 
-    top_performers = sorted(
-        Monkey.monkeys, key=lambda x: x.items_inspected, reverse=True
-    )
+    top_performers = sorted(Monkey.monkeys, key=lambda x: x.items_inspected, reverse=True)
 
     return top_performers[0].items_inspected * top_performers[1].items_inspected
 
@@ -115,16 +111,10 @@ def process_monkey_file(filename, num_rounds=20, worry_divisor=3):
 if __name__ == "__main__":
     monkey_business = process_monkey_file("day11_input.txt")
 
-    print(
-        f"{len(Monkey.monkeys)} monkeys caused {monkey_business} worth of monkey business."
-    )
+    print(f"{len(Monkey.monkeys)} monkeys caused {monkey_business} worth of monkey business.")
 
     print("Whew... that wasn't so bad.... oh no! They are throwing again")
 
-    monkey_business = process_monkey_file(
-        "day11_input.txt", num_rounds=10_000, worry_divisor=1
-    )
+    monkey_business = process_monkey_file("day11_input.txt", num_rounds=10_000, worry_divisor=1)
 
-    print(
-        f"{len(Monkey.monkeys)} monkeys caused {monkey_business} worth of monkey business."
-    )
+    print(f"{len(Monkey.monkeys)} monkeys caused {monkey_business} worth of monkey business.")

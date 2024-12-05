@@ -43,9 +43,7 @@ def check_level_safety(level: list, dampen=False) -> bool:
 
         return analyze_row(level, increasing=increasing)
     else:
-        results = [
-            check_level_safety(row, dampen=False) for row in generate_subrows(level)
-        ]
+        results = [check_level_safety(row, dampen=False) for row in generate_subrows(level)]
         return any(results)
 
 

@@ -18,9 +18,7 @@ def simple_valve_tree():
 
 @pytest.fixture(scope="function")
 def example_valve_tree():
-    with open(
-        os.path.join(os.path.dirname(__file__), "day16_example_input.txt"), "r"
-    ) as infile:
+    with open(os.path.join(os.path.dirname(__file__), "day16_example_input.txt"), "r") as infile:
         valves = [parse_line(line.strip()) for line in infile]
     return ValveTree(valves)
 
@@ -35,16 +33,13 @@ def test_simple_valve_tree(simple_valve_tree):
 
 def test_simple_valve_tree_v2(simple_valve_tree):
     """GIVEN: The simple_valve_tree and 10 Minutes"""
-    assert (
-        simple_valve_tree.dfs_part2(starting_node=simple_valve_tree["A"], cost_limit=10)
-        == 192
-    )
+    assert simple_valve_tree.dfs_part2(starting_node=simple_valve_tree["A"], cost_limit=10) == 192
 
 
 def test_parse_line():
-    assert parse_line(
-        "Valve AA has flow rate=0; tunnels lead to valves DD, II, BB"
-    ) == Valve(id="AA", flow=0, neighbors=("DD", "II", "BB"))
+    assert parse_line("Valve AA has flow rate=0; tunnels lead to valves DD, II, BB") == Valve(
+        id="AA", flow=0, neighbors=("DD", "II", "BB")
+    )
 
 
 def test_example_valve_tree(example_valve_tree):

@@ -23,9 +23,7 @@ class TestSensor:
     def test_Sensor_non_beacon_locations(self):
         expected_non_beacon_locations = {(-1, 0), (0, 0), (0, 1), (0, -1)}
 
-        assert (
-            self.simple_sensor.non_beacon_locations() == expected_non_beacon_locations
-        )
+        assert self.simple_sensor.non_beacon_locations() == expected_non_beacon_locations
 
     def test_rule_out_row(self):
         sensors = [self.simple_sensor]
@@ -35,9 +33,7 @@ class TestSensor:
 
 
 def test_example_input():
-    sensors = Sensor.from_file(
-        os.path.join(os.path.dirname(__file__), "test_day15_input.txt")
-    )
+    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), "test_day15_input.txt"))
     non_beacons = rule_out_row(10, sensors)
 
     assert len(non_beacons) == 26
@@ -50,9 +46,7 @@ def return_to_sender(caller):
 @patch("day15.tqdm")
 def test_find_beacon(fake_tqdm):
     fake_tqdm.side_effect = return_to_sender
-    sensors = Sensor.from_file(
-        os.path.join(os.path.dirname(__file__), "test_day15_input.txt")
-    )
+    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), "test_day15_input.txt"))
     expected_beacon_location = (14, 11)
     expected_tuning_freq = 56000011
 

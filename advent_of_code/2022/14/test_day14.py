@@ -28,9 +28,7 @@ def ybound_coord(draw):
     return [a_coord, b_coord]
 
 
-@pytest.mark.parametrize(
-    "a,b,expected", [((498, 6), (496, 6), {(498, 6), (497, 6), (496, 6)})]
-)
+@pytest.mark.parametrize("a,b,expected", [((498, 6), (496, 6), {(498, 6), (497, 6), (496, 6)})])
 def test_between_two_slates(a, b, expected):
     assert between_two_slates(a, b) == expected
 
