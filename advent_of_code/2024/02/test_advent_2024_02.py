@@ -1,4 +1,5 @@
 import pytest
+from hypothesis import given, strategies as st
 
 from advent_2024_02 import (
     check_level_safety,
@@ -63,6 +64,9 @@ def test_generate_subrows():
         [7, 6, 4, 2],
     ]
 
+@given(st.lists(st.integers(), min_size=2))
+def test_generate_subrows_hypothesis(hypo_list):
+    assert len(generate_subrows(hypo_list)) == len(hypo_list)
 
 def test_check_full_example_report():
     example = [
