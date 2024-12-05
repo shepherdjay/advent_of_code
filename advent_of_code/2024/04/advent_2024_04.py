@@ -1,8 +1,3 @@
-from itertools import product
-
-SEARCH_WORD = "XMAS"
-
-
 def get_neighbor_coord(row, col):
     possibilities = set()
     for r in range(row - 1, row + 2):
@@ -45,7 +40,8 @@ def get_paths(coord: tuple[int, int], path_length: int) -> list[list[tuple[int, 
 
     return [left, leftup, up, rightup, right, rightdown, down, leftdown]
 
-def on_grid(path: list[tuple[int,int]], grid_length) -> bool:
+
+def on_grid(path: list[tuple[int, int]], grid_length) -> bool:
     for row, col in path:
         if 0 > row or row > grid_length:
             return False
@@ -73,22 +69,23 @@ def search(coord, target_word, grid):
 def solve_puzzle(puzzle_str: str) -> int:
     grid = [row for row in puzzle_str.split("\n") if row]
 
+    target_word = "XMAS"
     successes = 0
     for r_index, row in enumerate(grid):
         for col_index, char in enumerate(row):
-            if char == "X":
+            if char == target_word[0]:
                 result = search(
-                    (r_index, col_index), grid=grid, target_word=SEARCH_WORD
+                    (r_index, col_index), grid=grid, target_word=target_word
                 )
                 successes += result
 
     return successes
 
-if __name__ == '__main__': # pragma: no cover
+
+if __name__ == "__main__":  # pragma: no cover
     from aocd import submit
 
-    with open('advent_2024_04_input.txt', 'r') as infile:
+    with open("advent_2024_04_input.txt", "r") as infile:
         puzzle_input = infile.read()
-    
+
     submit(solve_puzzle(puzzle_input))
-    
