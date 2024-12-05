@@ -1,4 +1,4 @@
-def analyze_row(row, increasing, max_diff = 3):
+def analyze_row(row, increasing, max_diff=3):
     prev_value = row[0]
 
     for index, value in enumerate(row):
@@ -13,10 +13,11 @@ def analyze_row(row, increasing, max_diff = 3):
             return False
         elif abs(prev_value - value) > max_diff:
             return False
-        
+
         prev_value = value
-            
+
     return True
+
 
 def check_level_safety(level: list, dampen=False) -> bool:
     """
@@ -29,16 +30,16 @@ def check_level_safety(level: list, dampen=False) -> bool:
         increasing = True
     else:
         return False
-    
+
     if not dampen:
         return analyze_row(level, increasing=increasing)
     else:
         available_lists = []
         for i in range(len(level)):
-            available_lists.append(level[:i] + level[i+1:])
+            available_lists.append(level[:i] + level[i + 1 :])
 
         results = [check_level_safety(row) for row in available_lists]
-        
+
         return any(results)
 
 
