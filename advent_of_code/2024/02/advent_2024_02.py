@@ -33,14 +33,14 @@ def check_level_safety(level: list, dampen=False) -> bool:
     Given a level return a bool of True if safe
     If dampen True recurse sublevels
     """
-    if level[0] > level[1]:
-        increasing = False
-    elif level[0] < level[1]:
-        increasing = True
-    else:
-        return False
-
     if not dampen:
+        if level[0] > level[1]:
+            increasing = False
+        elif level[0] < level[1]:
+            increasing = True
+        else:
+            return False
+        
         return analyze_row(level, increasing=increasing)
     else:
         results = [
