@@ -40,6 +40,7 @@ def test_check_level_safety(level, safe_result):
         # CUSTOM
         ([10, 11, 10, 9, 8], True),
         ([11, 10, 9, 8, 9], True),
+        ([10, 10, 9, 8, 7, 6], True)
     ],
 )
 def test_check_level_safety_dampen(level, dampen_result):
