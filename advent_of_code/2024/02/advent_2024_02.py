@@ -40,7 +40,7 @@ def check_level_safety(level: list, dampen=False) -> bool:
             increasing = True
         else:
             return False
-        
+
         return analyze_row(level, increasing=increasing)
     else:
         results = [
