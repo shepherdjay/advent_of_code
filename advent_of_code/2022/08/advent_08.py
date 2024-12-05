@@ -4,9 +4,7 @@ import math
 from collections import deque
 
 
-def extract_neighbors(
-    forest_map: np.ndarray, coordinates: Tuple[int, int]
-) -> Dict[str, deque]:
+def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, deque]:
     neighbors = {"left": deque(), "right": deque(), "up": deque(), "down": deque()}
     x, y = coordinates
     # Extract the neighbors in the same row as the current element

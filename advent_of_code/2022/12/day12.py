@@ -157,9 +157,7 @@ def process_elev_map_v2(elev_map: Elev, terminal=None):
             if value == 0:
                 starting_points.append((row_idx, col_idx))
 
-    print(
-        f"Finding number of steps from {len(starting_points)} different starting points"
-    )
+    print(f"Finding number of steps from {len(starting_points)} different starting points")
 
     tasks = [
         traverse_path(
@@ -172,9 +170,7 @@ def process_elev_map_v2(elev_map: Elev, terminal=None):
     ]
 
     step_map = [
-        (len(task.result()) - 1, task.result())
-        for task in tasks
-        if task.result() is not None
+        (len(task.result()) - 1, task.result()) for task in tasks if task.result() is not None
     ]
 
     step_map.sort(key=lambda x: x[0])
@@ -199,6 +195,4 @@ if __name__ == "__main__":
 
     # part2
     steps, scenic_path = process_elev_map_v2(problem_input, terminal=terminal)
-    print(
-        f"The number of steps is {steps}, and the path if your interested is:\n\n {scenic_path}"
-    )
+    print(f"The number of steps is {steps}, and the path if your interested is:\n\n {scenic_path}")

@@ -15,9 +15,7 @@ class Point:
 
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
-        if (
-            distance == 0
-        ):  # They are already in the same place so no need to calculate a vector
+        if distance == 0:  # They are already in the same place so no need to calculate a vector
             unit_vector = (0, 0)
         else:
             unit_vector = ((x2 - x1) / distance, (y2 - y1) / distance)

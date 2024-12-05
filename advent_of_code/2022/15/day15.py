@@ -33,9 +33,7 @@ class Sensor:
     def non_beacon_locations(self) -> set[tuple[int, int]]:
         """Returns a set of coordinates that definitely don't contain a beacon"""
         grid_coordinates = set(
-            itertools.product(
-                range(self.x_min, self.x_max + 1), range(self.y_min, self.y_max + 1)
-            )
+            itertools.product(range(self.x_min, self.x_max + 1), range(self.y_min, self.y_max + 1))
         )
 
         pruned_set = set(x for x in grid_coordinates if self.not_beacon(x))
@@ -132,9 +130,7 @@ def rule_out_row(y: int, sensors: list[Sensor]) -> set[tuple[int, int]]:
     return no_beacons
 
 
-def find_beacon(
-    sensors: list[Sensor], search_min, search_max
-) -> tuple[tuple[int, int], int]:
+def find_beacon(sensors: list[Sensor], search_min, search_max) -> tuple[tuple[int, int], int]:
     """Given a search space, and a list of sensors, return the beacon location and tuning freq"""
 
     print("Finding Edges")

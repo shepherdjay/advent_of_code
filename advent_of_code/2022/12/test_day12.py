@@ -12,9 +12,7 @@ import os
 SUPER_SIMPLE_MAP = [["S", "a"], ["a", "E"], ["b", "c"]]
 
 EXAMPLE_ELEV_MAP = []
-with open(
-    os.path.join(os.path.dirname(__file__), "test_day12_input.txt"), "r"
-) as infile:
+with open(os.path.join(os.path.dirname(__file__), "test_day12_input.txt"), "r") as infile:
     rows = [line.strip() for line in infile]
     for row in rows:
         EXAMPLE_ELEV_MAP.append([char for char in row])
@@ -35,9 +33,7 @@ def test_get_candidate_neighbors():
     current_idx = (4, 1)
     expected_neighbors = [(4, 0), (3, 1)]
 
-    actual = get_candidate_neighbors(
-        elev_map=height_map, current_idx=current_idx, visited=[]
-    )
+    actual = get_candidate_neighbors(elev_map=height_map, current_idx=current_idx, visited=[])
 
     assert set(actual) == set(expected_neighbors)
 
