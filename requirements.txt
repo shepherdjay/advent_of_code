@@ -2,7 +2,6 @@ attrs==24.2.0
 click==8.1.7
 colorama==0.4.6
 dill==0.3.9
-hypothesis==6.122.1
 iniconfig==2.0.0
 multiprocess==0.70.17
 mypy-extensions==1.0.0
