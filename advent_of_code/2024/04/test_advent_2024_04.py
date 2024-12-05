@@ -1,6 +1,12 @@
 import pytest
 
-from advent_2024_04 import solve_puzzle, get_neighbor_coord, get_neighbors, search
+from advent_2024_04 import (
+    solve_puzzle,
+    get_neighbor_coord,
+    get_neighbors,
+    search,
+    get_paths,
+)
 
 SIMPLE_EXAMPLE = """
 ..X...
@@ -33,11 +39,7 @@ def test_search_simple():
     initial_coord = (row, col)
 
     assert (
-        search(
-            initial_coord=initial_coord,
-            grid=SIMPLE_EXAMPLE_AS_GRID,
-            original=initial_coord,
-        )
+        search(coord=initial_coord, grid=SIMPLE_EXAMPLE_AS_GRID, target_word="XMAS")
         == 1
     )
 
@@ -48,11 +50,7 @@ def test_must_be_straight():
     initial_coord = (row, col)
 
     assert (
-        search(
-            initial_coord=initial_coord,
-            grid=SIMPLE_EXAMPLE_AS_GRID,
-            original=initial_coord,
-        )
+        search(coord=initial_coord, grid=SIMPLE_EXAMPLE_AS_GRID, target_word="XMAS")
         == 1
     )
 
@@ -78,3 +76,15 @@ XVCS
 VMAC
 """
     assert solve_puzzle(bad_example) == 0
+
+
+def check_path():
+    example = """
+XVCS
+VMAC
+"""
+
+
+def test_get_paths():
+    paths = get_paths((10, 10), 4)
+    assert len(paths) == 8
