@@ -13,9 +13,8 @@ from advent_2024_02 import check_level_safety, safe_level_count, analyze_row
         ([1, 3, 2, 4, 5], False),
         ([8, 6, 4, 4, 1], False),
         ([1, 3, 6, 7, 9], True),
-
         # CUSTOM
-        ([10, 11, 10, 9, 8], False)
+        ([10, 11, 10, 9, 8], False),
     ],
 )
 def test_check_level_safety(level, safe_result):
@@ -32,9 +31,9 @@ def test_check_level_safety(level, safe_result):
         ([1, 3, 2, 4, 5], True),
         ([8, 6, 4, 4, 1], True),
         ([1, 3, 6, 7, 9], True),
-
         # CUSTOM
-        ([10, 11, 10, 9, 8], True)
+        ([10, 11, 10, 9, 8], True),
+        ([11, 10, 9, 8, 9], True),
     ],
 )
 def test_check_level_safety_dampen(level, dampen_result):
@@ -44,8 +43,9 @@ def test_check_level_safety_dampen(level, dampen_result):
 def test_analyze_row_constrained():
     row = [7, 6, 4, 2, 1]
 
-    assert analyze_row(row, increasing = True) is False
-    assert analyze_row(row, increasing = False) is True
+    assert analyze_row(row, increasing=True) is False
+    assert analyze_row(row, increasing=False) is True
+
 
 def test_check_full_example_report():
     example = [
