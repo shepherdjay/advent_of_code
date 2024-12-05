@@ -1,3 +1,5 @@
+advent-of-code-data==2.0.4
+browser-cookie3==0.19.1
 attrs==24.2.0
 click==8.1.7
 colorama==0.4.6
@@ -19,3 +21,4 @@ sortedcontainers==2.4.0
 tqdm==4.67.1
 unsync==1.4.0
 xmltodict==0.14.2
+requests==2.32.2
