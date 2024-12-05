@@ -30,45 +30,44 @@ def get_neighbors(coord: tuple[int, int], grid: list[list[str]]):
     return neighbors
 
 
-def search(
-    initial_coord: tuple[int, int],
-    grid: list[list[str]],
-    original,
-    word="XMAS",
-) -> int:
-    try:
-        target_letter = word[1]
-    except IndexError:  # hit the end
-        init_row, init_col = initial_coord
-        orig_row, orig_col = original
+def get_paths(coord: tuple[int, int], path_length: int) -> list[list[tuple[int, int]]]:
+    row, col = coord
 
-        row_distance = abs(init_row - orig_row)
-        col_distance = abs(init_col - orig_col)
-        if row_distance == col_distance and row_distance == 3:
-            return 1
-        if row_distance == 3 and init_col == orig_col:
-            return 1
-        if col_distance == 3 and init_row == orig_row:
-            return 1
-        return 0
+    left = [(i, col) for i in range(row + 1 - path_length, row + 1)][::-1]
+    right = [(i, col) for i in range(row, row + path_length)]
+    up = [(row, i) for i in range(col + 1 - path_length, col + 1)][::-1]
+    down = [(row, i) for i in range(col, col + path_length)]
 
-    neighbors = get_neighbors(coord=initial_coord, grid=grid)
-    candidates = []
+    leftup = [(coord[0], up[i][1]) for i, coord in enumerate(left)]
+    rightup = [(coord[0], up[i][1]) for i, coord in enumerate(right)]
+    leftdown = [(coord[0], down[i][1]) for i, coord in enumerate(left)]
+    rightdown = [(coord[0], down[i][1]) for i, coord in enumerate(right)]
 
-    for char, char_coord in neighbors:
-        if char == target_letter:
-            candidates.append(char_coord)
-    if not candidates:
-        return 0
-    else:
-        return sum(
-            [
-                search(
-                    initial_coord=coord, grid=grid, word=word[1::], original=original
-                )
-                for coord in candidates
-            ]
-        )
+    return [left, leftup, up, rightup, right, rightdown, down, leftdown]
+
+def on_grid(path: list[tuple[int,int]], grid_length) -> bool:
+    for row, col in path:
+        if 0 > row or row > grid_length:
+            return False
+        if 0 > col or col > grid_length:
+            return False
+    return True
+
+
+def search(coord, target_word, grid):
+    available_paths = get_paths(coord=coord, path_length=len(target_word))
+
+    results = 0
+
+    for path in available_paths:
+        if on_grid(path, grid_length=len(grid)):
+            try:
+                word = "".join([grid[row][col] for row, col in path])
+                if word == target_word:
+                    results += 1
+            except IndexError:
+                pass
+    return results
 
 
 def solve_puzzle(puzzle_str: str) -> int:
@@ -79,8 +78,17 @@ def solve_puzzle(puzzle_str: str) -> int:
         for col_index, char in enumerate(row):
             if char == "X":
                 result = search(
-                    (r_index, col_index), grid=grid, original=(r_index, col_index)
+                    (r_index, col_index), grid=grid, target_word=SEARCH_WORD
                 )
                 successes += result
 
     return successes
+
+if __name__ == '__main__': # pragma: no cover
+    from aocd import submit
+
+    with open('advent_2024_04_input.txt', 'r') as infile:
+        puzzle_input = infile.read()
+    
+    submit(solve_puzzle(puzzle_input))
+    
