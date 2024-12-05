@@ -1,6 +1,11 @@
 import pytest
 
-from advent_2024_02 import check_level_safety, safe_level_count, analyze_row
+from advent_2024_02 import (
+    check_level_safety,
+    safe_level_count,
+    analyze_row,
+    generate_subrows,
+)
 
 
 @pytest.mark.parametrize(
@@ -45,6 +50,18 @@ def test_analyze_row_constrained():
 
     assert analyze_row(row, increasing=True) is False
     assert analyze_row(row, increasing=False) is True
+
+
+def test_generate_subrows():
+    row = [7, 6, 4, 2, 1]
+
+    assert generate_subrows(row) == [
+        [6, 4, 2, 1],
+        [7, 4, 2, 1],
+        [7, 6, 2, 1],
+        [7, 6, 4, 1],
+        [7, 6, 4, 2],
+    ]
 
 
 def test_check_full_example_report():

@@ -1,4 +1,4 @@
-def analyze_row(row, increasing, max_diff=3):
+def analyze_row(row: list, increasing: bool, max_diff: int = 3) -> bool:
     prev_value = row[0]
 
     for index, value in enumerate(row):
@@ -19,11 +19,20 @@ def analyze_row(row, increasing, max_diff=3):
     return True
 
 
+def generate_subrows(row: list) -> list[list]:
+    subrows = []
+    for i in range(len(row)):
+        new_row = row[:]
+        new_row.pop(i)
+        subrows.append(new_row)
+    return subrows
+
+
 def check_level_safety(level: list, dampen=False) -> bool:
     """
     Given a level return a bool of True if safe
+    If dampen True recurse sublevels
     """
-
     if level[0] > level[1]:
         increasing = False
     elif level[0] < level[1]:
@@ -34,12 +43,9 @@ def check_level_safety(level: list, dampen=False) -> bool:
     if not dampen:
         return analyze_row(level, increasing=increasing)
     else:
-        available_lists = []
-        for i in range(len(level)):
-            available_lists.append(level[:i] + level[i + 1 :])
-
-        results = [check_level_safety(row) for row in available_lists]
-
+        results = [
+            check_level_safety(row, dampen=False) for row in generate_subrows(level)
+        ]
         return any(results)
 
 
