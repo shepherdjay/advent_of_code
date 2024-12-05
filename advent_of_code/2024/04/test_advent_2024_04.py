@@ -1,29 +1,51 @@
-from advent_2024_04 import solve_puzzle, get_neighbor_coord, get_neighbors
+import pytest
 
-EXAMPLE = '''
+from advent_2024_04 import solve_puzzle, get_neighbor_coord, get_neighbors, search
+
+SIMPLE_EXAMPLE = '''
 ..X...
 .SAMX.
 .A..A.
 XMAS.S
 .X....
 '''
+SIMPLE_EXAMPLE_AS_GRID = [row for row in SIMPLE_EXAMPLE.split('\n') if row]
+
+EXAMPLE = '''
+MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX
+'''
 
 EXAMPLE_AS_GRID = [row for row in EXAMPLE.split('\n') if row]
 
-def test_get_neighbor_coord():
-    row, column = 3, 2
-    assert get_neighbor_coord(row, column) == set([
-        (2,2),(4,2),(3,1),(3,3)
-    ])
+def test_search_simple():
+    row = 3
+    col = 0
+    initial_coord = (row, col)
 
-def test_get_neighbors():
-    coord = (3,2)
-    assert get_neighbors(coord, EXAMPLE_AS_GRID) == set([
-        ('M',(3,1)),
-        ('.',(2,2)),
-        ('S',(3,3)),
-        ('.',(4,2))
-    ])
+    assert search(initial_coord=initial_coord, grid=SIMPLE_EXAMPLE_AS_GRID) == 1
+
+
+@pytest.mark.parametrize('coord,expected',[
+    ((0,0), set([
+        ('.', (0,1)),
+        ('.', (1,0)),
+        ('S', (1,1))
+    ]))
+])
+def test_get_neighbors(coord, expected):
+    assert get_neighbors(coord, SIMPLE_EXAMPLE_AS_GRID) == expected
+
+def test_solve_puzzle_simple():
+    assert solve_puzzle(SIMPLE_EXAMPLE) == 4
 
 def test_solve_puzzle():
     assert solve_puzzle(EXAMPLE) == 18
