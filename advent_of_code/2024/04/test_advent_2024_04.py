@@ -81,5 +81,13 @@ def test_get_paths_only_diagonals():
     assert len(paths) == 4
 
 
-def test_solve_puzzle_diagnol():
+def test_solve_puzzle_diagonal():
     assert solve_puzzle_diagonal(DIAG_EXAMPLE) == 9
+
+def test_solve_puzzle_diagonal_bad():
+    bad_example = '''
+S.M
+.A.
+M.S
+'''
+    assert solve_puzzle_diagonal(bad_example) == 0
