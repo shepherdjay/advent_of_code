@@ -10,7 +10,7 @@ from advent_2024_02 import (
 
 
 @pytest.mark.parametrize(
-    'level,safe_result',
+    "level,safe_result",
     [
         # PROVIDED EXAMPLES
         ([7, 6, 4, 2, 1], True),
@@ -28,7 +28,7 @@ def test_check_level_safety(level, safe_result):
 
 
 @pytest.mark.parametrize(
-    'level,dampen_result',
+    "level,dampen_result",
     [
         # PROVIDED EXAMPLES
         ([7, 6, 4, 2, 1], True),
