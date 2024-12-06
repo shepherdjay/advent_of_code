@@ -75,9 +75,11 @@ def test_get_paths():
     paths = get_paths((10, 10), 4)
     assert len(paths) == 8
 
+
 def test_get_paths_only_diagonals():
-    paths = get_paths((10,10), 2, diagonals_only=True)
+    paths = get_paths((10, 10), 2, diagonals_only=True)
     assert len(paths) == 4
+
 
 def test_solve_puzzle_diagnol():
     assert solve_puzzle_diagonal(DIAG_EXAMPLE) == 9
