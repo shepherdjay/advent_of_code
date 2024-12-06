@@ -1,8 +1,6 @@
-import requests
 from urllib.parse import urlparse
 from pathlib import Path
 import aocd
-import os
 
 
 def fetch_input_example(year, day):
