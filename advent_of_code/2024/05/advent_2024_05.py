@@ -31,6 +31,7 @@ def check_printjob(printjob: list[int], rules: dict[int : list[int]]):
 
     return True
 
+
 def rulesort(rules, a, b):
     if a not in rules:
         return 0
@@ -39,8 +40,8 @@ def rulesort(rules, a, b):
     else:
         return 1
 
-def correct_printjob(printjob: list, rules: dict):
 
+def correct_printjob(printjob: list, rules: dict):
     printjob.sort(key=functools.cmp_to_key(functools.partial(rulesort, rules)))
 
     return printjob
@@ -77,4 +78,4 @@ if __name__ == "__main__":  # pragma: no cover
     print(part_b)
 
     submit(part_a, part="a")
-    submit(part_b, part='b')
+    submit(part_b, part="b")

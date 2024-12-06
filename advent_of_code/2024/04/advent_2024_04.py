@@ -29,7 +29,11 @@ def on_grid(path: list[tuple[int, int]], grid_length) -> bool:
 
 
 def search(
-    target_word: str, grid: list, paths: list | None = None, coord: tuple | None = None, return_paths=False
+    target_word: str,
+    grid: list,
+    paths: list | None = None,
+    coord: tuple | None = None,
+    return_paths=False,
 ) -> int:
     results = 0
     result_paths = []
@@ -47,7 +51,7 @@ def search(
             except IndexError:
                 pass
     if return_paths:
-        return results,result_paths
+        return results, result_paths
     return results
 
 
@@ -106,5 +110,5 @@ if __name__ == "__main__":  # pragma: no cover
     part_b = solve_puzzle_diagonal(puzzle_input)
     print(part_b)
 
-    submit(part_a, part='a')
-    submit(part_b, part='b')
+    submit(part_a, part="a")
+    submit(part_b, part="b")
