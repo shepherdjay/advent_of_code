@@ -22,7 +22,7 @@ EXAMPLE_FOREST_MAP = np.array(
 
 
 def test_extract_neighbors():
-    expected = {'left': [5, 6], 'right': [3, 2], 'up': [5, 3], 'down': [5, 3]}
+    expected = {"left": [5, 6], "right": [3, 2], "up": [5, 3], "down": [5, 3]}
     extracted = extract_neighbors(EXAMPLE_FOREST_MAP, (2, 2))
 
     for key, value in expected.items():
@@ -30,11 +30,11 @@ def test_extract_neighbors():
 
 
 @pytest.mark.parametrize(
-    'value,neighbors,expected_result',
+    "value,neighbors,expected_result",
     [
-        (5, {'up': [7], 'down': [3], 'left': [10], 'right': [20]}, True),
-        (0, {'up': [7], 'down': [], 'left': [10], 'right': [20]}, True),
-        (3, {'up': [7], 'down': [5], 'left': [10], 'right': [20]}, False),
+        (5, {"up": [7], "down": [3], "left": [10], "right": [20]}, True),
+        (0, {"up": [7], "down": [], "left": [10], "right": [20]}, True),
+        (3, {"up": [7], "down": [5], "left": [10], "right": [20]}, False),
     ],
 )
 def test_is_visible(value, neighbors, expected_result):
@@ -46,8 +46,8 @@ def test_find_visible_trees():
 
 
 @pytest.mark.parametrize(
-    'height,neighbors,expected_result',
-    [(5, {'up': [3], 'down': [3, 5, 3], 'left': [5, 2], 'right': [1, 2]}, 4)],
+    "height,neighbors,expected_result",
+    [(5, {"up": [3], "down": [3, 5, 3], "left": [5, 2], "right": [1, 2]}, 4)],
 )
 def test_scenic_score(height, neighbors, expected_result):
     assert scenic_score(height, neighbors) == expected_result

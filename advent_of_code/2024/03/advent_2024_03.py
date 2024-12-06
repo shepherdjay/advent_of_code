@@ -17,7 +17,7 @@ def uncorrupt_string(
     valid_instructions = []
     for x, y, enable_flag in mul_re.findall(corrupted_string):
         if enable_parsing is True:
-            if enable_flag == 'do()':
+            if enable_flag == "do()":
                 enabled = True
             elif enable_flag == "don't()":
                 enabled = False
@@ -43,8 +43,8 @@ def multiply_and_add(corrupted_string, enable_parsing=False):
     return running_total
 
 
-if __name__ == '__main__':  # pragma: no cover
-    with open('advent_2024_03_input.txt', 'r') as infile:
+if __name__ == "__main__":  # pragma: no cover
+    with open("advent_2024_03_input.txt", "r") as infile:
         puzzle_string = infile.read()
 
     print(multiply_and_add(puzzle_string))

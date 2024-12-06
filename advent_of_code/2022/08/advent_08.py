@@ -5,16 +5,16 @@ from collections import deque
 
 
 def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> Dict[str, deque]:
-    neighbors = {'left': deque(), 'right': deque(), 'up': deque(), 'down': deque()}
+    neighbors = {"left": deque(), "right": deque(), "up": deque(), "down": deque()}
     x, y = coordinates
     # Extract the neighbors in the same row as the current element
     for col_index, value in enumerate(forest_map[x]):
         if col_index == y:
             pass
         elif col_index < y:
-            neighbors['left'].appendleft(value)
+            neighbors["left"].appendleft(value)
         elif col_index > y:
-            neighbors['right'].append(value)
+            neighbors["right"].append(value)
 
     # Extract the neighbors in the same column as the current element
     for row_index, row in enumerate(forest_map):
@@ -22,9 +22,9 @@ def extract_neighbors(forest_map: np.ndarray, coordinates: Tuple[int, int]) -> D
         if row_index == x:
             pass
         elif row_index < x:
-            neighbors['up'].appendleft(value)
+            neighbors["up"].appendleft(value)
         elif row_index > x:
-            neighbors['down'].append(value)
+            neighbors["down"].append(value)
     return neighbors
 
 
@@ -35,13 +35,13 @@ def is_visible(height: int, neighbor_map: dict):
     """
     for direction, neighbors in neighbor_map.items():
         if len(neighbors) == 0:
-            neighbor_map[direction] = [float('-inf')]
+            neighbor_map[direction] = [float("-inf")]
 
     visible_results = [
-        all(x < height for x in neighbor_map['left']),
-        all(x < height for x in neighbor_map['right']),
-        all(x < height for x in neighbor_map['up']),
-        all(x < height for x in neighbor_map['down']),
+        all(x < height for x in neighbor_map["left"]),
+        all(x < height for x in neighbor_map["right"]),
+        all(x < height for x in neighbor_map["up"]),
+        all(x < height for x in neighbor_map["down"]),
     ]
     if any(visible_results):
         return True
@@ -93,8 +93,8 @@ def score_every_tree(forest_map: np.ndarray) -> List[int]:
     return scores
 
 
-if __name__ == '__main__':
-    with open('day_08_input.txt', 'r') as elf_file:
+if __name__ == "__main__":
+    with open("day_08_input.txt", "r") as elf_file:
         array = []
         for line in elf_file:
             new_row = [int(char) for char in line.strip()]
