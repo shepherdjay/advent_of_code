@@ -28,9 +28,7 @@ def ybound_coord(draw):
     return [a_coord, b_coord]
 
 
-@pytest.mark.parametrize(
-    "a,b,expected", [((498, 6), (496, 6), {(498, 6), (497, 6), (496, 6)})]
-)
+@pytest.mark.parametrize('a,b,expected', [((498, 6), (496, 6), {(498, 6), (497, 6), (496, 6)})])
 def test_between_two_slates(a, b, expected):
     assert between_two_slates(a, b) == expected
 
@@ -60,16 +58,16 @@ def test_property_between_two_slates_ybound(ybound_coords):
 
 
 @pytest.mark.parametrize(
-    "rock_str,expected",
-    [("498,4 -> 498,6 -> 496,6", {(498, 4), (498, 5), (498, 6), (497, 6), (496, 6)})],
+    'rock_str,expected',
+    [('498,4 -> 498,6 -> 496,6', {(498, 4), (498, 5), (498, 6), (497, 6), (496, 6)})],
 )
 def test_expand_positions(rock_str, expected):
     assert expand_coordinates(rock_str) == expected
 
 
 def test_can_fall():
-    rock_positions = expand_coordinates("498,4 -> 498,6 -> 496,6") | expand_coordinates(
-        "503,4 -> 502,4 -> 502,9 -> 494,9"
+    rock_positions = expand_coordinates('498,4 -> 498,6 -> 496,6') | expand_coordinates(
+        '503,4 -> 502,4 -> 502,9 -> 494,9'
     )
 
     assert can_fall((500, 0), rock_positions=rock_positions)
@@ -77,18 +75,18 @@ def test_can_fall():
 
 
 def test_simulate_sand():
-    rock_positions = expand_coordinates("498,4 -> 498,6 -> 496,6") | expand_coordinates(
-        "503,4 -> 502,4 -> 502,9 -> 494,9"
+    rock_positions = expand_coordinates('498,4 -> 498,6 -> 496,6') | expand_coordinates(
+        '503,4 -> 502,4 -> 502,9 -> 494,9'
     )
 
     max_y = max([y for _, y in rock_positions])
     assert simulate_sand(rock_positions, max_y=max_y) == (500, 8)
 
 
-@pytest.mark.parametrize("floor,expected", [(False, 24), (True, 93)])
+@pytest.mark.parametrize('floor,expected', [(False, 24), (True, 93)])
 def test_cave_in(floor, expected):
-    rock_positions = expand_coordinates("498,4 -> 498,6 -> 496,6") | expand_coordinates(
-        "503,4 -> 502,4 -> 502,9 -> 494,9"
+    rock_positions = expand_coordinates('498,4 -> 498,6 -> 496,6') | expand_coordinates(
+        '503,4 -> 502,4 -> 502,9 -> 494,9'
     )
 
     assert cave_in(rock_positions, floor) == expected

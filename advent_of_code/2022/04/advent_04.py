@@ -2,7 +2,7 @@ from typing import List, Tuple
 
 
 def range_section(sections: str) -> range:
-    min, max = map(int, sections.split("-"))
+    min, max = map(int, sections.split('-'))
     return range(min, max + 1)
 
 
@@ -57,7 +57,7 @@ def find_overlaps(pairs_list: List[List]) -> Tuple[int, int]:
     return fully_contained, overlaps
 
 
-if __name__ == "__main__":
-    with open("advent_04_input.txt", "r") as infile:
-        pairs = [line.strip().split(",") for line in infile]
+if __name__ == '__main__':
+    with open('advent_04_input.txt', 'r') as infile:
+        pairs = [line.strip().split(',') for line in infile]
     print(find_overlaps(pairs))

@@ -10,7 +10,7 @@ from advent_2024_02 import (
 
 
 @pytest.mark.parametrize(
-    "level,safe_result",
+    'level,safe_result',
     [
         # PROVIDED EXAMPLES
         ([7, 6, 4, 2, 1], True),
@@ -28,7 +28,7 @@ def test_check_level_safety(level, safe_result):
 
 
 @pytest.mark.parametrize(
-    "level,dampen_result",
+    'level,dampen_result',
     [
         # PROVIDED EXAMPLES
         ([7, 6, 4, 2, 1], True),
@@ -40,7 +40,7 @@ def test_check_level_safety(level, safe_result):
         # CUSTOM
         ([10, 11, 10, 9, 8], True),
         ([11, 10, 9, 8, 9], True),
-        ([10, 10, 9, 8, 7, 6], True)
+        ([10, 10, 9, 8, 7, 6], True),
     ],
 )
 def test_check_level_safety_dampen(level, dampen_result):
@@ -65,9 +65,11 @@ def test_generate_subrows():
         [7, 6, 4, 2],
     ]
 
+
 @given(st.lists(st.integers(), min_size=2))
 def test_generate_subrows_hypothesis(hypo_list):
     assert len(generate_subrows(hypo_list)) == len(hypo_list)
+
 
 def test_check_full_example_report():
     example = [

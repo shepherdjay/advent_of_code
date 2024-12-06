@@ -7,7 +7,7 @@ import functools
 from multiprocessing import Pool, Manager
 
 
-Valve = namedtuple("Valve", "id,flow,neighbors")
+Valve = namedtuple('Valve', 'id,flow,neighbors')
 
 
 class ValveTree:
@@ -25,7 +25,7 @@ class ValveTree:
         shortest_tree = {}
         for valve in self.valves:
             starting = valve
-            node_map = {node: (float("inf"), []) for node in self.valves}
+            node_map = {node: (float('inf'), []) for node in self.valves}
             node_map[starting] = (0, [starting])
             min_dist = [(0, starting)]
             visited = set()
@@ -73,9 +73,7 @@ class ValveTree:
             for node_z in interesting_nodes:
                 if node_a == node_z:
                     continue
-                new_tree[node_a].append(
-                    (node_z, self.cost_between_nodes(node_a.id, node_z.id) + 1)
-                )
+                new_tree[node_a].append((node_z, self.cost_between_nodes(node_a.id, node_z.id) + 1))
         return new_tree
 
     @functools.lru_cache
@@ -127,9 +125,7 @@ class ValveTree:
         cache[cache_key] = max_relief
         return max_relief
 
-    def p2_worker(
-        self, visit_set, relief_matrix, cost_limit, starting_node, shared_cache
-    ):
+    def p2_worker(self, visit_set, relief_matrix, cost_limit, starting_node, shared_cache):
         my_no_visit = set(visit_set)
         eleph_no_visit = set()
         for key in relief_matrix.keys():
@@ -156,9 +152,7 @@ class ValveTree:
     def dfs_part2(self, starting_node, cost_limit):
         relief_matrix = self.construct_relief_node_tree(starting_node)
 
-        all_nodes_minus_a = set(
-            [k for k in relief_matrix.keys() if k is not starting_node]
-        )
+        all_nodes_minus_a = set([k for k in relief_matrix.keys() if k is not starting_node])
         visiting_sets = list(self.powerset(all_nodes_minus_a))
 
         # MultiProcessing
@@ -188,24 +182,22 @@ class ValveTree:
 
 
 def parse_line(line: str):
-    valve_regex = re.compile(
-        r"Valve (.+) has flow rate=(\d+); tunnels? leads? to valves? (.+)"
-    )
+    valve_regex = re.compile(r'Valve (.+) has flow rate=(\d+); tunnels? leads? to valves? (.+)')
     valve_id, flow_rate, neighbors_raw = valve_regex.search(line).groups()
-    neighbors = tuple(neighbors_raw.split(", "))
+    neighbors = tuple(neighbors_raw.split(', '))
     return Valve(id=valve_id, flow=int(flow_rate), neighbors=neighbors)
 
 
-if __name__ == "__main__":
-    with open("day16_input.txt", "r") as elf_file:
+if __name__ == '__main__':
+    with open('day16_input.txt', 'r') as elf_file:
         valves = [parse_line(line.strip()) for line in elf_file]
 
     tree = ValveTree(valves)
-    starting_node = tree["AA"]
+    starting_node = tree['AA']
     relief_tree = tree.construct_relief_node_tree(starting_node)
 
     # print(tree.dfs(tree=relief_tree, node=starting_node, time=30))
     # print(len(tree._dfs_cache))
 
-    print(tree.dfs_part2(starting_node=tree["AA"], cost_limit=26))
+    print(tree.dfs_part2(starting_node=tree['AA'], cost_limit=26))
     print(len(tree._dfs_cache))
