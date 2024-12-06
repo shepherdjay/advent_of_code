@@ -3,9 +3,9 @@ from collections import deque
 
 def find_marker(datastream: str, marker_distinction: int = 4) -> int:
     """
-    >>> find_marker('bvwbjplbgvbhsrlpgdmjqwftvncz')
+    >>> find_marker("bvwbjplbgvbhsrlpgdmjqwftvncz")
     5
-    >>> find_marker('nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg')
+    >>> find_marker("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")
     10
     """
     queue = deque(maxlen=marker_distinction)
@@ -20,8 +20,8 @@ def find_marker(datastream: str, marker_distinction: int = 4) -> int:
     return marker
 
 
-if __name__ == '__main__':
-    with open('advent_06_input.txt', 'r') as infile:
+if __name__ == "__main__":
+    with open("advent_06_input.txt", "r") as infile:
         datastream = infile.read().strip()
 
     print(find_marker(datastream, marker_distinction=4))

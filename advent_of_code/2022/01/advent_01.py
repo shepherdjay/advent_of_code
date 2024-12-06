@@ -1,5 +1,5 @@
-if __name__ == '__main__':
-    with open('advent_01_input.txt', 'r') as infile:
+if __name__ == "__main__":
+    with open("advent_01_input.txt", "r") as infile:
         raw_lines = infile.readlines()
 
     all_sets = []
@@ -7,7 +7,7 @@ if __name__ == '__main__':
     while True:
         index = 0
         for entry in raw_lines:
-            if entry.strip() == '':
+            if entry.strip() == "":
                 break
             else:
                 index += 1
