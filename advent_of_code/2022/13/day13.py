@@ -18,7 +18,7 @@ class Comparable:
         return str(self.x)
 
     def __repr__(self):
-        return f"Comparable(x={self.x}"
+        return f'Comparable(x={self.x}'
 
 
 def comparator(a: Packet, b: Packet):
@@ -53,20 +53,20 @@ def sum_correct(pairs):
 
 
 def process_file(filename):
-    with open(filename, "r") as elf_file:
-        pairs = [pair.split("\n") for pair in elf_file.read().split("\n\n")]
+    with open(filename, 'r') as elf_file:
+        pairs = [pair.split('\n') for pair in elf_file.read().split('\n\n')]
 
     return sum_correct(pairs)
 
 
 def process_file_v2(filename):
-    with open(filename, "r") as elf_file:
+    with open(filename, 'r') as elf_file:
         raw_lines = [line.strip() for line in elf_file if line]
 
     divider_a = Comparable([[2]])
     divider_b = Comparable([[6]])
 
-    comparable = [Comparable(eval(x)) for x in raw_lines if x != ""]
+    comparable = [Comparable(eval(x)) for x in raw_lines if x != '']
     comparable.extend([divider_a, divider_b])
     comparable.sort()
 
@@ -75,6 +75,6 @@ def process_file_v2(filename):
     return decode_a * decode_b
 
 
-if __name__ == "__main__":
-    print(process_file("day13_input.txt"))
-    print(process_file_v2("day13_input.txt"))
+if __name__ == '__main__':
+    print(process_file('day13_input.txt'))
+    print(process_file_v2('day13_input.txt'))

@@ -90,25 +90,25 @@ class Sensor:
 
         return round(x_rotated), round(y_rotated)
 
-    def __eq__(self, other: "Sensor"):
+    def __eq__(self, other: 'Sensor'):
         if not isinstance(other, Sensor):
             raise TypeError
 
         return all([self.location == other.location, self.beacon == other.beacon])
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.location}, {self.beacon})"
+        return f'{self.__class__.__name__}({self.location}, {self.beacon})'
 
     @classmethod
     def from_string(cls, sensor_string: str):
-        parse = re.compile(r"-*\d+")
+        parse = re.compile(r'-*\d+')
         loc_x, loc_y, beac_x, beac_y = (int(x) for x in parse.findall(sensor_string))
 
         return Sensor(location=(loc_x, loc_y), beacon=(beac_x, beac_y))
 
     @classmethod
-    def from_file(cls, filename: str) -> list["Sensor"]:
-        with open(filename, "r") as infile:
+    def from_file(cls, filename: str) -> list['Sensor']:
+        with open(filename, 'r') as infile:
             lines = [line.strip() for line in infile]
 
         return [Sensor.from_string(line) for line in lines]
@@ -133,12 +133,12 @@ def rule_out_row(y: int, sensors: list[Sensor]) -> set[tuple[int, int]]:
 def find_beacon(sensors: list[Sensor], search_min, search_max) -> tuple[tuple[int, int], int]:
     """Given a search space, and a list of sensors, return the beacon location and tuning freq"""
 
-    print("Finding Edges")
+    print('Finding Edges')
     edges = set()
     for sensor in tqdm(sensors):
         edges.update(sensor.return_outside_edges())
 
-    print("Finding Beacon")
+    print('Finding Beacon')
     for coord in tqdm(edges):
         x = coord[0]
         y = coord[1]
@@ -148,8 +148,8 @@ def find_beacon(sensors: list[Sensor], search_min, search_max) -> tuple[tuple[in
                 return ((x, y), (x * 4000000 + y))
 
 
-if __name__ == "__main__":
-    sensors = Sensor.from_file("day15_input.txt")
+if __name__ == '__main__':
+    sensors = Sensor.from_file('day15_input.txt')
 
     # print(len(rule_out_row(2_000_000, sensors)))
 
