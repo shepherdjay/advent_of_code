@@ -6,7 +6,7 @@ def count_card(winning_numbers: set, player_numbers: set) -> Tuple[int, int]:
     Returns winnings, first match is worth 1 point for each subsequent its 2x
     >>> count_card({41, 48, 83, 86, 17}, {83, 86, 6, 31, 17, 9, 48, 53})
     (8, 4)
-    >>> count_card({41, 92, 73, 84, 69}, {59, 84, 76, 51, 58,  5, 54, 83})
+    >>> count_card({41, 92, 73, 84, 69}, {59, 84, 76, 51, 58, 5, 54, 83})
     (1, 1)
     """
     matches = len(winning_numbers.intersection(player_numbers))
@@ -27,8 +27,8 @@ def process_cards(card_list: list[str]) -> int:
     """
     total = 0
     for idx, line in enumerate(card_list):
-        card, details = line.split(":")
-        winning, player = details.split("|")
+        card, details = line.split(':')
+        winning, player = details.split('|')
         winning = set(winning.split())
         player = set(player.split())
         card_value, matches = count_card(winning, player)
@@ -39,27 +39,27 @@ def process_cards(card_list: list[str]) -> int:
 def process_cards_v2(card_list: list[str]) -> int:
     card_dict = {}
     for idx, card in enumerate(card_list):
-        _, details = card.split(":")
-        winning, player = details.split("|")
+        _, details = card.split(':')
+        winning, player = details.split('|')
         winning = set(winning.split())
         player = set(player.split())
-        card_dict[idx] = {"winning": winning, "player": player, "copies": 1}
+        card_dict[idx] = {'winning': winning, 'player': player, 'copies': 1}
 
     total_cards = len(card_dict)
     for card_number, card in card_dict.items():
-        for _ in range(card["copies"]):
-            card_value, matches = count_card(card["winning"], card["player"])
+        for _ in range(card['copies']):
+            card_value, matches = count_card(card['winning'], card['player'])
             total_cards += matches
             shift = 1
             for _ in range(matches):
-                card_dict[card_number + shift]["copies"] += 1
+                card_dict[card_number + shift]['copies'] += 1
                 shift += 1
 
     return total_cards
 
 
-if __name__ == "__main__":  # pragma: no cover
-    with open("advent_2023_04_input.txt", "r") as infile:
+if __name__ == '__main__':  # pragma: no cover
+    with open('advent_2023_04_input.txt', 'r') as infile:
         card_string = infile.read().splitlines()
     print(process_cards(card_string))
     print(process_cards_v2(card_string))

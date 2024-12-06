@@ -18,7 +18,7 @@ EXAMPLE_CUBES = [
 
 Coord = tuple[int, int, int]
 
-Dimensions = namedtuple("Dimensions", "x_min,x_max,y_min,y_max,z_min,z_max")
+Dimensions = namedtuple('Dimensions', 'x_min,x_max,y_min,y_max,z_min,z_max')
 
 
 def surface_area(cubes):
@@ -55,7 +55,9 @@ def get_dimensions(array):
 
 def explore_exterior(cubes):
     """
-    >>> explore_exterior({(1, 1, 1), (2, 1, 1), (1, 2, 1), (2, 2, 1), (1, 1, 2), (2, 1, 2), (1, 2, 2), (2, 2, 2)})
+    >>> explore_exterior(
+    ...     {(1, 1, 1), (2, 1, 1), (1, 2, 1), (2, 2, 1), (1, 1, 2), (2, 1, 2), (1, 2, 2), (2, 2, 2)}
+    ... )
     24
     >>> explore_exterior(EXAMPLE_CUBES)
     58
@@ -100,7 +102,7 @@ def explore_exterior(cubes):
 
 def calculate_neighbors(cube):
     """
-    >>> len(list(calculate_neighbors((2,2,2))))
+    >>> len(list(calculate_neighbors((2, 2, 2))))
     6
     """
     # Given 1x1x1 cube calculate coordinates for all six neighbors
@@ -109,11 +111,11 @@ def calculate_neighbors(cube):
     return ((x + dx, y + dy, z + dz) for dx, dy, dz in offsets)
 
 
-if __name__ == "__main__":
-    with open("day18_input.txt", "r") as cube_file:
+if __name__ == '__main__':
+    with open('day18_input.txt', 'r') as cube_file:
         puzzle = []
         for line in cube_file:
-            clean_line = line.strip().split(",")
+            clean_line = line.strip().split(',')
             x, y, z = clean_line
             puzzle.append((int(x), int(y), int(z)))
 
@@ -121,5 +123,5 @@ if __name__ == "__main__":
             total_surface_area = surface_area(cubes)
             exposed = explore_exterior(cubes)
             print(
-                f"For {len(cubes)} cubes. The total surface area is {total_surface_area}. The exposed surface area is {exposed}"
+                f'For {len(cubes)} cubes. The total surface area is {total_surface_area}. The exposed surface area is {exposed}'
             )

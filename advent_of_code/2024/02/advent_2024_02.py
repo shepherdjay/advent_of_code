@@ -51,8 +51,8 @@ def safe_level_count(report: list[list[int]], dampen=False) -> int:
     return sum([check_level_safety(level, dampen) for level in report])
 
 
-if __name__ == "__main__":  # pragma: no cover
-    with open("advent_2024_02_input.txt", "r") as infile:
+if __name__ == '__main__':  # pragma: no cover
+    with open('advent_2024_02_input.txt', 'r') as infile:
         reports = []
         for line in infile:
             reports.append([int(x) for x in line.split()])

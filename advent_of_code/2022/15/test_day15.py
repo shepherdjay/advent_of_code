@@ -8,13 +8,13 @@ class TestSensor:
         self.simple_sensor = Sensor(location=(0, 0), beacon=(1, 0))
 
     def test_Sensor_from_string(self):
-        sensor_string = "Sensor at x=2, y=18: closest beacon is at x=-2, y=15"
+        sensor_string = 'Sensor at x=2, y=18: closest beacon is at x=-2, y=15'
         expected_sensor = Sensor(location=(2, 18), beacon=(-2, 15))
 
         assert Sensor.from_string(sensor_string) == expected_sensor
 
     def test_Sensor_from_filel(self):
-        filename = os.path.join(os.path.dirname(__file__), "test_day15_input.txt")
+        filename = os.path.join(os.path.dirname(__file__), 'test_day15_input.txt')
 
         sensors = Sensor.from_file(filename)
 
@@ -33,7 +33,7 @@ class TestSensor:
 
 
 def test_example_input():
-    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), "test_day15_input.txt"))
+    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), 'test_day15_input.txt'))
     non_beacons = rule_out_row(10, sensors)
 
     assert len(non_beacons) == 26
@@ -43,10 +43,10 @@ def return_to_sender(caller):
     return caller
 
 
-@patch("day15.tqdm")
+@patch('day15.tqdm')
 def test_find_beacon(fake_tqdm):
     fake_tqdm.side_effect = return_to_sender
-    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), "test_day15_input.txt"))
+    sensors = Sensor.from_file(os.path.join(os.path.dirname(__file__), 'test_day15_input.txt'))
     expected_beacon_location = (14, 11)
     expected_tuning_freq = 56000011
 

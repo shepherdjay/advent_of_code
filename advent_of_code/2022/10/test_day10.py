@@ -2,11 +2,11 @@ import pytest
 from day10 import process_instruction_set, CommunicationsDevice
 import os
 
-with open(os.path.join(os.path.dirname(__file__), "test_day10_input.txt"), "r") as elf_file:
+with open(os.path.join(os.path.dirname(__file__), 'test_day10_input.txt'), 'r') as elf_file:
     EXAMPLE_INSTRUCTIONS = [line.strip() for line in elf_file]
 
 
-@pytest.mark.parametrize("cycle,register,signal", [(20, 21, 420), (60, 19, 1140), (100, 18, 1800)])
+@pytest.mark.parametrize('cycle,register,signal', [(20, 21, 420), (60, 19, 1140), (100, 18, 1800)])
 def test_day10_with_example(cycle, register, signal):
     prototype = CommunicationsDevice()
 
