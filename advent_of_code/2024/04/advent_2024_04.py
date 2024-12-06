@@ -7,8 +7,8 @@ def get_paths(coord: tuple[int, int], path_length: int, diagonals_only: bool=Fal
     down = [(row, i) for i in range(col, col + path_length)]
 
     leftup = [(coord[0], up[i][1]) for i, coord in enumerate(left)]
-    rightup = [(coord[0], up[i][1]) for i, coord in enumerate(right)]
-    leftdown = [(coord[0], down[i][1]) for i, coord in enumerate(left)]
+    leftdown = [(coord[0], up[i][1]) for i, coord in enumerate(right)]
+    rightup = [(coord[0], down[i][1]) for i, coord in enumerate(left)]
     rightdown = [(coord[0], down[i][1]) for i, coord in enumerate(right)]
 
     if diagonals_only:
@@ -59,7 +59,21 @@ def solve_puzzle(puzzle_str: str) -> int:
     return successes
 
 def solve_puzzle_diagonal(puzzle_str) -> int:
-    return solve_puzzle(puzzle_str=puzzle_str)
+    grid = [row for row in puzzle_str.split("\n") if row]
+    target_words = ["AS", "AM"]
+    successes = 0
+
+    for r_index, row in enumerate(grid):
+        for col_index, char in enumerate(row):
+            coord = (r_index, col_index)
+            diagonal_match = 0
+            for target_word in target_words:
+                if char == target_word[0]:
+                    available_paths = get_paths(coord=coord, path_length=len(target_word), diagonals_only=True)
+                    diagonal_match += search(paths = available_paths, grid=grid, target_word=target_word)
+            if diagonal_match == 4:
+                successes += 1
+    return successes
 
 
 if __name__ == "__main__":  # pragma: no cover
