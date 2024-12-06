@@ -29,9 +29,10 @@ def on_grid(path: list[tuple[int, int]], grid_length) -> bool:
 
 
 def search(
-    target_word: str, grid: list, paths: list | None = None, coord: tuple | None = None
+    target_word: str, grid: list, paths: list | None = None, coord: tuple | None = None, return_paths=False
 ) -> int:
     results = 0
+    result_paths = []
 
     if paths is None:
         paths = get_paths(coord=coord, path_length=len(target_word))
@@ -42,8 +43,11 @@ def search(
                 word = "".join([grid[row][col] for row, col in path])
                 if word == target_word:
                     results += 1
+                    result_paths.append(path)
             except IndexError:
                 pass
+    if return_paths:
+        return results,result_paths
     return results
 
 
@@ -74,13 +78,19 @@ def solve_puzzle_diagonal(puzzle_str) -> int:
             diagonal_match = 0
             for target_word in target_words:
                 if char == target_word[0]:
+                    # diagonal must be offset
                     available_paths = get_paths(
                         coord=coord, path_length=len(target_word), diagonals_only=True
                     )
-                    diagonal_match += search(
-                        paths=available_paths, grid=grid, target_word=target_word
+                    word_match, match_paths = search(
+                        paths=available_paths, grid=grid, target_word=target_word, return_paths=True
                     )
-            if diagonal_match == 4:
+                    if word_match == 2:
+                        interesting_rows = set([match[1][0] for match in match_paths])
+                        interesting_cols = set([match[1][1] for match in match_paths])
+                        if len(interesting_rows) == 1 or len(interesting_cols) == 1:
+                            diagonal_match += 1
+            if diagonal_match == 2:
                 successes += 1
     return successes
 
@@ -91,4 +101,10 @@ if __name__ == "__main__":  # pragma: no cover
     with open("advent_2024_04_input.txt", "r") as infile:
         puzzle_input = infile.read()
 
-    submit(solve_puzzle(puzzle_input))
+    part_a = solve_puzzle(puzzle_input)
+    print(part_a)
+    part_b = solve_puzzle_diagonal(puzzle_input)
+    print(part_b)
+
+    submit(part_a, part='a')
+    submit(part_b, part='b')
