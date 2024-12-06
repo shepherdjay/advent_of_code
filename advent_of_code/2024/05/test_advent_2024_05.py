@@ -1,5 +1,5 @@
 import pytest
-from advent_2024_05 import split_input, solve_puzzle
+from advent_2024_05 import split_input, solve_puzzle, check_printjob
 
 EXAMPLE = """
 47|53
@@ -49,3 +49,15 @@ def test_split_input():
 
 def test_solve_puzzle():
     assert solve_puzzle(EXAMPLE) == 143
+
+def test_check_printjob_ok():
+    rules = {47: [53]}
+    printjob = [47,95,53]
+
+    assert check_printjob(printjob, rules) is True
+
+def test_check_printjob_bad():
+    rules = {47: [53]}
+    printjob = [53,95,47]
+
+    assert check_printjob(printjob, rules) is False
