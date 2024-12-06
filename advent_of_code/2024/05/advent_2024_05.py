@@ -1,4 +1,5 @@
 from collections import defaultdict
+import random
 
 
 def split_input(puzzle_input: str) -> tuple[dict[int : list[int]], list[list[int]]]:
@@ -30,13 +31,31 @@ def check_printjob(printjob: list[int], rules: dict[int : list[int]]):
     return True
 
 
-def solve_puzzle(puzzle_input):
+def correct_printjob(printjob, rules):
+    in_order = False
+    while not in_order:
+        random.shuffle(printjob)
+        in_order = check_printjob(printjob, rules)
+    return printjob
+
+
+def solve_puzzle(puzzle_input, partb=False):
     rules, pages_to_produce = split_input(puzzle_input=puzzle_input)
 
-    middle_values = [
-        pages[(len(pages) - 1) // 2] for pages in pages_to_produce if check_printjob(pages, rules)
-    ]
-    return sum(middle_values)
+    correct_order = []
+    incorrect_order = []
+
+    for printjob in pages_to_produce:
+        if check_printjob(printjob, rules):
+            correct_order.append(printjob)
+        else:
+            incorrect_order.append(printjob)
+
+    if partb:
+        corrected = [correct_printjob(printjob, rules) for printjob in incorrect_order]
+        return sum([pages[(len(pages) - 1) // 2] for pages in corrected])
+
+    return sum([pages[(len(pages) - 1) // 2] for pages in correct_order])
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -47,8 +66,8 @@ if __name__ == "__main__":  # pragma: no cover
 
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
-    # part_b = solve_puzzle(puzzle_input)
-    # print(part_b)
+    part_b = solve_puzzle(puzzle_input, partb=True)
+    print(part_b)
 
     submit(part_a, part="a")
-    # submit(part_b, part='b')
+    submit(part_b, part='b')
