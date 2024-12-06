@@ -54,7 +54,7 @@ def test_example_valve_tree(example_valve_tree):
 def test_example_valve_tree_v2(example_valve_tree):
     tree = example_valve_tree
     starting_node = tree['AA']
-    relief_tree = tree.construct_relief_node_tree(starting_node)
+    tree.construct_relief_node_tree(starting_node)
     pressure = tree.dfs_part2(starting_node=starting_node, cost_limit=26)
 
     assert pressure == 1707

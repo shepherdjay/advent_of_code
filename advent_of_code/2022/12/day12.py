@@ -57,7 +57,7 @@ def transform_elev_map(elev_map: Elev):
                     char_value = 0
                 case 'E':
                     char_value = e_value
-                case other:
+                case _:
                     char_value = ascii_letters.find(char)
             new_row.append(char_value)
         new_elev_map.append(new_row)
@@ -117,7 +117,7 @@ def traverse_path(elev_map, starting_index, goal_index, terminal=None) -> List:
         if current_index == goal_index:
             if not min_path or len(path) < len(min_path):
                 min_path = path
-                min_successful_path_length = len(path)
+                len(path)
         else:
             if current_index not in visited_nodes:
                 neighbors = get_candidate_neighbors(

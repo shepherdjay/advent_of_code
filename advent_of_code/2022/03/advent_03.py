@@ -28,9 +28,9 @@ def find_badge(group):
             return char
 
 
-def chunk(l, n=3):
-    for i in range(0, len(l), n):
-        yield l[i : i + n]
+def chunk(list_to_chunk, n=3):
+    for i in range(0, len(list_to_chunk), n):
+        yield list_to_chunk[i : i + n]
 
 
 if __name__ == '__main__':
