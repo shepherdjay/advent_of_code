@@ -16,7 +16,8 @@ def split_input(puzzle_input: str) -> tuple[dict[int : list[int]], list[list[int
             pages_to_produce.append([int(x) for x in line.split(",")])
     return rules, pages_to_produce
 
-def check_printjob(printjob: list[int], rules: dict[int:list[int]]):
+
+def check_printjob(printjob: list[int], rules: dict[int : list[int]]):
     checked_values = []
 
     for value in printjob:
@@ -25,22 +26,23 @@ def check_printjob(printjob: list[int], rules: dict[int:list[int]]):
             if following_page in checked_values:
                 return False
         checked_values.append(value)
-    
-    return True
 
+    return True
 
 
 def solve_puzzle(puzzle_input):
     rules, pages_to_produce = split_input(puzzle_input=puzzle_input)
 
-    middle_values = [pages[(len(pages)-1)//2] for pages in pages_to_produce]
+    middle_values = [
+        pages[(len(pages) - 1) // 2] for pages in pages_to_produce if check_printjob(pages, rules)
+    ]
     return sum(middle_values)
 
 
 if __name__ == "__main__":  # pragma: no cover
     from aocd import submit
 
-    with open("advent_2024_04_input.txt", "r") as infile:
+    with open("advent_2024_05_input.txt", "r") as infile:
         puzzle_input = infile.read()
 
     part_a = solve_puzzle(puzzle_input)
