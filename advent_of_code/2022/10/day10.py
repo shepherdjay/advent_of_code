@@ -11,7 +11,7 @@ class CommunicationsDevice:
         for _ in range(6):
             new_row = list()
             for _ in range(40):
-                new_row.append(".")
+                new_row.append('.')
             self.display.append(new_row)
 
         self._pixel_gen = self._yield_pixel()
@@ -27,9 +27,9 @@ class CommunicationsDevice:
         pixel_x, pixel_y = self._pixel_gen.__next__()
 
         if pixel_x in range(self.X - 1, self.X + 2):
-            char = "#"
+            char = '#'
         else:
-            char = "."
+            char = '.'
         self.display[pixel_y][pixel_x] = char
 
         self.cycles += 1
@@ -37,7 +37,7 @@ class CommunicationsDevice:
     def draw(self):
         for row in self.display:
             for char in row:
-                print(char, end="")
+                print(char, end='')
             print()
 
     def addx(self, value: int):
@@ -57,19 +57,25 @@ def process_instruction_set(instructions: List[str], cpu: CommunicationsDevice):
     >>> instructions = ['noop', 'addx 3', 'addx -5']
     >>> cpu = CommunicationsDevice()
     >>> process_instruction_set(instructions, cpu)
-    >>> cpu.reg_history[1], cpu.reg_history[2], cpu.reg_history[3], cpu.reg_history[4], cpu.reg_history[5]
+    >>> (
+    ...     cpu.reg_history[1],
+    ...     cpu.reg_history[2],
+    ...     cpu.reg_history[3],
+    ...     cpu.reg_history[4],
+    ...     cpu.reg_history[5],
+    ... )
     (1, 1, 1, 4, 4)
     """
     for instruction in instructions:
         match instruction.split():
-            case ["noop"]:
+            case ['noop']:
                 cpu.noop()
-            case ["addx", value]:
+            case ['addx', value]:
                 cpu.addx(value=int(value))
 
 
-if __name__ == "__main__":
-    with open("day10_input.txt", "r") as elf_file:
+if __name__ == '__main__':
+    with open('day10_input.txt', 'r') as elf_file:
         instructions = [line.strip() for line in elf_file]
 
     walkie_talkie = CommunicationsDevice()

@@ -1,17 +1,17 @@
 import re
 
 NUMBERED_WORDS = {
-    "one": "1",
-    "two": "2",
-    "three": "3",
-    "four": "4",
-    "five": "5",
-    "six": "6",
-    "seven": "7",
-    "eight": "8",
-    "nine": "9",
+    'one': '1',
+    'two': '2',
+    'three': '3',
+    'four': '4',
+    'five': '5',
+    'six': '6',
+    'seven': '7',
+    'eight': '8',
+    'nine': '9',
 }
-NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
 def parse_line(line):
@@ -28,7 +28,7 @@ def parse_line(line):
         elif char.isnumeric():
             last_num = char
 
-    return int(f"{first_num}{last_num}")
+    return int(f'{first_num}{last_num}')
 
 
 def parse_line_v2(line):
@@ -49,7 +49,7 @@ def parse_line_v2(line):
             index_map[match.start()] = match.group()
 
     first, last = index_map[min(index_map.keys())], index_map[max(index_map.keys())]
-    return int(f"{first}{last}")
+    return int(f'{first}{last}')
 
 
 def parse_string(string, part2=False):
@@ -60,7 +60,7 @@ def parse_string(string, part2=False):
     return sum([parse_line_v2(line) for line in lines])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     test_string = """
     1abc2
     pqr3stu8vwx
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     print(parse_string(test_string_v2, part2=True))
 
-    with open("advent_01_input.txt", "r") as infile:
+    with open('advent_01_input.txt', 'r') as infile:
         data = infile.read()
         print(parse_string(data))
         print(parse_string(data, part2=True))
