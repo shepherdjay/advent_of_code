@@ -26,12 +26,13 @@ def on_grid(path: list[tuple[int, int]], grid_length) -> bool:
     return True
 
 
-def search(coord, target_word, grid):
-    available_paths = get_paths(coord=coord, path_length=len(target_word))
-
+def search(target_word: str, grid: list, paths: list|None=None, coord: tuple|None=None) -> int:
     results = 0
 
-    for path in available_paths:
+    if paths is None:
+        paths = get_paths(coord=coord, path_length=len(target_word))
+
+    for path in paths:
         if on_grid(path, grid_length=len(grid)):
             try:
                 word = "".join([grid[row][col] for row, col in path])
@@ -50,7 +51,9 @@ def solve_puzzle(puzzle_str: str) -> int:
     for r_index, row in enumerate(grid):
         for col_index, char in enumerate(row):
             if char == target_word[0]:
-                result = search((r_index, col_index), grid=grid, target_word=target_word)
+                coord = (r_index, col_index)
+                available_paths = get_paths(coord=coord, path_length=len(target_word))
+                result = search(paths = available_paths, grid=grid, target_word=target_word)
                 successes += result
 
     return successes
