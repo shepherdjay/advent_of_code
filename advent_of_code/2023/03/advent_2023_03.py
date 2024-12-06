@@ -3,7 +3,7 @@ import re
 
 
 def extract_numbers_start_end(row_string: str) -> list[tuple[int, int, int]]:
-    number_re = re.compile(r"\d+")
+    number_re = re.compile(r'\d+')
 
     values = []
     for match in number_re.finditer(row_string):
@@ -28,7 +28,7 @@ def process_schematic(schematic: list[str]) -> int:
     for row_id, row in enumerate(schematic):
         all_values.append(extract_numbers_start_end(row))
         for col_id, char in enumerate(row):
-            if char.isdigit() or char == ".":
+            if char.isdigit() or char == '.':
                 continue
             char_neighbors = find_neighbors((row_id, col_id))
             part_coord_set.update(char_neighbors)
@@ -51,7 +51,7 @@ def process_gears(schematic: list[str]) -> int:
     total = 0
     for row_id, row in enumerate(schematic):
         for col_id, char in enumerate(row):
-            if char == "*":
+            if char == '*':
                 star_neighbors = find_neighbors((row_id, col_id))
                 count = 0
                 gear_one = 0
@@ -71,8 +71,8 @@ def process_gears(schematic: list[str]) -> int:
     return total
 
 
-if __name__ == "__main__":  # pragma: no cover
-    with open("advent_2023_03_input.txt", "r") as infile:
+if __name__ == '__main__':  # pragma: no cover
+    with open('advent_2023_03_input.txt', 'r') as infile:
         schematic = infile.read().splitlines()
     print(process_schematic(schematic))
     print(process_gears(schematic))

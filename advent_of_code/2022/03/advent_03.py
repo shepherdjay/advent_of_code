@@ -5,9 +5,9 @@ LETTERS = string.ascii_letters
 
 def process_rucksack(rucksack):
     """
-    >>> process_rucksack("vJrwpWtwJgWrhcsFMMfFFhFp")
+    >>> process_rucksack('vJrwpWtwJgWrhcsFMMfFFhFp')
     16
-    >>> process_rucksack("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL")
+    >>> process_rucksack('jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL')
     38
     """
 
@@ -28,13 +28,13 @@ def find_badge(group):
             return char
 
 
-def chunk(l, n=3):
-    for i in range(0, len(l), n):
-        yield l[i : i + n]
+def chunk(list_to_chunk, n=3):
+    for i in range(0, len(list_to_chunk), n):
+        yield list_to_chunk[i : i + n]
 
 
-if __name__ == "__main__":
-    with open("input.txt", "r") as infile:
+if __name__ == '__main__':
+    with open('input.txt', 'r') as infile:
         rucksacks = [line.strip() for line in infile]
 
     print(sum(process_rucksack(rucksack) for rucksack in rucksacks))

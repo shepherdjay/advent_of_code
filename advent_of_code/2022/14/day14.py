@@ -33,11 +33,11 @@ def expand_coordinates(input_str: str) -> set:
     returns all cords as set of coordinates
     """
 
-    parent_coords_raw = re.findall(r"\d+,\d+", input_str)
+    parent_coords_raw = re.findall(r'\d+,\d+', input_str)
 
     parent_coords = []
     for raw_string in parent_coords_raw:
-        x, y = raw_string.split(",")
+        x, y = raw_string.split(',')
         parent_coords.append((int(x), int(y)))
 
     expanded_range = []
@@ -96,8 +96,8 @@ def cave_in(rock_positions: set, floor=False):
             rock_positions.add(sand_rest)
 
 
-if __name__ == "__main__":
-    with open("day14_input.txt", "r") as rock_file:
+if __name__ == '__main__':
+    with open('day14_input.txt', 'r') as rock_file:
         rock_positions = set().union(*[expand_coordinates(line) for line in rock_file])
 
     # print(cave_in(rock_positions))
