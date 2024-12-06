@@ -1,6 +1,6 @@
 [project]
-name = "advent-of-code"
-version = "2024"
+name = "advent"
+version = "2024.04.00"
 description = "shepherdjay advent of code repo"
 readme = "README.md"
 

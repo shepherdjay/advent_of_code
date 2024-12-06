@@ -2,8 +2,8 @@ version = 1
 requires-python = ">=3.13"
 
 [[package]]
-name = "advent-of-code"
-version = "2024"
+name = "advent"
+version = "2024.4.0"
 source = { virtual = "." }
 dependencies = [
     { name = "advent-of-code-data" },

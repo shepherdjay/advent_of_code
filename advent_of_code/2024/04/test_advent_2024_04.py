@@ -1,4 +1,4 @@
-from advent_2024_04 import get_paths, search, solve_puzzle
+from advent_2024_04 import get_paths, search, solve_puzzle, solve_puzzle_diagonal
 
 SIMPLE_EXAMPLE = """
 ..X...
@@ -7,7 +7,6 @@ SIMPLE_EXAMPLE = """
 XMAS.S
 .X....
 """
-SIMPLE_EXAMPLE_AS_GRID = [row for row in SIMPLE_EXAMPLE.split("\n") if row]
 
 EXAMPLE = """
 MMMSXXMASM
@@ -22,7 +21,22 @@ MAMMMXMMMM
 MXMXAXMASX
 """
 
-EXAMPLE_AS_GRID = [row for row in EXAMPLE.split("\n") if row]
+DIAG_EXAMPLE = """
+.M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+..........
+"""
+
+
+def as_grid(string):
+    return [row for row in string.split("\n") if row]
 
 
 def test_search_simple():
@@ -30,7 +44,7 @@ def test_search_simple():
     col = 0
     initial_coord = (row, col)
 
-    assert search(coord=initial_coord, grid=SIMPLE_EXAMPLE_AS_GRID, target_word="XMAS") == 1
+    assert search(coord=initial_coord, grid=as_grid(SIMPLE_EXAMPLE), target_word="XMAS") == 1
 
 
 def test_must_be_straight():
@@ -38,7 +52,7 @@ def test_must_be_straight():
     col = 0
     initial_coord = (row, col)
 
-    assert search(coord=initial_coord, grid=SIMPLE_EXAMPLE_AS_GRID, target_word="XMAS") == 1
+    assert search(coord=initial_coord, grid=as_grid(SIMPLE_EXAMPLE), target_word="XMAS") == 1
 
 
 def test_solve_puzzle_simple():
@@ -60,3 +74,10 @@ VMAC
 def test_get_paths():
     paths = get_paths((10, 10), 4)
     assert len(paths) == 8
+
+def test_get_paths_only_diagonals():
+    paths = get_paths((10,10), 2, diagonals_only=True)
+    assert len(paths) == 4
+
+def test_solve_puzzle_diagnol():
+    assert solve_puzzle_diagonal(DIAG_EXAMPLE) == 9
