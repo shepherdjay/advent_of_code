@@ -1,5 +1,6 @@
 from collections import defaultdict
 import random
+import functools
 
 
 def split_input(puzzle_input: str) -> tuple[dict[int : list[int]], list[list[int]]]:
@@ -30,12 +31,18 @@ def check_printjob(printjob: list[int], rules: dict[int : list[int]]):
 
     return True
 
+def rulesort(rules, a, b):
+    if a not in rules:
+        return 0
+    if b in rules[a]:
+        return -1
+    else:
+        return 1
 
-def correct_printjob(printjob, rules):
-    in_order = False
-    while not in_order:
-        random.shuffle(printjob)
-        in_order = check_printjob(printjob, rules)
+def correct_printjob(printjob: list, rules: dict):
+
+    printjob.sort(key=functools.cmp_to_key(functools.partial(rulesort, rules)))
+
     return printjob
 
 
