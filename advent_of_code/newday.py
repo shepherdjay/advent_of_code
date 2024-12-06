@@ -7,6 +7,7 @@ def fetch_input_example(year, day):
     data = aocd.get_data(day=day, year=year)
     if data.startswith("Puzzle inputs differ"):
         raise RuntimeError("Unable to fetch puzzle input, check session exists")
+    return data
 
 
 if __name__ == "__main__":
