@@ -4,7 +4,7 @@ import os
 
 
 @pytest.mark.parametrize(
-    "a,b,expected",
+    'a,b,expected',
     [
         ([1, 1, 3, 1, 1], [1, 1, 5, 1, 1], True),
         ([[1], [2, 3, 4]], [[1], 4], True),
@@ -25,14 +25,8 @@ def test_comparator(a, b, expected):
 
 
 def test_process_file():
-    assert (
-        process_file(os.path.join(os.path.dirname(__file__), "test_day13_input.txt"))
-        == 13
-    )
+    assert process_file(os.path.join(os.path.dirname(__file__), 'test_day13_input.txt')) == 13
 
 
 def test_process_file_v2():
-    assert (
-        process_file_v2(os.path.join(os.path.dirname(__file__), "test_day13_input.txt"))
-        == 140
-    )
+    assert process_file_v2(os.path.join(os.path.dirname(__file__), 'test_day13_input.txt')) == 140

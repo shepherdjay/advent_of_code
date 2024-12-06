@@ -9,12 +9,10 @@ from day12 import (
 import pytest
 import os
 
-SUPER_SIMPLE_MAP = [["S", "a"], ["a", "E"], ["b", "c"]]
+SUPER_SIMPLE_MAP = [['S', 'a'], ['a', 'E'], ['b', 'c']]
 
 EXAMPLE_ELEV_MAP = []
-with open(
-    os.path.join(os.path.dirname(__file__), "test_day12_input.txt"), "r"
-) as infile:
+with open(os.path.join(os.path.dirname(__file__), 'test_day12_input.txt'), 'r') as infile:
     rows = [line.strip() for line in infile]
     for row in rows:
         EXAMPLE_ELEV_MAP.append([char for char in row])
@@ -27,7 +25,7 @@ def test_transform_elev_map():
 
 
 def test_find_index():
-    assert find_index(EXAMPLE_ELEV_MAP, "S") == (0, 0)
+    assert find_index(EXAMPLE_ELEV_MAP, 'S') == (0, 0)
 
 
 def test_get_candidate_neighbors():
@@ -35,19 +33,17 @@ def test_get_candidate_neighbors():
     current_idx = (4, 1)
     expected_neighbors = [(4, 0), (3, 1)]
 
-    actual = get_candidate_neighbors(
-        elev_map=height_map, current_idx=current_idx, visited=[]
-    )
+    actual = get_candidate_neighbors(elev_map=height_map, current_idx=current_idx, visited=[])
 
     assert set(actual) == set(expected_neighbors)
 
 
 @pytest.mark.parametrize(
-    "elev_map,possible_paths",
+    'elev_map,possible_paths',
     [
         (SUPER_SIMPLE_MAP, [[(0, 0), (1, 0), (2, 0), (2, 1), (1, 1)]]),
         (
-            [["S", "a"], ["a", "E"]],
+            [['S', 'a'], ['a', 'E']],
             [[(0, 0), (0, 1), (1, 1)], [(0, 0), (1, 0), (1, 1)]],
         ),
     ],
