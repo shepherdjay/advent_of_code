@@ -1,4 +1,4 @@
-def get_paths(coord: tuple[int, int], path_length: int) -> list[list[tuple[int, int]]]:
+def get_paths(coord: tuple[int, int], path_length: int, diagonals_only: bool=False) -> list[list[tuple[int, int]]]:
     row, col = coord
 
     left = [(i, col) for i in range(row + 1 - path_length, row + 1)][::-1]
@@ -10,6 +10,9 @@ def get_paths(coord: tuple[int, int], path_length: int) -> list[list[tuple[int, 
     rightup = [(coord[0], up[i][1]) for i, coord in enumerate(right)]
     leftdown = [(coord[0], down[i][1]) for i, coord in enumerate(left)]
     rightdown = [(coord[0], down[i][1]) for i, coord in enumerate(right)]
+
+    if diagonals_only:
+        return [leftup, rightup, rightdown, leftdown]
 
     return [left, leftup, up, rightup, right, rightdown, down, leftdown]
 
@@ -51,6 +54,9 @@ def solve_puzzle(puzzle_str: str) -> int:
                 successes += result
 
     return successes
+
+def solve_puzzle_diagonal(puzzle_str) -> int:
+    return solve_puzzle(puzzle_str=puzzle_str)
 
 
 if __name__ == "__main__":  # pragma: no cover
