@@ -2,10 +2,23 @@ from collections import deque
 
 
 def solve_layer(
-    target: int, queue: deque, cur_number: int | None = None, concat: bool = False
+    target: int,
+    queue: deque,
+    cur_number: int | None = None,
+    concat: bool = False,
+    memo: dict | None = None,
 ) -> bool:
+    if memo is None:
+        memo = {}
+
+    # Base cases
     if len(queue) == 0:
-        return target == cur_number
+        return cur_number == target
+
+    # Use memoization to avoid recalculating the same state
+    state = (tuple(queue), cur_number, concat)
+    if state in memo:
+        return memo[state]
 
     if cur_number is None:
         cur_number = queue.popleft()
@@ -13,18 +26,23 @@ def solve_layer(
     n1 = queue.popleft()
 
     # ADD
-    if solve_layer(target, queue.copy(), cur_number=cur_number + n1, concat=concat):
+    if solve_layer(target, queue.copy(), cur_number + n1, concat, memo):
+        memo[state] = True
         return True
 
     # MULTIPLY
-    if solve_layer(target, queue.copy(), cur_number=cur_number * n1, concat=concat):
+    if solve_layer(target, queue.copy(), cur_number * n1, concat, memo):
+        memo[state] = True
         return True
 
     # CONCAT
     if concat:
-        if solve_layer(target, queue.copy(), cur_number=int(f"{cur_number}{n1}"), concat=concat):
+        concatenated = int(f"{cur_number}{n1}")
+        if solve_layer(target, queue.copy(), concatenated, concat, memo):
+            memo[state] = True
             return True
 
+    memo[state] = False
     return False
 
 
