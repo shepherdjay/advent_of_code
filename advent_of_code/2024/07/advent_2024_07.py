@@ -2,6 +2,8 @@ from collections import deque
 
 
 def solve_layer(target, values: deque, cur_number=0):
+    if not values or cur_number > target:
+        return False
     n1 = values.popleft()
 
     add = n1 + cur_number
@@ -12,14 +14,12 @@ def solve_layer(target, values: deque, cur_number=0):
     elif multi == target:
         return True
     else:
-        if values:
-            return any(
-                [
-                    solve_layer(target, values.copy(), cur_number=operation)
-                    for operation in [add, multi]
-                ]
-            )
-    return False
+        return any(
+            [
+                solve_layer(target, values.copy(), cur_number=operation)
+                for operation in [add, multi]
+            ]
+        )
 
 
 def solve_puzzle(puzzle_input: str) -> int:
