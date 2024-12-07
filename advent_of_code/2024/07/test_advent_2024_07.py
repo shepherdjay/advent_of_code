@@ -18,7 +18,7 @@ EXAMPLE = """
 
 
 @st.composite
-def generate_positive_example(draw, max_size: int, min_value: int = 1) -> tuple[int, list[int]]:
+def positive_example(draw, max_size: int, min_value: int = 1) -> tuple[int, list[int]]:
     values = draw(
         st.lists(st.integers(min_value=min_value, max_value=1000), min_size=2, max_size=max_size)
     )
@@ -34,15 +34,15 @@ def generate_positive_example(draw, max_size: int, min_value: int = 1) -> tuple[
 
 
 @st.composite
-def generate_negative_example(draw: st.DrawFn, max_size: int) -> tuple[int, list[int]]:
-    _, values = draw(generate_positive_example(max_size=max_size, min_value=2))
+def negative_example(draw: st.DrawFn, max_size: int) -> tuple[int, list[int]]:
+    _, values = draw(positive_example(max_size=max_size, min_value=2))
     total = draw(st.sampled_from(values))
 
     return total, values
 
 
 @st.composite
-def generate_full_example(
+def full_report(
     draw: st.DrawFn, max_size_per_example: int, max_report_size: int = 100
 ) -> str:
     positive_examples = []
@@ -53,10 +53,10 @@ def generate_full_example(
     for _ in range(report_size):
         match draw(st.sampled_from(["positive", "negative"])):
             case "positive":
-                example = draw(generate_positive_example(max_size=max_size_per_example))
+                example = draw(positive_example(max_size=max_size_per_example))
                 positive_examples.append(example)
             case "negative":
-                example = draw(generate_positive_example(max_size=max_size_per_example))
+                example = draw(negative_example(max_size=max_size_per_example))
                 negative_examples.append(example)
         report.append(example)
 
@@ -87,7 +87,7 @@ def test_solve_layer_more():
     assert advent.solve_layer(target=target, values=values)
 
 
-@given(generate_positive_example(max_size=5))
+@given(positive_example(max_size=5))
 def test_solve_layer_hypyothesis_positive(example):
     target, values = example
     values = advent.deque(values)
@@ -95,7 +95,7 @@ def test_solve_layer_hypyothesis_positive(example):
     assert advent.solve_layer(target=target, values=values)
 
 
-@given(generate_negative_example(max_size=5))
+@given(negative_example(max_size=5))
 def test_solve_layer_hypyothesis_negative(example):
     target, values = example
     values = advent.deque(values)
@@ -104,8 +104,8 @@ def test_solve_layer_hypyothesis_negative(example):
 
 
 @settings(max_examples=5)  # Generating these is computationally expensive
-@given(generate_full_example(max_size_per_example=4))
+@given(full_report(max_size_per_example=4))
 def test_solve_hypothesis(sample_report):
-    expected, puzzle_input = sample_report
+    expected, puzzle_input, *_ = sample_report
 
     assert advent.solve_puzzle(puzzle_input) == expected

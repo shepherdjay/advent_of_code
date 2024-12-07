@@ -2,21 +2,18 @@ from collections import deque
 
 
 def solve_layer(target, values: deque, cur_number=0):
-    if not values or cur_number > target:
+    if len(values) == 0 and cur_number == target:
+        return True
+    if len(values) == 0:
         return False
     n1 = values.popleft()
 
     add = n1 + cur_number
     multi = n1 * cur_number
 
-    if add == target:
-        return True
-    elif multi == target:
-        return True
-    else:
-        return any(
-            [solve_layer(target, values.copy(), cur_number=operation) for operation in [add, multi]]
-        )
+    recursive = [solve_layer(target, values.copy(), cur_number=operation) for operation in [add, multi]]
+
+    return any(recursive)
 
 
 def solve_puzzle(puzzle_input: str) -> int:
