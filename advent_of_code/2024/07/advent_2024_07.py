@@ -1,28 +1,33 @@
 from collections import deque
 
 
-def solve_layer(target, values: deque, cur_number=None, concat=False):
-    if len(values) == 0 and cur_number == target:
+def solve_layer(
+    target: int, queue: deque, cur_number: int | None = None, concat: bool = False
+) -> bool:
+    if len(queue) == 0 and cur_number == target:
         return True
-    if len(values) == 0:
+    if len(queue) == 0:
         return False
 
-    results = []
     if cur_number is None:
-        cur_number = values.popleft()
+        cur_number = queue.popleft()
 
-    n1 = values.popleft()
+    n1 = queue.popleft()
 
-    results.append(solve_layer(target, values.copy(), cur_number=cur_number + n1, concat=concat))
+    # ADD
+    if solve_layer(target, queue.copy(), cur_number=cur_number + n1, concat=concat):
+        return True
 
-    results.append(solve_layer(target, values.copy(), cur_number=cur_number * n1, concat=concat))
+    # MULTIPLY
+    if solve_layer(target, queue.copy(), cur_number=cur_number * n1, concat=concat):
+        return True
 
+    # CONCAT
     if concat:
-        results.append(
-            solve_layer(target, values.copy(), cur_number=int(f"{cur_number}{n1}"), concat=concat)
-        )
+        if solve_layer(target, queue.copy(), cur_number=int(f"{cur_number}{n1}"), concat=concat):
+            return True
 
-    return any(results)
+    return False
 
 
 def solve_puzzle(puzzle_input: str, concat=False) -> int:
@@ -34,7 +39,7 @@ def solve_puzzle(puzzle_input: str, concat=False) -> int:
             target_number, values = line.strip().split(":")
             target_number = int(target_number)
             values = deque([int(value) for value in values.split()])
-            if solve_layer(target=target_number, values=values, concat=concat):
+            if solve_layer(target=target_number, queue=values, concat=concat):
                 total += target_number
 
     return total
