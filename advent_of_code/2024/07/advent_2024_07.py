@@ -4,10 +4,8 @@ from collections import deque
 def solve_layer(
     target: int, queue: deque, cur_number: int | None = None, concat: bool = False
 ) -> bool:
-    if len(queue) == 0 and cur_number == target:
-        return True
     if len(queue) == 0:
-        return False
+        return target == cur_number
 
     if cur_number is None:
         cur_number = queue.popleft()
