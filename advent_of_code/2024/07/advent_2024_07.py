@@ -1,50 +1,36 @@
 from collections import deque
+from functools import cache
 
+def solve_layer(target: int, queue: deque, cur_number: int | None = None, concat: bool = False) -> bool:
+    @cache
+    def helper(target, queue_tuple, cur_number, concat):
+        # Base case: if the queue is empty
+        if not queue_tuple:
+            return cur_number == target
 
-def solve_layer(
-    target: int,
-    queue: deque,
-    cur_number: int | None = None,
-    concat: bool = False,
-    memo: dict | None = None,
-) -> bool:
-    if memo is None:
-        memo = {}
+        queue = deque(queue_tuple)  # Convert back to deque for processing
+        n1 = queue.popleft()
 
-    # Base cases
-    if len(queue) == 0:
-        return cur_number == target
-
-    # Use memoization to avoid recalculating the same state
-    state = (tuple(queue), cur_number, concat)
-    if state in memo:
-        return memo[state]
-
-    if cur_number is None:
-        cur_number = queue.popleft()
-
-    n1 = queue.popleft()
-
-    # ADD
-    if solve_layer(target, queue.copy(), cur_number + n1, concat, memo):
-        memo[state] = True
-        return True
-
-    # MULTIPLY
-    if solve_layer(target, queue.copy(), cur_number * n1, concat, memo):
-        memo[state] = True
-        return True
-
-    # CONCAT
-    if concat:
-        concatenated = int(f"{cur_number}{n1}")
-        if solve_layer(target, queue.copy(), concatenated, concat, memo):
-            memo[state] = True
+        # ADD
+        if helper(target, tuple(queue), cur_number + n1, concat):
             return True
 
-    memo[state] = False
-    return False
+        # MULTIPLY
+        if helper(target, tuple(queue), cur_number * n1, concat):
+            return True
 
+        # CONCAT
+        if concat:
+            concatenated = int(f"{cur_number}{n1}")
+            if helper(target, tuple(queue), concatenated, concat):
+                return True
+
+        return False
+
+    # Convert queue to tuple for hashing and call the helper
+    if cur_number is None:
+        cur_number = queue.popleft()
+    return helper(target, tuple(queue), cur_number, concat)
 
 def solve_puzzle(puzzle_input: str, concat=False) -> int:
     total = 0
