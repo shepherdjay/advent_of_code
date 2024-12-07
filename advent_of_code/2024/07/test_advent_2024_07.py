@@ -14,14 +14,17 @@ EXAMPLE = """
 292: 11 6 16 20
 """
 
+
 def test_solve_puzzle():
     assert advent.solve_puzzle(EXAMPLE) == 3749
 
+
 def test_solve_layer_simple():
     target_number = 190
-    values = advent.deque([10,19])
+    values = advent.deque([10, 19])
 
     assert advent.solve_layer(target=target_number, values=values)
+
 
 def test_solve_layer_more():
     target = 3267
