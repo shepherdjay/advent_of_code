@@ -1,17 +1,24 @@
 from collections import deque
 
 
-def solve_layer(target, values: deque, cur_number=0):
+def solve_layer(target, values: deque, cur_number=None):
     if len(values) == 0 and cur_number == target:
         return True
     if len(values) == 0:
         return False
+
     n1 = values.popleft()
 
-    add = n1 + cur_number
-    multi = n1 * cur_number
+    if cur_number is None:
+        add = n1
+        multi = n1
+    else:
+        add = n1 + cur_number
+        multi = n1 * cur_number
 
-    recursive = [solve_layer(target, values.copy(), cur_number=operation) for operation in [add, multi]]
+    recursive = [
+        solve_layer(target, values.copy(), cur_number=operation) for operation in [add, multi]
+    ]
 
     return any(recursive)
 

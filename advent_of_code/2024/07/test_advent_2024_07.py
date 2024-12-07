@@ -1,6 +1,4 @@
-import pytest
-from hypothesis import given, assume, strategies as st, settings
-import random
+from hypothesis import given, assume, strategies as st
 
 import advent_2024_07 as advent
 
@@ -42,9 +40,7 @@ def negative_example(draw: st.DrawFn, max_size: int) -> tuple[int, list[int]]:
 
 
 @st.composite
-def full_report(
-    draw: st.DrawFn, max_size_per_example: int, max_report_size: int = 100
-) -> str:
+def full_report(draw: st.DrawFn, max_size_per_example: int, max_report_size: int = 100) -> str:
     positive_examples = []
     negative_examples = []
     report = []
@@ -103,7 +99,6 @@ def test_solve_layer_hypyothesis_negative(example):
     assert not advent.solve_layer(target=target, values=values)
 
 
-@settings(max_examples=5)  # Generating these is computationally expensive
 @given(full_report(max_size_per_example=4))
 def test_solve_hypothesis(sample_report):
     expected, puzzle_input, *_ = sample_report
