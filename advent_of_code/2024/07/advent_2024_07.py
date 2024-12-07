@@ -15,10 +15,7 @@ def solve_layer(target, values: deque, cur_number=0):
         return True
     else:
         return any(
-            [
-                solve_layer(target, values.copy(), cur_number=operation)
-                for operation in [add, multi]
-            ]
+            [solve_layer(target, values.copy(), cur_number=operation) for operation in [add, multi]]
         )
 
 
