@@ -1,7 +1,9 @@
-from hypothesis import given, assume, strategies as st
+from hypothesis import given
+from strategies import positive_example, negative_example, full_report
 
 import advent_2024_07 as advent
 import pytest
+import os
 
 EXAMPLE = """
 190: 10 19
@@ -16,56 +18,6 @@ EXAMPLE = """
 """
 
 
-@st.composite
-def positive_example(draw, max_size: int, min_value: int = 1) -> tuple[int, list[int]]:
-    values = draw(
-        st.lists(st.integers(min_value=min_value, max_value=1000), min_size=2, max_size=max_size)
-    )
-    total = values[0]
-    for n in values[1:]:
-        match draw(st.sampled_from(["multiply", "add"])):
-            case "multiply":
-                total *= n
-            case "add":
-                total += n
-
-    return total, values
-
-
-@st.composite
-def negative_example(draw: st.DrawFn, max_size: int) -> tuple[int, list[int]]:
-    _, values = draw(positive_example(max_size=max_size, min_value=2))
-    total = draw(st.sampled_from(values))
-
-    return total, values
-
-
-@st.composite
-def full_report(draw: st.DrawFn, max_size_per_example: int, max_report_size: int = 100) -> str:
-    positive_examples = []
-    negative_examples = []
-    report = []
-
-    report_size = draw(st.integers(min_value=1, max_value=max_report_size))
-    for _ in range(report_size):
-        match draw(st.sampled_from(["positive", "negative"])):
-            case "positive":
-                example = draw(positive_example(max_size=max_size_per_example))
-                positive_examples.append(example)
-            case "negative":
-                example = draw(negative_example(max_size=max_size_per_example))
-                negative_examples.append(example)
-        report.append(example)
-
-    puzzle_input = ""
-    for total, value_list in report:
-        puzzle_input += f"{total}: {' '.join([str(x) for x in value_list])}\n"
-
-    expected_result = sum([x for x, _ in positive_examples])
-
-    return expected_result, puzzle_input
-
-
 def test_solve_puzzle():
     assert advent.solve_puzzle(EXAMPLE) == 3749
 
@@ -78,35 +30,23 @@ def test_solve_puzzle_concat():
     "target,numbers,result",
     [
         (156, [15, 6], True),
-        (
-            7290,
-            [
-                6,
-                8,
-                6,
-                15,
-            ],
-            True,
-        ),
+        (7290, [6, 8, 6, 15], True),
         (161011, [16, 10, 13], False),
     ],
 )
 def test_solve_layer_concat(target, numbers, result):
-    assert advent.solve_layer(target=target, values=advent.deque(numbers), concat=True) is result
+    assert advent.solve_layer(target=target, queue=advent.deque(numbers), concat=True) is result
 
 
-def test_solve_layer_simple():
-    target_number = 190
-    values = advent.deque([10, 19])
-
-    assert advent.solve_layer(target=target_number, values=values)
-
-
-def test_solve_layer_more():
-    target = 3267
-    values = advent.deque([81, 40, 27])
-
-    assert advent.solve_layer(target=target, values=values)
+@pytest.mark.parametrize(
+    "target,numbers,result",
+    [
+        (190, [10, 19], True),
+        (3267, [81, 40, 27], True),
+    ],
+)
+def test_solve_layer(target, numbers, result):
+    assert advent.solve_layer(target=target, queue=advent.deque(numbers)) is result
 
 
 @given(positive_example(max_size=5))
@@ -114,7 +54,7 @@ def test_solve_layer_hypyothesis_positive(example):
     target, values = example
     values = advent.deque(values)
 
-    assert advent.solve_layer(target=target, values=values)
+    assert advent.solve_layer(target=target, queue=values)
 
 
 @given(negative_example(max_size=5))
@@ -122,10 +62,10 @@ def test_solve_layer_hypyothesis_negative(example):
     target, values = example
     values = advent.deque(values)
 
-    assert not advent.solve_layer(target=target, values=values)
+    assert not advent.solve_layer(target=target, queue=values)
 
 
-@given(full_report(max_size_per_example=4))
+@given(full_report(max_size_per_example=5, max_report_size=10))
 def test_solve_hypothesis(sample_report):
     expected, puzzle_input, *_ = sample_report
 
