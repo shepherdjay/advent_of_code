@@ -1,7 +1,10 @@
 from collections import deque
 from functools import cache
 
-def solve_layer(target: int, queue: deque, cur_number: int | None = None, concat: bool = False) -> bool:
+
+def solve_layer(
+    target: int, queue: deque, cur_number: int | None = None, concat: bool = False
+) -> bool:
     @cache
     def helper(target, queue_tuple, cur_number, concat):
         # Base case: if the queue is empty
@@ -31,6 +34,7 @@ def solve_layer(target: int, queue: deque, cur_number: int | None = None, concat
     if cur_number is None:
         cur_number = queue.popleft()
     return helper(target, tuple(queue), cur_number, concat)
+
 
 def solve_puzzle(puzzle_input: str, concat=False) -> int:
     total = 0
