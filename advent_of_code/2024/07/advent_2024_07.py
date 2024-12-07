@@ -1,29 +1,31 @@
 from collections import deque
 
 
-def solve_layer(target, values: deque, cur_number=None):
+def solve_layer(target, values: deque, cur_number=None, concat=False):
     if len(values) == 0 and cur_number == target:
         return True
     if len(values) == 0:
         return False
 
+    results = []
+    if cur_number is None:
+        cur_number = values.popleft()
+
     n1 = values.popleft()
 
-    if cur_number is None:
-        add = n1
-        multi = n1
-    else:
-        add = n1 + cur_number
-        multi = n1 * cur_number
+    results.append(solve_layer(target, values.copy(), cur_number=cur_number + n1, concat=concat))
 
-    recursive = [
-        solve_layer(target, values.copy(), cur_number=operation) for operation in [add, multi]
-    ]
+    results.append(solve_layer(target, values.copy(), cur_number=cur_number * n1, concat=concat))
 
-    return any(recursive)
+    if concat:
+        results.append(
+            solve_layer(target, values.copy(), cur_number=int(f"{cur_number}{n1}"), concat=concat)
+        )
+
+    return any(results)
 
 
-def solve_puzzle(puzzle_input: str) -> int:
+def solve_puzzle(puzzle_input: str, concat=False) -> int:
     total = 0
 
     lines = puzzle_input.splitlines()
@@ -32,7 +34,7 @@ def solve_puzzle(puzzle_input: str) -> int:
             target_number, values = line.strip().split(":")
             target_number = int(target_number)
             values = deque([int(value) for value in values.split()])
-            if solve_layer(target=target_number, values=values):
+            if solve_layer(target=target_number, values=values, concat=concat):
                 total += target_number
 
     return total
@@ -47,4 +49,8 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
 
+    part_b = solve_puzzle(puzzle_input, concat=True)
+    print(part_b)
+
     submit(part_a, part="a")
+    submit(part_b, part="b")

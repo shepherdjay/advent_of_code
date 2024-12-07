@@ -1,6 +1,7 @@
 from hypothesis import given, assume, strategies as st
 
 import advent_2024_07 as advent
+import pytest
 
 EXAMPLE = """
 190: 10 19
@@ -67,6 +68,31 @@ def full_report(draw: st.DrawFn, max_size_per_example: int, max_report_size: int
 
 def test_solve_puzzle():
     assert advent.solve_puzzle(EXAMPLE) == 3749
+
+
+def test_solve_puzzle_concat():
+    assert advent.solve_puzzle(EXAMPLE, concat=True) == 11387
+
+
+@pytest.mark.parametrize(
+    "target,numbers,result",
+    [
+        (156, [15, 6], True),
+        (
+            7290,
+            [
+                6,
+                8,
+                6,
+                15,
+            ],
+            True,
+        ),
+        (161011, [16, 10, 13], False),
+    ],
+)
+def test_solve_layer_concat(target, numbers, result):
+    assert advent.solve_layer(target=target, values=advent.deque(numbers), concat=True) is result
 
 
 def test_solve_layer_simple():
