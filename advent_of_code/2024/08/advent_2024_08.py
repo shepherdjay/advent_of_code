@@ -1,4 +1,36 @@
 from collections import defaultdict
+from itertools import combinations
+
+
+def calculate_slopes(antennas_map: dict[str : list[tuple]]) -> dict[tuple : set[float]]:
+    slopes = {}
+    for _, points in antennas_map.items():
+        if len(points) > 1:
+            for orig_point, dest_point in combinations(points, 2):
+                slopes[orig_point] = set()
+                x1, y1 = orig_point[1], orig_point[0]
+                x2, y2 = dest_point[1], dest_point[0]
+                try:
+                    slope = (y2 - y1) / (x2 - x1)
+                except ZeroDivisionError:
+                    slope = "undefined"
+                slopes[orig_point].add(slope)
+    return slopes
+
+
+def on_a_slope(origin, slopes_dict):
+    if origin in slopes_dict:
+        return True
+    for point, slopes in slopes_dict.items():
+        for slope in slopes:
+            x, y = origin[1], origin[0]
+            x1, y1 = point[1], point[0]
+            if slope == "undefined":
+                if x == x1:
+                    return True
+            if y - y1 == slope * (x - x1):
+                return True
+    return False
 
 
 def calculate_double(orig_coord, target_coord):
@@ -42,9 +74,18 @@ def solve_puzzle(puzzle_input: str):
                 total += 1
     return total
 
+
 def solve_puzzle_two(puzzle_input):
     grid = [[char for char in line] for line in puzzle_input.split()]
     antennas = map_antennas(grid)
+    slopes = calculate_slopes(antennas)
+
+    total = 0
+    for r_idx, row in enumerate(grid):
+        for c_idx, _ in enumerate(row):
+            if on_a_slope((r_idx, c_idx), slopes_dict=slopes):
+                total += 1
+    return total
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -56,4 +97,11 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
 
-    submit(part_a, part="a")
+    part_b = solve_puzzle_two(puzzle_input)
+    print(part_b)
+
+    try:
+        submit(part_a, part="a")
+        submit(part_b, part="b")
+    except:
+        pass

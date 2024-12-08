@@ -61,13 +61,47 @@ def test_solve_puzzle_simple():
 
     assert advent.solve_puzzle(puzzle_input) == 2
 
-@pytest.mark.xfail("not yet started")
-def test_solve_puzzle_two_simple():
-    puzzle_input = """
-    ...C.
-    .AA..
-    """
-    assert advent.solve_puzzle_two(puzzle_input) == 5
+
+def test_map_antennas():
+    grid = [
+        [".", ".", ".", "C", "."],
+        [".", "A", "A", ".", "."],
+    ]
+    assert advent.map_antennas(grid) == {"C": [(0, 3)], "A": [(1, 1), (1, 2)]}
+
+
+@pytest.mark.parametrize(
+    "antennas,expected",
+    [({"A": [(1, 1), (1, 2)]}, {(1, 1): {0}}), ({"A": [(1, 1), (2, 1)]}, {(1, 1): {"undefined"}})],
+)
+def test_calculate_slopes(antennas, expected):
+    assert advent.calculate_slopes(antennas) == expected
+
+
+@pytest.mark.parametrize(
+    "origin,slopes,result",
+    [
+        ((1, 0), {(1, 1): {0}}, True),
+        ((1, 3), {(1, 1): {0}}, True),
+        ((2, 3), {(1, 1): {0}}, False),
+        [(5, 0), {(3, 0): {"undefined"}}, True],
+        [(1, 0), {(3, 0): {"undefined"}}, True],
+    ],
+)
+def test_on_a_slope(origin, slopes, result):
+    assert advent.on_a_slope(origin, slopes) is result
+
+
+@pytest.mark.parametrize(
+    "puzzle_input,expected",
+    [
+        ("...C.\n.AA..", 5),
+        ("...C.\n.....", 0),
+        ("...\n.A.\n.A.\n...", 4),
+    ],
+)
+def test_solve_puzzle_two_simple(puzzle_input, expected):
+    assert advent.solve_puzzle_two(puzzle_input) == expected
 
 
 def test_solve_puzzle_example():
