@@ -72,7 +72,7 @@ def test_map_antennas():
 
 @pytest.mark.parametrize(
     "antennas,expected",
-    [({"A": [(1, 1), (1, 2)]}, {(1, 1): {0}}), ({"A": [(1, 1), (2, 1)]}, {(1, 1): {"undefined"}})],
+    [({"A": [(1, 1), (1, 2)]}, {(1, 1): {(0,1)}}), ({"A": [(1, 1), (2, 1)]}, {(1, 1): {("undefined", 1)}})],
 )
 def test_calculate_slopes(antennas, expected):
     assert advent.calculate_slopes(antennas) == expected
@@ -98,6 +98,9 @@ def test_on_a_slope(origin, slopes, result):
         ("...C.\n.AA..", 5),
         ("...C.\n.....", 0),
         ("...\n.A.\n.A.\n...", 4),
+        ("..A\n.A.\n...", 3),
+        ("A..\n.A.\n...", 3),
+        ("..........\n..A..A....", 3),
     ],
 )
 def test_solve_puzzle_two_simple(puzzle_input, expected):
@@ -106,3 +109,28 @@ def test_solve_puzzle_two_simple(puzzle_input, expected):
 
 def test_solve_puzzle_example():
     assert advent.solve_puzzle(EXAMPLE) == 14
+
+
+@pytest.mark.parametrize(
+    "puzzle_input,expected",
+    [
+        (EXAMPLE, 39),
+        (
+            """
+T....#....
+...T......
+.T....#...
+.........#
+..#.......
+..........
+...#......
+..........
+....#.....
+..........
+""",
+            9,
+        ),
+    ],
+)
+def test_solve_parttwo_examples(puzzle_input, expected):
+    assert advent.solve_puzzle_two(puzzle_input) == expected
