@@ -99,6 +99,7 @@ def solve_puzzle_two(puzzle_input):
 
 if __name__ == "__main__":  # pragma: no cover
     from aocd import submit
+    from aocd.exceptions import AocdError
 
     with open("advent_2024_08_input.txt") as infile:
         puzzle_input = infile.read()
@@ -112,5 +113,5 @@ if __name__ == "__main__":  # pragma: no cover
     try:
         submit(part_a, part="a")
         submit(part_b, part="b")
-    except:
+    except AocdError:
         pass
