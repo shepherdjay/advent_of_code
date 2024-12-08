@@ -42,6 +42,10 @@ def solve_puzzle(puzzle_input: str):
                 total += 1
     return total
 
+def solve_puzzle_two(puzzle_input):
+    grid = [[char for char in line] for line in puzzle_input.split()]
+    antennas = map_antennas(grid)
+
 
 if __name__ == "__main__":  # pragma: no cover
     from aocd import submit

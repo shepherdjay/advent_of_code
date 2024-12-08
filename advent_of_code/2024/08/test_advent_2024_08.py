@@ -61,6 +61,14 @@ def test_solve_puzzle_simple():
 
     assert advent.solve_puzzle(puzzle_input) == 2
 
+@pytest.mark.xfail("not yet started")
+def test_solve_puzzle_two_simple():
+    puzzle_input = """
+    ...C.
+    .AA..
+    """
+    assert advent.solve_puzzle_two(puzzle_input) == 5
+
 
 def test_solve_puzzle_example():
     assert advent.solve_puzzle(EXAMPLE) == 14
