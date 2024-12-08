@@ -1,5 +1,5 @@
 from collections import defaultdict
-from itertools import combinations,permutations
+from itertools import combinations, permutations
 
 
 def grid_dist(coord_a, coord_b):
@@ -89,17 +89,11 @@ def solve_puzzle_two(puzzle_input):
     antennas = map_antennas(grid)
     slopes = calculate_slopes(antennas)
 
-    print(antennas)
-    print(slopes)
-
     total = 0
     for r_idx, row in enumerate(grid):
         for c_idx, _ in enumerate(row):
             if on_a_slope((r_idx, c_idx), slopes_dict=slopes):
                 total += 1
-                grid[r_idx][c_idx] = '#'
-    for row in grid:
-        print(''.join(row))
     return total
 
 
