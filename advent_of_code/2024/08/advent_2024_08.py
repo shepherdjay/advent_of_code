@@ -2,6 +2,11 @@ from collections import defaultdict
 from itertools import combinations
 
 
+def grid_dist(coord_a, coord_b):
+    distance = sum(abs(val1 - val2) for val1, val2 in zip(coord_a, coord_b))
+    return distance
+
+
 def calculate_slopes(antennas_map: dict[str : list[tuple]]) -> dict[tuple : set[float]]:
     slopes = {}
     for _, points in antennas_map.items():
@@ -10,11 +15,12 @@ def calculate_slopes(antennas_map: dict[str : list[tuple]]) -> dict[tuple : set[
                 slopes[orig_point] = set()
                 x1, y1 = orig_point[1], orig_point[0]
                 x2, y2 = dest_point[1], dest_point[0]
+                distance = grid_dist(orig_point, dest_point)
                 try:
                     slope = (y2 - y1) / (x2 - x1)
                 except ZeroDivisionError:
                     slope = "undefined"
-                slopes[orig_point].add(slope)
+                slopes[orig_point].add((slope, distance))
     return slopes
 
 
@@ -22,14 +28,16 @@ def on_a_slope(origin, slopes_dict):
     if origin in slopes_dict:
         return True
     for point, slopes in slopes_dict.items():
-        for slope in slopes:
-            x, y = origin[1], origin[0]
-            x1, y1 = point[1], point[0]
-            if slope == "undefined":
-                if x == x1:
+        distance = grid_dist(origin, point)
+        for slope, slope_dist in slopes:
+            if distance % slope_dist == 0:
+                x, y = origin[1], origin[0]
+                x1, y1 = point[1], point[0]
+                if slope == "undefined":
+                    if x == x1:
+                        return True
+                if y - y1 == slope * (x - x1):
                     return True
-            if y - y1 == slope * (x - x1):
-                return True
     return False
 
 

@@ -72,7 +72,10 @@ def test_map_antennas():
 
 @pytest.mark.parametrize(
     "antennas,expected",
-    [({"A": [(1, 1), (1, 2)]}, {(1, 1): {(0,1)}}), ({"A": [(1, 1), (2, 1)]}, {(1, 1): {("undefined", 1)}})],
+    [
+        ({"A": [(1, 1), (1, 2)]}, {(1, 1): {(0, 1)}}),
+        ({"A": [(1, 1), (2, 1)]}, {(1, 1): {("undefined", 1)}}),
+    ],
 )
 def test_calculate_slopes(antennas, expected):
     assert advent.calculate_slopes(antennas) == expected
@@ -81,11 +84,12 @@ def test_calculate_slopes(antennas, expected):
 @pytest.mark.parametrize(
     "origin,slopes,result",
     [
-        ((1, 0), {(1, 1): {0}}, True),
-        ((1, 3), {(1, 1): {0}}, True),
-        ((2, 3), {(1, 1): {0}}, False),
-        [(5, 0), {(3, 0): {"undefined"}}, True],
-        [(1, 0), {(3, 0): {"undefined"}}, True],
+        ((1, 0), {(1, 1): {(0, 1)}}, True),
+        ((1, 3), {(1, 1): {(0, 1)}}, True),
+        ((2, 3), {(1, 1): {(0, 1)}}, False),
+        ((5, 0), {(3, 0): {("undefined", 1)}}, True),
+        ((1, 0), {(3, 0): {("undefined", 1)}}, True),
+        ((5, 0), {(5, 2): {(0, 3)}}, False),
     ],
 )
 def test_on_a_slope(origin, slopes, result):
