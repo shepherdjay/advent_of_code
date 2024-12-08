@@ -45,9 +45,12 @@ def test_solve_layer_concat(target, numbers, result):
         (3267, [81, 40, 27], True),
     ],
 )
-def test_solve_layer(target, numbers, result):
-    assert advent.solve_layer(target=target, queue=advent.deque(numbers)) is result
+def test_solve_layer(target, numbers, result, benchmark):
+    def setup():
+        return (),{'queue' : advent.deque(numbers), 'target': target}
+    actual = benchmark.pedantic(advent.solve_layer, setup=setup)
 
+    assert actual is result
 
 @given(positive_example(max_size=5))
 def test_solve_layer_hypyothesis_positive(example):
