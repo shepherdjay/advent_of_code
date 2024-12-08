@@ -118,7 +118,7 @@ def test_solve_puzzle_example():
 @pytest.mark.parametrize(
     "puzzle_input,expected",
     [
-        (EXAMPLE, 39),
+        (EXAMPLE, 34),
         (
             """
 T....#....

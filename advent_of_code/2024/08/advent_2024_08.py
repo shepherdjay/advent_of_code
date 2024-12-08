@@ -12,7 +12,8 @@ def calculate_slopes(antennas_map: dict[str : list[tuple]]) -> dict[tuple : set[
     for _, points in antennas_map.items():
         if len(points) > 1:
             for orig_point, dest_point in combinations(points, 2):
-                slopes[orig_point] = set()
+                if orig_point not in slopes:
+                    slopes[orig_point] = set()
                 x1, y1 = orig_point[1], orig_point[0]
                 x2, y2 = dest_point[1], dest_point[0]
                 distance = grid_dist(orig_point, dest_point)
@@ -31,8 +32,8 @@ def on_a_slope(origin, slopes_dict):
         distance = grid_dist(origin, point)
         for slope, slope_dist in slopes:
             if distance % slope_dist == 0:
-                x, y = point[1], point[0]
-                x1, y1 = origin[1], origin[0]
+                x, y = origin[1], origin[0]
+                x1, y1 = point[1], point[0]
                 if slope == "undefined":
                     if x == x1:
                         return True
