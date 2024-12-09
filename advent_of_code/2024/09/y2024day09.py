@@ -1,5 +1,7 @@
 from pathlib import Path
 from dataclasses import dataclass
+from copy import copy
+from tqdm import tqdm
 
 BASEPATH = Path(__file__).parent.resolve()
 
@@ -12,6 +14,9 @@ class File:
     def __str__(self):
         return f"{self.name}"
 
+    def __hash__(self):
+        return hash(self.name)
+
 
 class FileSystem:
     def __init__(self, disk_size: int = 0):
@@ -19,7 +24,6 @@ class FileSystem:
         self.fragmented = False
 
     def find_free_space(self, desired_space: int, _start_idx=0):
-        print(f"finding {desired_space}")
         free_sectors = 0
         for i, value in enumerate(self._disk):
             if i >= _start_idx:
@@ -39,6 +43,8 @@ class FileSystem:
         allocated = 0
         start = self.find_free_space(space_needed, _start_idx=loc)
         while True:
+            if start is None:
+                raise RuntimeError("No Space")
             self._disk[start] = file
             allocated += 1
             if allocated == file.size:
@@ -46,7 +52,12 @@ class FileSystem:
             if dnf:
                 start += 1
             else:
-                start = self.find_free_space(max(1, (space_needed - allocated)), _start_idx=loc)
+                start = self.find_free_space(max(1, (space_needed - allocated)), _start_idx=start)
+
+    def delete_file(self, file: File):
+        indexes = [i for i, x in enumerate(self._disk) if id(x) == id(file)]
+        for i in indexes:
+            self._disk[i] = None
 
     def describe(self):
         for sector in self._disk:
@@ -57,17 +68,19 @@ class FileSystem:
             else:
                 yield "."
 
+    def __len__(self):
+        return len(self._disk)
+
     @classmethod
-    def from_string(cls, description_string) -> 'FileSystem':
+    def from_string(cls, description_string) -> "FileSystem":
         file_system = cls()
-        print(file_system)
         file_index = 0
-        location = 0
         for i, value in enumerate(description_string):
             if (i + 1) % 2 == 0:
                 file_system._disk += [None] * int(value)
             else:
-                file_system._disk += [f"{file_index}"] * int(value)
+                file = File(file_index, size=int(value))
+                file_system._disk += [file] * int(value)
                 file_index += 1
         return file_system
 
@@ -84,7 +97,28 @@ def construct_filesystem(puzzle_input):
     return file_system
 
 
-def solve_puzzle(puzzle_input, part2=False):
+def solve_puzzle_two(puzzle_input):
+    filesystem = FileSystem.from_string(puzzle_input)
+    files = sorted(
+        set([x for x in filesystem._disk if x is not None]), key=lambda x: x.name, reverse=True
+    )
+
+    for file in tqdm(files):
+        cur_index = filesystem._disk.index(file)
+        new_file = copy(file)
+        try:
+            filesystem.add_file(new_file, dnf=True)
+            if filesystem._disk.index(new_file) < cur_index:
+                filesystem.delete_file(file)
+            else:
+                filesystem.delete_file(new_file)
+        except RuntimeError:
+            pass
+
+    return sum([i * x for i, x in enumerate(filesystem.describe()) if x != "."])
+
+
+def solve_puzzle(puzzle_input):
     filesystem = construct_filesystem(puzzle_input)
     left_idx = 0
     right_idx = len(filesystem) - 1
@@ -115,7 +149,7 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
 
-    part_b = solve_puzzle(puzzle_input, part2=True)
+    part_b = solve_puzzle_two(puzzle_input)
     print(part_b)
 
     try:
