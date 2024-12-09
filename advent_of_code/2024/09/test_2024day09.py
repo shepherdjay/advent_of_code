@@ -6,15 +6,21 @@ def test_filesystem():
 
     assert advent.construct_filesystem(input) == ["0", ".", ".", "1", "1", "1"]
 
+
 def test_filesystem_class():
     input = "123"
 
-    assert list(advent.FileSystem.from_string(input).describe()) == ["0", ".", ".", "1", "1", "1"]
+    assert list(advent.FileSystem.from_string(input).describe()) == [0, ".", ".", 1, 1, 1]
 
 
 def test_solve_example():
     input = "2333133121414131402"
     assert advent.solve_puzzle(input) == 1928
+
+
+def test_solve_example_parttwo():
+    input = "2333133121414131402"
+    assert advent.solve_puzzle_two(input) == 2858
 
 
 def test_filesystem_class_add():
@@ -64,3 +70,18 @@ def test_filesystem_find_free_space_start():
     filesystem._disk = [1, 1, None, None, None, None]
 
     assert filesystem.find_free_space(2, 4) == 4
+
+
+def test_filesystem_delete():
+    filesystem = advent.FileSystem(disk_size=3)
+
+    myfile = advent.File(50, 2)
+    myfile2 = advent.File(30, 1)
+
+    filesystem.add_file(myfile)
+    filesystem.add_file(myfile2)
+
+    assert filesystem._disk == [myfile, myfile, myfile2]
+
+    filesystem.delete_file(myfile)
+    assert filesystem._disk == [None, None, myfile2]
