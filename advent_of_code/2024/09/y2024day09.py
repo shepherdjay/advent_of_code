@@ -17,11 +17,16 @@ class File:
     def __hash__(self):
         return hash(self.name)
 
+@dataclass
+class FreeBlock:
+    size: int
+    start: int
+
 
 class FileSystem:
     def __init__(self, disk_size: int = 0):
         self._disk = [None for _ in range(disk_size)]
-        self.fragmented = False
+        self._descriptors = [FreeBlock(disk_size, start=0)]
 
     def find_free_space(self, desired_space: int, _start_idx=0):
         free_sectors = 0
@@ -70,6 +75,15 @@ class FileSystem:
 
     def __len__(self):
         return len(self._disk)
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        for descriptor in self._descriptors:
+            for _ in range(descriptor.size()):
+                yield descriptor
+        raise StopIteration
 
     @classmethod
     def from_string(cls, description_string) -> "FileSystem":
