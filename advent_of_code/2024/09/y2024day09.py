@@ -3,22 +3,40 @@ from dataclasses import dataclass
 
 BASEPATH = Path(__file__).parent.resolve()
 
-@dataclass
-class Freespace:
-    i: int
-    size: int
+
+
 
 @dataclass
 class File:
     name: int
     size: int
+    def __str__(self):
+        return f'{self.name}'
 
 class FileSystem():
-    def __init__(self, disk_size: int):
-        self._disk = ['.'] * disk_size
+    def __init__(self, disk_size: int=0):
+        self._disk = [None for _ in range(disk_size)]
+        self.fragmented = False
 
-    def add_file(file: File, start=None):
-        pass
+    def add_file(self, file: File, loc: int=None):
+        allocated = 0
+        i = 0
+        while allocated != file.size:
+            if not self._disk[loc + i]:
+                self._disk[loc + i] = file
+                allocated += 1
+            else:
+                self.fragmented = True
+            i += 1
+
+    def describe(self):
+        for sector in self._disk:
+            if isinstance(sector, File):
+                yield sector.name
+            elif sector:
+                yield sector
+            else:
+                yield '.'
         
         
 
