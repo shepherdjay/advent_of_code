@@ -10,7 +10,10 @@ import os
 
 @pytest.mark.parametrize(
     "list_a,list_b,expected",
-    [([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3], 11), ([1], [1], 0)],
+    [
+        ([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3], 11),
+        ([1], [1], 0),
+    ],
 )
 def test_find_total_distance(list_a, list_b, expected):
     result = find_total_distance(list_a, list_b)
@@ -29,7 +32,10 @@ def test_get_lists():
 
 @pytest.mark.parametrize(
     "list_a,list_b,expected",
-    [([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3], 31), ([1], [1], 1)],
+    [
+        ([3, 4, 2, 1, 3, 3], [4, 3, 5, 3, 9, 3], 31),
+        ([1], [1], 1),
+    ],
 )
 def test_calculate_similarity(list_a, list_b, expected):
     assert calculate_similarity(list_a, list_b) == expected

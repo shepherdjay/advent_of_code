@@ -17,6 +17,7 @@ class File:
     def __hash__(self):
         return hash(self.name)
 
+
 @dataclass
 class FreeBlock:
     size: int
@@ -75,10 +76,10 @@ class FileSystem:
 
     def __len__(self):
         return len(self._disk)
-    
+
     def __iter__(self):
         return self
-    
+
     def __next__(self):
         for descriptor in self._descriptors:
             for _ in range(descriptor.size()):
