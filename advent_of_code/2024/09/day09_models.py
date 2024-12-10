@@ -15,16 +15,24 @@ class File:
 class FileBlock:
     size: int
     start_idx: int
+    file_ptr: File
 
-@dataclass
-class FilePointer:
-    file: File
-    blocks: list[FileBlock]
+    def __len__(self):
+        return self.size
+    
+    def __str__(self):
+        return str(self.file_ptr)
 
 @dataclass
 class FreeBlock:
     size: int
     start_idx: int
+
+    def __len__(self):
+        return self.size
+    
+    def __str__(self):
+        return '.'
 
 
 class FileSystem:
@@ -69,13 +77,9 @@ class FileSystem:
             self._disk[i] = None
 
     def describe(self):
-        for sector in self._disk:
-            if isinstance(sector, File):
-                yield sector.name
-            elif sector:
-                yield sector
-            else:
-                yield "."
+        for descriptor in self._descriptors:
+            for _ in range(len(descriptor)):
+                yield str(descriptor)
 
     def __len__(self):
         return len(self._disk)

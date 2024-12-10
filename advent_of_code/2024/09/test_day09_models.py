@@ -1,6 +1,21 @@
-import y2024day09 as advent
+import pytest
+import day09_models as advent
 
-def test_filesystem_class():
+@pytest.fixture()
+def bare_filesystem() -> advent.FileSystem:
+    filesystem = advent.FileSystem()
+    filesystem._descriptors = [
+        advent.FileBlock(size=1, start_idx=0, file_ptr=advent.File(name = 0, size = 0)),
+        advent.FreeBlock(size=2, start_idx=1),
+        advent.FileBlock(size=3, start_idx=3, file_ptr=advent.File(name=1, size=3))
+    ]
+    yield filesystem
+
+def test_filesystem_class(bare_filesystem):
+
+    assert list(bare_filesystem.describe()) == ['0', ".", ".", '1', '1', '1']
+
+def test_filesystem_class_from_string():
     input = "123"
 
     assert list(advent.FileSystem.from_string(input).describe()) == [0, ".", ".", 1, 1, 1]
