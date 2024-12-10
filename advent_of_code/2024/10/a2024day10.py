@@ -1,4 +1,6 @@
 from pathlib import Path
+from collections import deque
+from copy import deepcopy
 
 BASEPATH = Path(__file__).parent.resolve()
 
@@ -23,6 +25,31 @@ def get_neighbors(origin):
     left = n_row, n_col - 1
     right = n_row, n_col + 1
     return [up, down, left, right]
+
+
+def distinct_paths(origin: tuple, grid: list[list[int]]) -> int:
+    queue = deque([(origin, [origin])])
+    paths = []
+
+    while queue:
+        node, path = queue.pop()
+        row, col = node
+        my_value = grid[row][col]
+
+        if my_value == 9:
+            paths.append(path)
+            continue
+
+        for neighbor in get_neighbors(node):
+            n_row, n_col = neighbor
+            if (
+                0 <= n_row < len(grid)
+                and 0 <= n_col < len(grid[0])
+                and neighbor not in path
+                and grid[n_row][n_col] == my_value + 1
+            ):
+                queue.append((neighbor, path + [neighbor]))
+    return len(paths)
 
 
 def calculate_path(origin: tuple, grid: list[list[int]], positions=None) -> int:
@@ -51,11 +78,13 @@ def solve_puzzle(puzzle_input, part2=False):
     grid = create_grid(puzzle_input)
 
     ultimate_total = 0
+    part2_ultimate_total = 0
     for r_idx, n_row in enumerate(grid):
         for c_idx, value in enumerate(n_row):
             if value == 0:
                 ultimate_total += calculate_path((r_idx, c_idx), grid)
-    return ultimate_total
+                part2_ultimate_total += distinct_paths((r_idx, c_idx), grid)
+    return ultimate_total, part2_ultimate_total
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -65,16 +94,13 @@ if __name__ == "__main__":  # pragma: no cover
     with open(f"{BASEPATH}/input.txt") as infile:
         grid_str = infile.read().strip("\n")
 
-    part_a = solve_puzzle(grid_str)
+    part_a, part_b = solve_puzzle(grid_str)
     print(part_a)
-
-    part_b = solve_puzzle(grid_str, part2=True)
-    print(part_b)
 
     try:
         with open(f"../../../.token") as infile:
             session = infile.read().strip()
         submit(part_a, part="a", session=session)
-        # submit(part_b, part="b", session=session)
+        submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
