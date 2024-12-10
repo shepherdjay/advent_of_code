@@ -5,11 +5,11 @@ from typing import Generator
 @pytest.fixture()
 def bare_filesystem() -> Generator[advent.FileSystem]:
     filesystem = advent.FileSystem()
-    filesystem._descriptors = [
+    filesystem.descriptors = set([
         advent.FileBlock(size=1, start_idx=0, file_ptr=advent.File(name = 0, size = 0)),
         advent.FreeBlock(size=2, start_idx=1),
         advent.FileBlock(size=3, start_idx=3, file_ptr=advent.File(name=1, size=3))
-    ]
+    ])
     yield filesystem
 
 def test_filesystem_class(bare_filesystem):
@@ -45,13 +45,6 @@ def test_filesystem_class_add_dnf():
 
     filesystem.add_file(file, dnf=True)
     assert list(filesystem.describe()) == ["1", "1", ".", "1", "50", "50"]
-
-
-def test_filesystem_find_free_space_base_case():
-    filesystem = advent.FileSystem()
-    filesystem._disk = [None]
-
-    assert filesystem.find_free_space(1) == 0
 
 
 def test_filesystem_find_free_space():
