@@ -65,7 +65,7 @@ def test_guard_loop_detect():
 
     with pytest.raises(Loop):
         steps = 0  # in case it doesn't raise
-        for _ in guard.walk(obstructions): # pragma: no cover
+        for _ in guard.walk(obstructions):  # pragma: no cover
             steps += 1
             if steps == 6:
                 break
