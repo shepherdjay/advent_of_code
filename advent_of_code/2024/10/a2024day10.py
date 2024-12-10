@@ -2,50 +2,57 @@ from pathlib import Path
 
 BASEPATH = Path(__file__).parent.resolve()
 
+
 def create_grid(grid_str: str) -> list[list[int]]:
     grid = []
     for line in grid_str.splitlines():
-        row = list()
+        n_row = list()
         for char in line:
             if char.isdigit():
-                row.append(int(char))
+                n_row.append(int(char))
             else:
-                row.append(-1)
-        grid.append(row)
+                n_row.append(-1)
+        grid.append(n_row)
     return grid
 
+
 def get_neighbors(origin):
-    row, col = origin
-    up = row - 1, col
-    down = row + 1, col
-    left = row, col - 1
-    right = row, col + 1
+    n_row, n_col = origin
+    up = n_row - 1, n_col
+    down = n_row + 1, n_col
+    left = n_row, n_col - 1
+    right = n_row, n_col + 1
     return [up, down, left, right]
 
 
-def calculate_path(origin: tuple, grid: list[list[int]]) -> int:
+def calculate_path(origin: tuple, grid: list[list[int]], positions=None) -> int:
     neighbors = get_neighbors(origin)
     canidates = []
-    total_found = 0
+    my_value = grid[origin[0]][origin[1]]
+
+    if positions is None:
+        positions = set()
     for neighbor in neighbors:
-        row, col = neighbor
-        if row < 0 or row >= len(grid):
-            continue
-        if col < 0 or col >= len(grid[0]):
-            continue
-        if grid[row][col] == 9:
-            total_found += 1
-        elif grid[row][col] == grid[origin[0]][origin[1]] + 1:
-            canidates.append(neighbor)
-    
-    return total_found + sum([calculate_path(neighbor, grid) for neighbor in canidates])
+        n_row, n_col = neighbor
+
+        if 0 <= n_row < len(grid) and 0 <= n_col < len(grid[0]):
+            n_value = grid[n_row][n_col]
+            if n_value == 9 and my_value == 8:
+                positions.add((n_row, n_col))
+            elif n_value == my_value + 1 and my_value < 8:
+                canidates.append(neighbor)
+
+    for canidate in canidates:
+        calculate_path(canidate, grid, positions)
+    return len(positions)
+
 
 def solve_puzzle(puzzle_input, part2=False):
     grid = create_grid(puzzle_input)
 
     ultimate_total = 0
-    for r_idx, row in enumerate(grid):
-        for c_idx, value in enumerate(row):
+    for r_idx, n_row in enumerate(grid):
+        for c_idx, value in enumerate(n_row):
             if value == 0:
                 ultimate_total += calculate_path((r_idx, c_idx), grid)
     return ultimate_total
@@ -65,7 +72,9 @@ if __name__ == "__main__":  # pragma: no cover
     print(part_b)
 
     try:
-        submit(part_a, part="a")
-        submit(part_b, part="b")
+        with open(f"../../../.token") as infile:
+            session = infile.read().strip()
+        submit(part_a, part="a", session=session)
+        # submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
