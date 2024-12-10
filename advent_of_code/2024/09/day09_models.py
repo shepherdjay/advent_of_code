@@ -34,32 +34,31 @@ class FreeBlock:
     def __str__(self):
         return '.'
 
-
 class FileSystem:
     def __init__(self, disk_size: int = 0):
         self._disk = [None for _ in range(disk_size)]
         self._descriptors = [FreeBlock(disk_size, start_idx=0)]
 
     def find_free_space(self, desired_space: int, _start_idx=0):
-        free_sectors = 0
-        for i, value in enumerate(self._disk):
-            if i >= _start_idx:
-                if value is None:
-                    free_sectors += 1
-                else:
-                    free_sectors = 0
-                if free_sectors == desired_space:
-                    return i - desired_space + 1
+        for descriptor in self._descriptors:
+            print(descriptor, len(descriptor))
+            # if descriptor.start_idx < _start_idx > descriptor.start_idx + descriptor.size:
+            #     continue
+            if isinstance(descriptor, FreeBlock) and len(descriptor) >= desired_space:
+                return descriptor.start_idx
+        
 
     def add_file(self, file: File, loc: int = 0, dnf=False):
         if dnf:
             space_needed = file.size
         else:
             space_needed = 1
-
         allocated = 0
         start = self.find_free_space(space_needed, _start_idx=loc)
-        while True:
+
+        fileblocks = []
+        while sum(fileblocks) != file.size:
+            print(start)
             if start is None:
                 raise RuntimeError("No Space")
             self._disk[start] = file
@@ -89,19 +88,21 @@ class FileSystem:
     
     def __next__(self):
         for descriptor in self._descriptors:
-            for _ in range(descriptor.size()):
-                yield descriptor
+            yield descriptor
         raise StopIteration
 
     @classmethod
     def from_string(cls, description_string) -> "FileSystem":
         file_system = cls()
         file_index = 0
+        system_idx = 0
         for i, value in enumerate(description_string):
             if (i + 1) % 2 == 0:
-                file_system._disk += [None] * int(value)
+                descriptor = FreeBlock(size=int(value), start_idx = system_idx)
             else:
-                file = File(file_index, size=int(value))
-                file_system._disk += [file] * int(value)
+                file = File(name=file_index, size=int(value))
+                descriptor = FileBlock(size=file.size, start_idx=system_idx, file_ptr=file)
                 file_index += 1
+            file_system._descriptors.append(descriptor)
+            system_idx += len(descriptor)
         return file_system

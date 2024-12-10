@@ -1,8 +1,9 @@
 import pytest
 import day09_models as advent
+from typing import Generator
 
 @pytest.fixture()
-def bare_filesystem() -> advent.FileSystem:
+def bare_filesystem() -> Generator[advent.FileSystem]:
     filesystem = advent.FileSystem()
     filesystem._descriptors = [
         advent.FileBlock(size=1, start_idx=0, file_ptr=advent.File(name = 0, size = 0)),
@@ -12,12 +13,10 @@ def bare_filesystem() -> advent.FileSystem:
     yield filesystem
 
 def test_filesystem_class(bare_filesystem):
-
     assert list(bare_filesystem.describe()) == ['0', ".", ".", '1', '1', '1']
 
 def test_filesystem_class_from_string():
     input = "123"
-
     assert list(advent.FileSystem.from_string(input).describe()) == ["0", ".", ".", "1", "1", "1"]
 
 def test_filesystem_class_add():
