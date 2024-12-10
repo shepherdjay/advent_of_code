@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Generator
+from collections.abc  import MutableSequence
 
 @dataclass
 class File:
@@ -12,33 +13,79 @@ class File:
     def __hash__(self):
         return hash(self.name)
 
-@dataclass(frozen=True)
+@dataclass
 class Block:
     size: int
     start_idx: int
 
     def __len__(self):
         return self.size
+    
+    @property
+    def end_idx(self):
+        return self.start_idx + self.size - 1
 
-@dataclass(frozen=True)
+@dataclass
 class FileBlock(Block):
     file_ptr: File
     
     def __str__(self):
         return str(self.file_ptr)
 
-@dataclass(frozen=True)
+@dataclass
 class FreeBlock(Block): 
     def __str__(self):
         return '.'
+    
+class Disk(MutableSequence):
+    def __init__(self, disk_size: int = 0):
+        self.disk_size = disk_size
+
+        if self.disk_size == 0:
+            self.blocks = []
+        else:
+            self.blocks = FreeBlock(size=disk_size, start_idx=0)
+    
+    def __getitem__(self, idx):
+        print(f'get {idx}')
+        for block in self.blocks:
+            print(block.start_idx, block.end_idx, block.__repr__())
+            if block.start_idx <= idx < block.end_idx:
+                return block
+        raise IndexError(f"Index {idx} out of range")
+    
+    def __setitem__(self, idx, block: Block):
+        print('set')
+        for i, b in enumerate(self.blocks):
+            if b.start_idx <= idx < b.end_idx:
+                self.blocks[i] = block
+                return
+        raise IndexError(f"Index {idx} out of range")
+    
+    def __delitem__(self, idx):
+        print('del')
+        raise NotImplementedError
+        for i, block in enumerate(self):
+            if block.start_idx <= idx < block.end_idx:
+                pass
+
+    def __len__(self):
+        print('len')
+        return len(self.blocks)
+    
+    def insert(self, i, block):
+        raise NotImplementedError
+
+
+        
 
 class FileSystem:
     def __init__(self, disk_size: int = 0):
         self._disk = [None for _ in range(disk_size)]
-        self.descriptors = set( [FreeBlock(disk_size, start_idx=0)] )
+        self.disk = Disk(disk_size=disk_size)
 
     def find_free_space(self, desired_space: int, _start_idx=0) -> FreeBlock|None:
-        for block in self.descriptors:
+        for block in self.disk:
             # if descriptor.start_idx < _start_idx > descriptor.start_idx + descriptor.size:
             #     continue
             if isinstance(block, FreeBlock) and len(block) >= desired_space:
@@ -58,10 +105,10 @@ class FileSystem:
         else:
             new_free_block = None 
         
-        self.descriptors[file_block.start_idx] = file_block
+        self[file_block.start_idx] = file_block
         if new_free_block:
             print(new_free_block.start_idx)
-            self.descriptors[new_free_block.start_idx] = new_free_block
+            self[new_free_block.start_idx] = new_free_block
 
     def delete_file(self, file: File):
         indexes = [i for i, x in enumerate(self._disk) if id(x) == id(file)]
@@ -69,42 +116,25 @@ class FileSystem:
             self._disk[i] = None
 
     def describe(self):
-        ordered = sorted(self.descriptors, key = lambda x : x.start_idx)
-        for descriptor in ordered:
-            for _ in range(len(descriptor)):
-                yield str(descriptor)
-
-    def __len__(self):
-        return len(self._disk)
-    
-    def __iter__(self):
-        return self
-    
-    def __next__(self) -> Generator[FreeBlock|FileBlock]:
-        for descriptor in self.descriptors:
-            yield descriptor
-        raise StopIteration
-    
-    def __getitem__(self, i):
-        for block in self:
-            start_idx, end_idx = block.start_idx + block.size
-            if start_idx <= i < end_idx:
-                return block
-    
+        for block in self.disk:
+            yield str(block)
 
 
     @classmethod
     def from_string(cls, description_string) -> "FileSystem":
-        file_system = cls()
         file_index = 0
         system_idx = 0
+        blocks = []
         for i, value in enumerate(description_string):
             if (i + 1) % 2 == 0:
-                descriptor = FreeBlock(size=int(value), start_idx = system_idx)
+                blocks.append(FreeBlock(size=int(value), start_idx = system_idx))
             else:
                 file = File(name=file_index, size=int(value))
-                descriptor = FileBlock(size=file.size, start_idx=system_idx, file_ptr=file)
+                blocks.append(FileBlock(size=file.size, start_idx=system_idx, file_ptr=file))
                 file_index += 1
-            file_system.descriptors.add(descriptor)
-            system_idx += len(descriptor)
+            system_idx += 1
+        
+        file_system = cls(disk_size = blocks[-1].end_idx)
+        print(blocks)
+        file_system.disk.blocks = blocks
         return file_system

@@ -5,11 +5,11 @@ from typing import Generator
 @pytest.fixture()
 def bare_filesystem() -> Generator[advent.FileSystem]:
     filesystem = advent.FileSystem()
-    filesystem.descriptors = set([
+    filesystem.disk = [
         advent.FileBlock(size=1, start_idx=0, file_ptr=advent.File(name = 0, size = 0)),
         advent.FreeBlock(size=2, start_idx=1),
         advent.FileBlock(size=3, start_idx=3, file_ptr=advent.File(name=1, size=3))
-    ])
+    ]
     yield filesystem
 
 def test_filesystem_class(bare_filesystem):
