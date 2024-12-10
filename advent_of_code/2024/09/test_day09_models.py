@@ -18,7 +18,7 @@ def test_filesystem_class(bare_filesystem):
 def test_filesystem_class_from_string():
     input = "123"
 
-    assert list(advent.FileSystem.from_string(input).describe()) == [0, ".", ".", 1, 1, 1]
+    assert list(advent.FileSystem.from_string(input).describe()) == ["0", ".", ".", "1", "1", "1"]
 
 def test_filesystem_class_add():
     filesystem = advent.FileSystem(disk_size=5)
@@ -26,7 +26,7 @@ def test_filesystem_class_add():
 
     filesystem.add_file(file, loc=2)
 
-    assert list(filesystem.describe()) == [".", ".", 50, 50, "."]
+    assert list(filesystem.describe()) == [".", ".", "50", "50", "."]
 
 
 def test_filesystem_class_add_fragment():
@@ -36,7 +36,7 @@ def test_filesystem_class_add_fragment():
 
     filesystem.add_file(file, loc=2)
 
-    assert list(filesystem.describe()) == [1, 1, 50, 1, 50]
+    assert list(filesystem.describe()) == ["1", "1", "50", "1", "50"]
 
 
 def test_filesystem_class_add_dnf():
@@ -45,7 +45,7 @@ def test_filesystem_class_add_dnf():
     file = advent.File(name=50, size=2)
 
     filesystem.add_file(file, dnf=True)
-    assert list(filesystem.describe()) == [1, 1, ".", 1, 50, 50]
+    assert list(filesystem.describe()) == ["1", "1", ".", "1", "50", "50"]
 
 
 def test_filesystem_find_free_space_base_case():
