@@ -1,10 +1,11 @@
 from pathlib import Path
 from tqdm import tqdm
 from typing import Generator
-from collections import deque
+from functools import cache, lru_cache
 
 BASEPATH = Path(__file__).parent.resolve()
 
+@cache
 def blink_value(value: int) -> list[int]:
     val_len = len(str(value))
     if value == 0:
@@ -15,49 +16,34 @@ def blink_value(value: int) -> list[int]:
     else:
         return [value * 2024]
 
-def blink(input_list: list[int]) -> Generator[list]:
+def blink(input_list: list[int], blink_count=1) -> int:
     """
     If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
     If the stone is engraved with a number that has an even number of digits, it is replaced by two stones. The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone. (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
     If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.
     """
-    queue = deque(input_list)
-    list_length = len(input_list)
-    while True:
-        for _ in range(list_length):
-            cur_value = queue.popleft()
-            result = blink_value(cur_value)
-            if len(result) == 2:
-                list_length += 1
-            for value in result:
-                queue.append(value)
-        yield list_length
-        
+    stones_map = {i:1 for i in input_list}
+    for _ in range(blink_count):
+        stones = [k for k,v in stones_map.items() if v >= 1 for _ in range(v)]
+        for stone in stones:
+            stones_map[stone] -= 1
+            for new_stone in blink_value(stone):
+                stones_map[new_stone] = stones_map.get(new_stone, 0) + 1
+            
+    return sum(stones_map.values())
 
-    list_length = 0
-    processed = 0
-    queue = input_list
-    length = len(input_list)
-    while count != 0:
-        cur_value = queue.pop(0)
-        result = blink_value(cur_value)
-        result.append(queue)
-        length += len(result)
-        processed += 1
-        if processed == to_process:
-            count -=1
-    return length
 
 def solve_puzzle(puzzle_input, part2=False):
     initial = [int(i) for i in puzzle_input.strip().split()]
     blink_count = 25
-    blink_gen = blink(initial)
-
     if part2:
-        blink_count = 75
+            blink_count = 75
 
-    for _ in range(blink_count):
-        result = next(blink_gen)
+    result = blink(initial, blink_count)
+    # blink_gen = blink(initial)
+
+    # for _ in tqdm(range(blink_count)):
+    #     result = next(blink_gen)
 
     return result
 
