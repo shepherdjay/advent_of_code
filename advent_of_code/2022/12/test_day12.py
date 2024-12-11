@@ -12,7 +12,7 @@ import os
 SUPER_SIMPLE_MAP = [["S", "a"], ["a", "E"], ["b", "c"]]
 
 EXAMPLE_ELEV_MAP = []
-with open(os.path.join(os.path.dirname(__file__), "test_day12_input.txt"), "r") as infile:
+with open(os.path.join(os.path.dirname(__file__), "example.txt"), "r") as infile:
     rows = [line.strip() for line in infile]
     for row in rows:
         EXAMPLE_ELEV_MAP.append([char for char in row])

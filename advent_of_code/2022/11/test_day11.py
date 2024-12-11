@@ -10,7 +10,7 @@ def cleanup_monkey():
 
 
 def test_process_a_monkey():
-    with open(os.path.join(os.path.dirname(__file__), "day11_single_monkey.txt"), "r") as infile:
+    with open(os.path.join(os.path.dirname(__file__), "single_monkey.txt"), "r") as infile:
         single_monkey = infile.read()
 
     actual = Monkey.from_monkey_block(single_monkey)
@@ -37,14 +37,14 @@ def test_monkey_takes_turn():
 
 def test_process_example_monkey_file():
     assert (
-        process_monkey_file(os.path.join(os.path.dirname(__file__), "test_day11_input.txt"))
+        process_monkey_file(os.path.join(os.path.dirname(__file__), "example.txt"))
         == 10605
     )
 
 
 def test_process_example_monkey_file_lots_of_rounds():
     process_monkey_file(
-        os.path.join(os.path.dirname(__file__), "test_day11_input.txt"),
+        os.path.join(os.path.dirname(__file__), "example.txt"),
         num_rounds=5_000,
         worry_divisor=1,
     )
