@@ -1,9 +1,8 @@
 from pathlib import Path
-from tqdm import tqdm
-from typing import Generator
-from functools import cache, lru_cache
+from functools import cache
 
 BASEPATH = Path(__file__).parent.resolve()
+
 
 @cache
 def blink_value(value: int) -> list[int]:
@@ -16,13 +15,14 @@ def blink_value(value: int) -> list[int]:
     if value == 0:
         return [1]
     elif val_len % 2 == 0:
-        left, right = int(str(value)[0:val_len // 2]),   int(str(value)[val_len // 2::])
+        left, right = int(str(value)[0 : val_len // 2]), int(str(value)[val_len // 2 : :])
         return [left, right]
     else:
         return [value * 2024]
 
+
 @cache
-def blink_recurse(stone,  blink_count=1, depth=0):
+def blink_recurse(stone: int, blink_count: int = 1, depth: int = 0) -> int:
     total = 0
     if depth == blink_count:
         total += 1
@@ -32,22 +32,23 @@ def blink_recurse(stone,  blink_count=1, depth=0):
     return total
 
 
-def solve_puzzle(puzzle_input, part2=False):
+def solve_puzzle(puzzle_input: str, part2: bool = False) -> int:
     initial = [int(i) for i in puzzle_input.strip().split()]
     blink_count = 25
     if part2:
         blink_count = 75
 
-    result = sum( [blink_recurse(stone, blink_count) for stone in initial] )
+    result = sum([blink_recurse(stone, blink_count) for stone in initial])
 
     return result
+
 
 if __name__ == "__main__":  # pragma: no cover
     from aocd import submit
     from aocd.exceptions import AocdError
 
     with open(f"{BASEPATH}/input.txt") as infile:
-        puzzle_input = infile.read().strip('\n')
+        puzzle_input = infile.read().strip("\n")
 
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
