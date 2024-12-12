@@ -1,4 +1,4 @@
-from advent_2024day11 import solve_puzzle, blink, blink_value
+from advent_2024day11 import solve_puzzle, blink, blink_value, blink_fifo
 from itertools import islice
 import pytest
 
@@ -20,8 +20,18 @@ def test_blink_value(value, expected):
     (5,13),
     (6,22)
 ])
-def test_blink_example(blink_count, expected):
+def test_blink_example(blink_count, expected,  benchmark):
     result = blink([125, 17], blink_count=blink_count)
+    assert result == expected
+
+@pytest.mark.parametrize('blink_count,expected', [
+    (1,3),
+    (4,9),
+    (5,13),
+    (6,22)
+])
+def test_blink_fifo_example(blink_count, expected,  benchmark):
+    result = blink_fifo([125, 17], blink_count=blink_count)
     assert result == expected
 
 def test_solve_puzzle(benchmark):
