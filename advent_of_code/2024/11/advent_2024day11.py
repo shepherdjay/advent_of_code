@@ -31,32 +31,6 @@ def blink_recurse(stone,  blink_count=1, depth=0):
             total += blink_recurse(new_stone, blink_count, depth + 1)
     return total
 
-def blink_fifo(input_list: list[int], blink_count=1) -> int:
-    queue = [(v, 0) for v in input_list]
-    memo = {}
-    leafs = 0
-
-    while queue:
-        stone, depth = queue.pop()
-        if depth == blink_count:
-            leafs += 1
-            continue
-        for new_stone in blink_value(stone):
-            queue.append((new_stone, depth + 1))
-    
-    return leafs
-
-def blink(input_list: list[int], blink_count=1) -> int:
-    stones_map = {i:1 for i in input_list}
-    for _ in range(blink_count):
-        stones = [k for k,v in stones_map.items() if v >= 1 for _ in range(v)]
-        for stone in stones:
-            stones_map[stone] -= 1
-            for new_stone in blink_value(stone):
-                stones_map[new_stone] = stones_map.get(new_stone, 0) + 1
-            
-    return sum(stones_map.values())
-
 
 def solve_puzzle(puzzle_input, part2=False):
     initial = [int(i) for i in puzzle_input.strip().split()]

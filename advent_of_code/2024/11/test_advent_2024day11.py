@@ -1,4 +1,4 @@
-from advent_2024day11 import solve_puzzle, blink, blink_value, blink_fifo
+from advent_2024day11 import solve_puzzle, blink_value, blink_recurse
 from itertools import islice
 import pytest
 
@@ -13,26 +13,15 @@ EXAMPLE = "125 17"
 def test_blink_value(value, expected):
     assert blink_value(value) == expected
 
-
 @pytest.mark.parametrize('blink_count,expected', [
     (1,3),
     (4,9),
     (5,13),
     (6,22)
 ])
-def test_blink_example(blink_count, expected,  benchmark):
-    result = blink([125, 17], blink_count=blink_count)
+def test_blink_recurse(blink_count, expected):
+    result = sum([blink_recurse(stone, blink_count=blink_count) for stone in [125,17]])
     assert result == expected
 
-@pytest.mark.parametrize('blink_count,expected', [
-    (1,3),
-    (4,9),
-    (5,13),
-    (6,22)
-])
-def test_blink_fifo_example(blink_count, expected,  benchmark):
-    result = blink_fifo([125, 17], blink_count=blink_count)
-    assert result == expected
-
-def test_solve_puzzle(benchmark):
-    assert benchmark(solve_puzzle,EXAMPLE) == 55312
+def test_solve_puzzle():
+    assert solve_puzzle(EXAMPLE) == 55312
