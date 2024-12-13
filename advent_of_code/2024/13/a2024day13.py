@@ -33,8 +33,10 @@ def parse(input_str):
 
 def solver(dx_a, dx_b, prize):
     origin = 0, 0
-    cost_a = 3
-    cost_b = 1
+    moves = [
+        (3, dx_a),
+        (1, dx_b),
+    ]
     distances = {origin: 0}
 
     queue = PriorityQueue()
@@ -46,21 +48,14 @@ def solver(dx_a, dx_b, prize):
         if current_node == prize:
             break
 
-        for n_dist, neighbor in zip(
-            [cost_a, cost_b],
-            [calculate_node(current_node, dn) for dn in [dx_a, dx_b]],
-        ):
-            new_dist = cur_distance + n_dist
-            if new_dist > 300:
-                continue
-            if neighbor not in distances or new_dist < distances[neighbor]:
+        for cost, dx in moves:
+            neighbor = calculate_node(current_node, dx)
+            new_dist = cur_distance + cost
+            if new_dist < distances.get(neighbor, float("inf")) and new_dist <= 300:
                 distances[neighbor] = new_dist
                 queue.put((new_dist, neighbor))
 
-    try:
-        return distances[prize]
-    except KeyError:
-        return float("inf")
+    return distances.get(prize, float("inf"))
 
 
 def solve_puzzle(puzzle_input, part2=False):
