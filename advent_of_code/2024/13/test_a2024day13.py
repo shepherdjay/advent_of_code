@@ -1,5 +1,5 @@
 import pytest
-from a2024day13 import solver, solve_puzzle
+from a2024day13 import solver, solve_puzzle, parse
 
 
 @pytest.mark.parametrize(
@@ -12,6 +12,18 @@ from a2024day13 import solver, solve_puzzle
 def test_solver(dx_a, dx_b, prize, expected):
     assert solver(dx_a=dx_a, dx_b=dx_b, prize=prize) == expected
 
+
+def test_parse():
+    assert parse("""
+                 Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
+                 
+""") == [((94, 34), (22, 67), (8400, 5400))]
+    
+def test_parse_example():
+    with open("sample_input.txt") as infile:
+        assert len(parse(infile.read())) == 4
 
 def test_solve_example():
     with open("sample_input.txt") as infile:

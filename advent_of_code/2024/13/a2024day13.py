@@ -1,13 +1,34 @@
 from pathlib import Path
 from queue import PriorityQueue
+import re
+from tqdm import tqdm
 
 BASEPATH = Path(__file__).parent.resolve()
+
+RE_BUTTON_A = re.compile(r"Button A: X\+(\d+), Y\+(\d+)")
+RE_BUTTON_B = re.compile(r"Button B: X\+(\d+), Y\+(\d+)")
+RE_PRIZE = re.compile(r"X\=(\d+), Y\=(\d+)")
 
 
 def calculate_node(origin, d):
     x, y = origin
     dx, dy = d
     return x + dx, y + dy
+
+
+def parse(input_str):
+    machines = []
+
+    a_buttons = RE_BUTTON_A.finditer(input_str)
+    b_buttons = RE_BUTTON_B.finditer(input_str)
+    prizes = RE_PRIZE.finditer(input_str)
+
+    for a, b, p in zip(a_buttons,b_buttons,prizes):
+        dx_a = int(a.group(1)), int(a.group(2))
+        dx_b = int(b.group(1)), int(b.group(2))
+        prize = int(p.group(1)), int(p.group(2))
+        machines.append((dx_a, dx_b, prize))
+    return machines
 
 
 def solver(dx_a, dx_b, prize):
@@ -41,7 +62,15 @@ def solver(dx_a, dx_b, prize):
 
 
 def solve_puzzle(puzzle_input, part2=False):
-    pass
+    machines = parse(puzzle_input)
+
+    total = 0
+    for machine in tqdm(machines):
+        result = solver(*machine)
+        if result != float("inf"):
+            total += result
+
+    return total
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -54,11 +83,13 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
 
-    part_b = solve_puzzle(puzzle_input, part2=True)
-    print(part_b)
+    # part_b = solve_puzzle(puzzle_input, part2=True)
+    # print(part_b)
 
     try:
-        submit(part_a, part="a")
-        submit(part_b, part="b")
+        with open(f"../../../.token") as infile:
+            session = infile.read().strip()
+        submit(part_a, part="a", session=session)
+        # submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
