@@ -23,7 +23,7 @@ def parse(input_str):
     b_buttons = RE_BUTTON_B.finditer(input_str)
     prizes = RE_PRIZE.finditer(input_str)
 
-    for a, b, p in zip(a_buttons,b_buttons,prizes):
+    for a, b, p in zip(a_buttons, b_buttons, prizes):
         dx_a = int(a.group(1)), int(a.group(2))
         dx_b = int(b.group(1)), int(b.group(2))
         prize = int(p.group(1)), int(p.group(2))
@@ -35,22 +35,24 @@ def solver(dx_a, dx_b, prize):
     origin = 0, 0
     cost_a = 3
     cost_b = 1
-    visited = set()
     distances = {origin: 0}
 
     queue = PriorityQueue()
     queue.put((0, origin))
 
-    while queue:
+    while not queue.empty():
         cur_distance, current_node = queue.get()
-        if min(current_node) > max(prize):
+
+        if current_node == prize:
             break
-        if current_node in visited:
-            continue
-        for weight, neighbor in zip(
-            [cost_a, cost_b], [calculate_node(current_node, dn) for dn in [dx_a, dx_b]]
+
+        for n_dist, neighbor in zip(
+            [cost_a, cost_b],
+            [calculate_node(current_node, dn) for dn in [dx_a, dx_b]],
         ):
-            new_dist = cur_distance + weight
+            new_dist = cur_distance + n_dist
+            if new_dist > 300:
+                continue
             if neighbor not in distances or new_dist < distances[neighbor]:
                 distances[neighbor] = new_dist
                 queue.put((new_dist, neighbor))
@@ -67,7 +69,7 @@ def solve_puzzle(puzzle_input, part2=False):
     total = 0
     for machine in tqdm(machines):
         result = solver(*machine)
-        if result != float("inf"):
+        if result <= 300:
             total += result
 
     return total
