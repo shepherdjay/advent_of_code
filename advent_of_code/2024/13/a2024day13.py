@@ -2,6 +2,7 @@ from pathlib import Path
 from queue import PriorityQueue
 import re
 from tqdm import tqdm
+import numpy as np
 
 BASEPATH = Path(__file__).parent.resolve()
 
@@ -31,32 +32,42 @@ def parse(input_str):
     return machines
 
 
+# def solver(dx_a, dx_b, prize):
+#     origin = 0, 0
+#     moves = [
+#         (3, dx_a),
+#         (1, dx_b),
+#     ]
+#     distances = {origin: 0}
+
+#     queue = PriorityQueue()
+#     queue.put((0, origin))
+
+#     while not queue.empty():
+#         cur_distance, current_node = queue.get()
+
+#         if current_node == prize:
+#             break
+
+#         for cost, dx in moves:
+#             neighbor = calculate_node(current_node, dx)
+#             new_dist = cur_distance + cost
+#             if new_dist < distances.get(neighbor, float("inf")) and new_dist <= 300:
+#                 distances[neighbor] = new_dist
+#                 queue.put((new_dist, neighbor))
+
+#     return distances.get(prize, float("inf"))
+
 def solver(dx_a, dx_b, prize):
-    origin = 0, 0
-    moves = [
-        (3, dx_a),
-        (1, dx_b),
-    ]
-    distances = {origin: 0}
+    for m in range(0,100):
+        for n in range(0, 100):
+            result1 = n * dx_a[0] + m * dx_b[0]
+            result2 = n * dx_a[1] + m * dx_b[1]
 
-    queue = PriorityQueue()
-    queue.put((0, origin))
-
-    while not queue.empty():
-        cur_distance, current_node = queue.get()
-
-        if current_node == prize:
-            break
-
-        for cost, dx in moves:
-            neighbor = calculate_node(current_node, dx)
-            new_dist = cur_distance + cost
-            if new_dist < distances.get(neighbor, float("inf")) and new_dist <= 300:
-                distances[neighbor] = new_dist
-                queue.put((new_dist, neighbor))
-
-    return distances.get(prize, float("inf"))
-
+            if result1 == prize[0] and result2 == prize[1]:
+                return n * 3 + m
+    else:
+        return float('inf')
 
 def solve_puzzle(puzzle_input, part2=False):
     machines = parse(puzzle_input)
@@ -76,6 +87,8 @@ if __name__ == "__main__":  # pragma: no cover
 
     with open(f"{BASEPATH}/input.txt") as infile:
         puzzle_input = infile.read().strip("\n")
+
+    machines = parse(puzzle_input)
 
     part_a = solve_puzzle(puzzle_input)
     print(part_a)

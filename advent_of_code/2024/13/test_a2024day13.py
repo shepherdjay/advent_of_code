@@ -2,6 +2,7 @@ import pytest
 from a2024day13 import solver, solve_puzzle, parse, calculate_node
 
 
+
 def test_calculate_node():
     dx_a = (94, 34)
     dx_b = (22, 67)
