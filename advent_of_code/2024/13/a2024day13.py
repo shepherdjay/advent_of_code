@@ -2,7 +2,7 @@ from pathlib import Path
 from queue import PriorityQueue
 import re
 from tqdm import tqdm
-from collections import namedtuple
+from pulp import LpProblem, LpVariable, LpInteger, PULP_CBC_CMD, LpMinimize
 
 
 BASEPATH = Path(__file__).parent.resolve()
@@ -61,29 +61,45 @@ def parse(input_str):
 
 #     return distances.get(prize, 0)
 
-def solver(dx_a, dx_b, prize):
-    ax,ay = dx_a
-    bx,by = dx_b
+def solver(dx_a, dx_b, prize, factor=0):
+# Create problem
+    prob = LpProblem("My_Problem", sense=LpMinimize)  # Minimize can be arbitrary here
 
-    if ax*by - ay*bx == 0:
-        return 0
+    # Create variables - LpInteger indicates that we need integer solutions
+    n = LpVariable("n", lowBound=0, cat=LpInteger)
+    m = LpVariable("m", lowBound=0, cat=LpInteger)
 
-    for m in range(0,100):
-        for n in range(0, 100):
-            result1 = n * dx_a[0] + m * dx_b[0]
-            result2 = n * dx_a[1] + m * dx_b[1]
+    # Equations
+    ax, ay = dx_a
+    bx, by = dx_b
+    px, py = prize
+    px += factor
+    py += factor
+    prob += ax * n + bx * m == px
+    prob += ay * n + by * m == py
 
-            if result1 == prize[0] and result2 == prize[1]:
-                return n * 3 + m
+    # Dummy objective function
+    prob += 0
+
+    # Solve the problem using CBC solver
+    prob.solve(PULP_CBC_CMD(msg=0))
+
+    # Check if a valid solution was found
+    if prob.status == 1:
+        return int(n.value() * 3 + m.value())
     else:
         return 0
 
 def solve_puzzle(puzzle_input, part2=False):
     machines = parse(puzzle_input)
+    if part2:
+        factor = 10000000000000
+    else:
+        factor = 0
 
     total = 0
     for machine in tqdm(machines):
-        result = solver(*machine)
+        result = solver(*machine, factor=factor)
         total += result
 
     return total
@@ -101,13 +117,13 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
 
-    # part_b = solve_puzzle(puzzle_input, part2=True)
-    # print(part_b)
+    part_b = solve_puzzle(puzzle_input, part2=True)
+    print(part_b)
 
     try:
         with open(f"../../../.token") as infile:
             session = infile.read().strip()
         submit(part_a, part="a", session=session)
-        # submit(part_b, part="b", session=session)
+        submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
