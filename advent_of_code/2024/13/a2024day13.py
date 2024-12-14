@@ -2,14 +2,14 @@ from pathlib import Path
 from queue import PriorityQueue
 import re
 from tqdm import tqdm
-import numpy as np
+from collections import namedtuple
+
 
 BASEPATH = Path(__file__).parent.resolve()
 
 RE_BUTTON_A = re.compile(r"Button A: X\+(\d+), Y\+(\d+)")
 RE_BUTTON_B = re.compile(r"Button B: X\+(\d+), Y\+(\d+)")
 RE_PRIZE = re.compile(r"X\=(\d+), Y\=(\d+)")
-
 
 def calculate_node(origin, d):
     x, y = origin
@@ -49,16 +49,25 @@ def parse(input_str):
 #         if current_node == prize:
 #             break
 
+#         if current_node[0] > prize[0] or current_node[1] > prize[1]:
+#             continue
+
 #         for cost, dx in moves:
 #             neighbor = calculate_node(current_node, dx)
 #             new_dist = cur_distance + cost
-#             if new_dist < distances.get(neighbor, float("inf")) and new_dist <= 300:
+#             if new_dist < distances.get(neighbor, float("inf")):
 #                 distances[neighbor] = new_dist
 #                 queue.put((new_dist, neighbor))
 
-#     return distances.get(prize, float("inf"))
+#     return distances.get(prize, 0)
 
 def solver(dx_a, dx_b, prize):
+    ax,ay = dx_a
+    bx,by = dx_b
+
+    if ax*by - ay*bx == 0:
+        return 0
+
     for m in range(0,100):
         for n in range(0, 100):
             result1 = n * dx_a[0] + m * dx_b[0]
@@ -67,7 +76,7 @@ def solver(dx_a, dx_b, prize):
             if result1 == prize[0] and result2 == prize[1]:
                 return n * 3 + m
     else:
-        return float('inf')
+        return 0
 
 def solve_puzzle(puzzle_input, part2=False):
     machines = parse(puzzle_input)
@@ -75,8 +84,7 @@ def solve_puzzle(puzzle_input, part2=False):
     total = 0
     for machine in tqdm(machines):
         result = solver(*machine)
-        if result <= 300:
-            total += result
+        total += result
 
     return total
 

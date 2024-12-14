@@ -20,7 +20,7 @@ def test_calculate_node():
     "dx_a,dx_b,prize,expected",
     [
         ((94, 34), (22, 67), (8400, 5400), 280),
-        ((26, 66), (67, 21), (12748, 12176), float("inf")),
+        ((26, 66), (67, 21), (12748, 12176), 0),
     ],
 )
 def test_solver(dx_a, dx_b, prize, expected):
