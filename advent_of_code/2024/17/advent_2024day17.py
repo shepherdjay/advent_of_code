@@ -5,8 +5,6 @@ import tqdm
 
 import itertools
 
-from tqdm import tqdm
-
 BASEPATH = Path(__file__).parent.resolve()
 
 
@@ -122,7 +120,7 @@ def solve_puzzle(puzzle_input, part2=False) -> str:
         computer.run(program)
         return ",".join([str(x) for x in computer.stdout])
     else:
-        for i in tqdm(itertools.count()):
+        for i in tqdm.trange(8**(len(program)-1), 8**(len(program))):
             computer.reg_a = i
             computer.run(program, limit=True)
             if computer.stdout == program:
