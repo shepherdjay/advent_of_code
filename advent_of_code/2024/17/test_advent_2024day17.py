@@ -1,4 +1,4 @@
-from advent_2024day17 import Computer3Bit, solve_puzzle
+from advent_2024day17 import Computer3Bit, solve_puzzle, parse
 import pytest
 
 MAIN_EXAMPLE = """Register A: 729
@@ -53,7 +53,26 @@ def test_simple_example_5():
     assert computer.reg_b == 44354
 
 
+def test_parse():
+    actual_comp, act_program = parse(MAIN_EXAMPLE)
+
+    assert act_program == [0, 1, 5, 4, 3, 0]
+    assert actual_comp.reg_a == 729
+
+
 def test_solver_example():
-    computer = Computer3Bit(reg_a=729)
-    program = [0, 1, 5, 4, 3, 0]
-    assert solve_puzzle(computer, program) == "4,6,3,5,6,3,5,2,1,0"
+    assert solve_puzzle(MAIN_EXAMPLE) == "4,6,3,5,6,3,5,2,1,0"
+
+
+def test_solver_example_part2():
+    assert (
+        solve_puzzle(
+            puzzle_input="""Register A: 2024
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0""",
+            part2=True,
+        )
+        == 117440
+    )

@@ -1,5 +1,6 @@
 .token
 **/input.txt
+**/input.py
 
 # IDE Files
 .idea/
