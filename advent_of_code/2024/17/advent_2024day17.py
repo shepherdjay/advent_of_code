@@ -120,7 +120,7 @@ def solve_puzzle(puzzle_input, part2=False) -> str:
         computer.run(program)
         return ",".join([str(x) for x in computer.stdout])
     else:
-        for i in tqdm.trange(8**(len(program)-1), 8**(len(program))):
+        for i in tqdm.trange(8 ** (len(program) - 1), 8 ** (len(program))):
             computer.reg_a = i
             computer.run(program, limit=True)
             if computer.stdout == program:
