@@ -36,10 +36,7 @@ def test_monkey_takes_turn():
 
 
 def test_process_example_monkey_file():
-    assert (
-        process_monkey_file(os.path.join(os.path.dirname(__file__), "example.txt"))
-        == 10605
-    )
+    assert process_monkey_file(os.path.join(os.path.dirname(__file__), "example.txt")) == 10605
 
 
 def test_process_example_monkey_file_lots_of_rounds():

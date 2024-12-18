@@ -20,7 +20,9 @@ if __name__ == "__main__":  # pragma: no cover
     print(part_b)
 
     try:
-        submit(part_a, part="a")
-        submit(part_b, part="b")
+        with open(f"../../../.token") as infile:
+            session = infile.read().strip()
+        submit(part_a, part="a", session=session)
+        submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
