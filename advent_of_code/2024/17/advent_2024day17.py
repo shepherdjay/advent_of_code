@@ -1,11 +1,11 @@
-from pathlib import Path
-from unittest import case
 import re
+from pathlib import Path
+
 import tqdm
 
-import itertools
-
 BASEPATH = Path(__file__).parent.resolve()
+
+from queue import PriorityQueue
 
 
 class Computer3Bit:
@@ -75,23 +75,53 @@ class Computer3Bit:
     def cdv(self, operand):
         self.reg_c = self._dv(operand)
 
-    def run(self, program: list[int], limit=False) -> None:
+    def run(self, program: list[int], limit=False) -> list[int]:
         self._inst_pointer = 0
         self.stdout = list()
 
-        while True:
+        iteration_cap = 10_000_000
+        i = 0
+        while i < iteration_cap:
             if limit and len(self.stdout) > len(program):
-                return
+                return self.stdout
             try:
                 opcode = program[self._inst_pointer]
                 operand = program[self._inst_pointer + 1]
                 if self.opcodes[opcode](operand=operand) is None:
                     self._inst_pointer += 2
             except IndexError:
-                return
+                return self.stdout
+            i += 1
 
     def __repr__(self):
         return f"Computer3Bit(reg_a={self.reg_a}, reg_b={self.reg_b}, reg_c={self.reg_c})"
+
+
+def reverse_engineer_bits(target_value: int, program, existing_value: int = 0):
+    possible_values = []
+    for i in range(8):
+        reg_a = (existing_value << 3) + i
+        computer = Computer3Bit(reg_a=reg_a)
+        if computer.run(program, limit=True)[0] == target_value:
+            possible_values.append(reg_a)
+    return possible_values
+
+
+def find_reg_a(target_output: list[int]):
+    possible_values = PriorityQueue()
+    possible_values.put((0, len(target_output) - 1))
+
+    while not possible_values.empty():
+        reg_a, ptr = possible_values.get()
+        computer = Computer3Bit(reg_a=reg_a)
+        if computer.run(target_output, limit=True) == target_output:
+            return reg_a
+        else:
+            possibilities = reverse_engineer_bits(
+                target_output[ptr], existing_value=reg_a, program=target_output
+            )
+            for possibility in possibilities:
+                possible_values.put((possibility, ptr - 1))
 
 
 def parse(puzzle_input: str) -> tuple[Computer3Bit, list[int]]:
@@ -120,11 +150,7 @@ def solve_puzzle(puzzle_input, part2=False) -> str:
         computer.run(program)
         return ",".join([str(x) for x in computer.stdout])
     else:
-        for i in tqdm.trange(8 ** (len(program) - 1), 8 ** (len(program))):
-            computer.reg_a = i
-            computer.run(program, limit=True)
-            if computer.stdout == program:
-                return i
+        return find_reg_a(program)
 
 
 if __name__ == "__main__":  # pragma: no cover
