@@ -1,11 +1,8 @@
 import re
 from pathlib import Path
-
-import tqdm
+from queue import PriorityQueue
 
 BASEPATH = Path(__file__).parent.resolve()
-
-from queue import PriorityQueue
 
 
 class Computer3Bit:

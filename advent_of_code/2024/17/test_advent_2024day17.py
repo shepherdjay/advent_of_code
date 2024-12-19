@@ -1,5 +1,4 @@
 from advent_2024day17 import Computer3Bit, solve_puzzle, parse
-import pytest
 
 MAIN_EXAMPLE = """Register A: 729
 Register B: 0
