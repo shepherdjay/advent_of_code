@@ -8,7 +8,7 @@ BASEPATH = Path(__file__).parent.resolve()
 
 
 class Robot:
-    def __init__(self, position, velocity):
+    def __init__(self, position, velocity=(0, 0)):
         self.position = position
         self.velocity = velocity
         self._orig_position = position
@@ -92,7 +92,7 @@ def print_grid(robots, grid_x, grid_y):
                 print(".", end="")
 
 
-def clear():
+def clear():  # pragma: no cover
     os.system("clear")
 
 
@@ -121,7 +121,7 @@ def solve_part2(robots: list[Robot], grid_x, grid_y, display=False):
 
         [robot.move() for robot in robots]
 
-    return min_iter
+    return min_iter, min_safety_score
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -134,7 +134,7 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input, grid_x=101, grid_y=103)
     print(part_a)
 
-    part_b = solve_puzzle(puzzle_input, grid_x=101, grid_y=103, part2=True, display=True)
+    part_b, _ = solve_puzzle(puzzle_input, grid_x=101, grid_y=103, part2=True, display=True)
     print(part_b)
 
     try:

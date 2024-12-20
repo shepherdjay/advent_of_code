@@ -1,4 +1,4 @@
-from advent_2024day14 import solve_puzzle, parse, Robot, determine_quads
+from advent_2024day14 import solve_puzzle, parse, Robot, determine_quads, print_grid, solve_part2
 
 MAIN_EXAMPLE = """p=0,4 v=3,-3
 p=6,3 v=-1,-3
@@ -53,3 +53,39 @@ def test_determine_quads():
     assert len(q2) == 0
     assert len(q3) == 0
     assert len(q4) == 0
+
+
+def test_print_grid(capsys):
+    robot = Robot((1, 1), (0, 0))
+    grid_x, grid_y = 3, 3
+
+    print_grid([robot], grid_x, grid_y)
+    captured = capsys.readouterr()
+    assert captured.out == "\n...\n.R.\n..."
+
+
+def test_solve_part2_zero():
+    """Min safety score will be 0 as robot never moves from middle"""
+    robot = Robot((1, 1), (0, 0))
+    grid_x, grid_y = 3, 3
+    _, safety_score = solve_part2([robot], grid_x, grid_y)
+
+    assert safety_score == 0
+
+
+def test_solve_part2_two():
+    """Min safety score will be 16 as there are 8 robots, two in each quadrant that never move"""
+    robots = [
+        Robot((0, 0)),
+        Robot((0, 0)),
+        Robot((2, 0)),
+        Robot((2, 0)),
+        Robot((2, 2)),
+        Robot((2, 2)),
+        Robot((0, 2)),
+        Robot((0, 2)),
+    ]
+    grid_x, grid_y = 3, 3
+    _, safety_score = solve_part2(robots, grid_x, grid_y)
+
+    assert safety_score == 16
