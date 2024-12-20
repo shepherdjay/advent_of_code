@@ -92,8 +92,11 @@ def print_grid(robots, grid_x, grid_y):
                 print(".", end="")
 
 
+def clear():
+    os.system("clear")
+
+
 def solve_part2(robots: list[Robot], grid_x, grid_y, display=False):
-    clear = lambda: os.system("clear")
     max_iter = math.lcm(grid_x, grid_y)
 
     initial_start = 0
