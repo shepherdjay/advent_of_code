@@ -65,10 +65,10 @@ def determine_quads(robots, grid_x, grid_y):
     return q1, q2, q3, q4
 
 
-def solve_puzzle(puzzle_input, grid_x, grid_y, part2=False):
+def solve_puzzle(puzzle_input, grid_x, grid_y, part2=False, display=False):
     robots = parse(puzzle_input)
     if part2:
-        return solve_part2(robots, grid_x, grid_y)
+        return solve_part2(robots, grid_x, grid_y, display=display)
 
     for i in range(100):
         for robot in robots:
@@ -93,7 +93,7 @@ def print_grid(robots, grid_x, grid_y):
 
 
 def solve_part2(robots: list[Robot], grid_x, grid_y, display=False):
-    clear = lambda: os.system("cls")
+    clear = lambda: os.system("clear")
     max_iter = math.lcm(grid_x, grid_y)
 
     initial_start = 0
@@ -110,6 +110,7 @@ def solve_part2(robots: list[Robot], grid_x, grid_y, display=False):
             min_safety_score = safety_score
             min_iter = i
             if display:
+                clear()
                 print_grid(robots, grid_x, grid_y)
                 print()
                 print(f"Iteration {i}")
@@ -130,7 +131,7 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input, grid_x=101, grid_y=103)
     print(part_a)
 
-    part_b = solve_puzzle(puzzle_input, grid_x=101, grid_y=103, part2=True)
+    part_b = solve_puzzle(puzzle_input, grid_x=101, grid_y=103, part2=True, display=True)
     print(part_b)
 
     try:
