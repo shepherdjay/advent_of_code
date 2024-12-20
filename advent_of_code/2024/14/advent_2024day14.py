@@ -1,5 +1,8 @@
 from pathlib import Path
 import re
+import math
+import os
+import time
 
 BASEPATH = Path(__file__).parent.resolve()
 
@@ -8,11 +11,13 @@ class Robot:
     def __init__(self, position, velocity):
         self.position = position
         self.velocity = velocity
+        self._orig_position = position
 
-    def move(self):
-        pos_x, pos_y = self.position
-        vel_x, vel_y = self.velocity
-        self.position = pos_x + vel_x, pos_y + vel_y
+    def move(self, ticks=1):
+        for i in range(ticks):
+            pos_x, pos_y = self.position
+            vel_x, vel_y = self.velocity
+            self.position = pos_x + vel_x, pos_y + vel_y
 
     def transpose(self, grid_x, grid_y):
         """
@@ -20,6 +25,9 @@ class Robot:
         """
         pos_x, pos_y = self.position
         return pos_x % grid_x, pos_y % grid_y
+
+    def reset_position(self):
+        self.position = self._orig_position
 
 
 def parse(puzzle_input):
@@ -59,12 +67,57 @@ def determine_quads(robots, grid_x, grid_y):
 
 def solve_puzzle(puzzle_input, grid_x, grid_y, part2=False):
     robots = parse(puzzle_input)
+    if part2:
+        return solve_part2(robots, grid_x, grid_y)
+
     for i in range(100):
         for robot in robots:
             robot.move()
 
     q1, q2, q3, q4 = determine_quads(robots, grid_x, grid_y)
     return len(q1) * len(q2) * len(q3) * len(q4)
+
+
+def print_grid(robots, grid_x, grid_y):
+    robot_coords = set()
+    for robot in robots:
+        rob_x, rob_y = robot.transpose(grid_x=grid_x, grid_y=grid_y)
+        robot_coords.add((rob_x, rob_y))
+    for y in range(grid_y):
+        print()
+        for x in range(grid_x):
+            if (x, y) in robot_coords:
+                print("R", end="")
+            else:
+                print(".", end="")
+
+
+def solve_part2(robots: list[Robot], grid_x, grid_y, display=False):
+    clear = lambda: os.system("cls")
+    max_iter = math.lcm(grid_x, grid_y)
+
+    initial_start = 0
+
+    [robot.move(initial_start) for robot in robots]
+
+    min_iter = 0
+    min_safety_score = float("inf")
+
+    for i in range(initial_start, max_iter):
+        q1, q2, q3, q4 = determine_quads(robots, grid_x, grid_y)
+        safety_score = len(q1) * len(q2) * len(q3) * len(q4)
+        if safety_score < min_safety_score:
+            min_safety_score = safety_score
+            min_iter = i
+            if display:
+                print_grid(robots, grid_x, grid_y)
+                print()
+                print(f"Iteration {i}")
+            time.sleep(1)
+
+        [robot.move() for robot in robots]
+
+    return min_iter
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -77,13 +130,13 @@ if __name__ == "__main__":  # pragma: no cover
     part_a = solve_puzzle(puzzle_input, grid_x=101, grid_y=103)
     print(part_a)
 
-    # part_b = solve_puzzle(puzzle_input, part2=True)
-    # print(part_b)
+    part_b = solve_puzzle(puzzle_input, grid_x=101, grid_y=103, part2=True)
+    print(part_b)
 
     try:
         with open(f"../../../.token") as infile:
             session = infile.read().strip()
         submit(part_a, part="a", session=session)
-        # submit(part_b, part="b", session=session)
+        submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
