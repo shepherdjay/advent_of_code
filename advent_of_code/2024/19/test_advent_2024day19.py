@@ -70,10 +70,6 @@ def test_try_combinations(pattern, possible):
     assert try_combinations(available_towels, pattern) is possible
 
 
-def test_solve_puzzle():
-    assert solve_puzzle(MAIN_EXAMPLE) == 6
-
-
 @given(true_example())
 def test_hypothesis_try_combinations_true(example):
     pattern, towels = example
@@ -84,3 +80,11 @@ def test_hypothesis_try_combinations_true(example):
 def test_hypothesis_try_combinations_false(example):
     pattern, towels = example
     assert try_combinations(towels, pattern) is False
+
+
+def test_solve_puzzle():
+    assert solve_puzzle(MAIN_EXAMPLE) == 6
+
+
+def test_solve_puzzle_part2():
+    assert solve_puzzle(MAIN_EXAMPLE, part2=True) == 16
