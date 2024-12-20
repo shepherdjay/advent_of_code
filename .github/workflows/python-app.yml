@@ -63,13 +63,23 @@ jobs:
       run: |
         pytest --cov=advent_of_code --cov-branch --junitxml=junit.xml -o junit_family=legacy
 
-    - name: Upload coverage to Codecov
+    - name: Upload coverage to Codecov - ATS
+      if: steps.ats.outcome == 'success'
       uses: codecov/codecov-action@v4-beta
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
         flags: smart-tests
         plugins: pycoverage,compress-pycoverage
+
+    - name: Upload coverage to Codecov - ATS Failed
+      if: steps.ats.outcome != 'success'
+      uses: codecov/codecov-action@v4-beta
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        plugins: pycoverage,compress-pycoverage
+
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
       uses: codecov/test-results-action@v1
