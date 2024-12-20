@@ -19,12 +19,12 @@ if __name__ == "__main__":
     advent_path = Path(f"{BASEPATH}/advent_of_code/{year}/{day:02}")
     advent_path.mkdir(parents=True, exist_ok=True)
 
-    # with open(f"{advent_path}/advent_{year}day{day:02}.py", "w") as newfile:
-    #     template_file = open(f"{BASEPATH}/templates/day.py.template").read()
-    #     newfile.write(template_file)
+    with open(f"{advent_path}/advent_{year}day{day:02}.py", "w") as newfile:
+        template_file = open(f"{BASEPATH}/templates/day.py.template").read()
+        newfile.write(template_file)
 
-    # with open(f"{advent_path}/test_advent_{year}day{day:02}.py", "w") as newfile:
-    #     pass
+    with open(f"{advent_path}/test_advent_{year}day{day:02}.py", "w") as newfile:
+        pass
 
     with open(f"{BASEPATH}/.token") as infile:
         session = infile.read().strip()

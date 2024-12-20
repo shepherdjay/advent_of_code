@@ -47,20 +47,39 @@ jobs:
 
     - name: Run ATS
       uses: codecov/codecov-ats@v0
+      id: ats
+      continue-on-error: true
       env:
         CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Test with pytest
+    - name: Test with pytest - ATS
+      if: steps.ats.outcome == 'success'
       run: |
         cat codecov_ats/tests_to_run.txt | xargs pytest --cov=advent_of_code --cov-branch --junitxml=junit.xml -o junit_family=legacy
-    - name: Upload coverage to Codecov
+
+    - name: Pytest Run All - ATS Failed
+      if: steps.ats.outcome != 'success'
+      run: |
+        pytest --cov=advent_of_code --cov-branch --junitxml=junit.xml -o junit_family=legacy
+
+    - name: Upload coverage to Codecov - ATS
+      if: steps.ats.outcome == 'success'
       uses: codecov/codecov-action@v4-beta
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
         flags: smart-tests
         plugins: pycoverage,compress-pycoverage
+
+    - name: Upload coverage to Codecov - ATS Failed
+      if: steps.ats.outcome != 'success'
+      uses: codecov/codecov-action@v4-beta
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        plugins: pycoverage,compress-pycoverage
+
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
       uses: codecov/test-results-action@v1
