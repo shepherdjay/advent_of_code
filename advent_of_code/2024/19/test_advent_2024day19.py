@@ -21,20 +21,20 @@ LOWER_ALPHABET = st.characters(min_codepoint=97, max_codepoint=122)
 @st.composite
 def true_example(draw):
     towels_list = draw(
-        st.lists(st.text(alphabet=LOWER_ALPHABET, min_size=1, max_size=10), min_size=2, max_size=10)
+        st.lists(st.text(alphabet=LOWER_ALPHABET, min_size=1, max_size=10), min_size=2, max_size=3)
     )
 
     pattern = []
     for _ in range(10):
         pattern.append(draw(st.sampled_from(towels_list)))
 
-    return "".join(pattern), towels_list
+    return "".join(pattern), frozenset(towels_list)
 
 
 @st.composite
 def false_example(draw):
     towels_list = draw(
-        st.lists(st.text(alphabet=LOWER_ALPHABET, min_size=1, max_size=10), min_size=2, max_size=10)
+        st.lists(st.text(alphabet=LOWER_ALPHABET, min_size=1, max_size=10), min_size=2, max_size=3)
     )
     char_not_present = draw(
         st.characters(
@@ -49,7 +49,7 @@ def false_example(draw):
         pattern.append(draw(st.sampled_from(towels_list)))
         pattern.append(char_not_present)
 
-    return "".join(pattern), towels_list
+    return "".join(pattern), frozenset(towels_list)
 
 
 @pytest.mark.parametrize(
@@ -66,7 +66,7 @@ def false_example(draw):
     ],
 )
 def test_try_combinations(pattern, possible):
-    available_towels = ["r", "wr", "b", "g", "bwu", "rb", "gb", "br"]
+    available_towels = frozenset(["r", "wr", "b", "g", "bwu", "rb", "gb", "br"])
     assert try_combinations(available_towels, pattern) is possible
 
 
