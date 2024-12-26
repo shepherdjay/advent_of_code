@@ -6,11 +6,9 @@ def test_grid_it():
     input_str = """11
     2"""
 
-    expected = [
-        ['1','1'],
-        ['2']
-    ]
+    expected = [["1", "1"], ["2"]]
     assert grid_it(input_str) == expected
+
 
 def test_parse_individual_lock():
     input_str = """#####
@@ -23,7 +21,8 @@ def test_parse_individual_lock():
 
     result = parse_individual(input_str)
     assert isinstance(result, Lock)
-    assert result.pins == [0,5,3,4,3]
+    assert result.pins == [0, 5, 3, 4, 3]
+
 
 def test_parse_individual_key():
     input_str = """.....
@@ -36,7 +35,8 @@ def test_parse_individual_key():
 
     result = parse_individual(input_str)
     assert isinstance(result, Key)
-    assert result.heights == [5,0,2,1,3]
+    assert result.heights == [5, 0, 2, 1, 3]
+
 
 def test_parse():
     input_str = EXAMPLE
@@ -44,7 +44,7 @@ def test_parse():
     assert len(keys) == 3
     assert len(locks) == 2
 
+
 def test_solve_puzzle():
     puzzle_input = EXAMPLE
     assert solve_puzzle(puzzle_input) == 3
-

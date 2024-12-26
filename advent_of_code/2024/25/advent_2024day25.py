@@ -2,6 +2,7 @@ from pathlib import Path
 
 BASEPATH = Path(__file__).parent.resolve()
 
+
 def grid_it(input_str):
     rows = []
     for row in input_str.splitlines():
@@ -10,6 +11,7 @@ def grid_it(input_str):
             new_row.append(char)
         rows.append(new_row)
     return rows
+
 
 class Key:
     def __init__(self, heights: list[int]):
@@ -56,42 +58,64 @@ class Lock:
                     break
         return Lock(pins=pins)
 
+    def __eq__(self, other: Key) -> bool:
+        if not isinstance(other, Key):
+            raise TypeError("Locks can only be compared to Keys")
+
+        for pin, height in zip(self.pins, other.heights):
+            if pin + height > 5:
+                return False
+        return True
 
 
-
-def parse_individual(input_str: str) -> Key|Lock:
-    if input_str.startswith('#'):
+def parse_individual(input_str: str) -> Key | Lock:
+    if input_str.startswith("#"):
         return Lock.from_string(input_str)
-    if input_str.startswith('.'):
+    if input_str.startswith("."):
         return Key.from_string(input_str)
 
 
-def parse(input_str: str) -> tuple[list[Key],list[Lock]]:
+def parse(input_str: str) -> tuple[list[Key], list[Lock]]:
     keys = []
     locks = []
 
+    for block in input_str.split("\n\n"):
+        if block.startswith("#"):
+            locks.append(Lock.from_string(block))
+        elif block.startswith("."):
+            keys.append(Key.from_string(block))
+
     return keys, locks
 
+
 def solve_puzzle(puzzle_input, part2=False):
-    pass
+    keys, locks = parse(puzzle_input)
+
+    count = 0
+    for lock in locks:
+        for key in keys:
+            if lock == key:
+                count += 1
+    return count
+
 
 if __name__ == "__main__":  # pragma: no cover
     from aocd import submit
     from aocd.exceptions import AocdError
 
     with open(f"{BASEPATH}/input.txt") as infile:
-        puzzle_input = infile.read().strip('\n')
+        puzzle_input = infile.read().strip("\n")
 
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
 
-    part_b = solve_puzzle(puzzle_input, part2=True)
-    print(part_b)
+    # part_b = solve_puzzle(puzzle_input, part2=True)
+    # print(part_b)
 
     try:
         with open(f"../../../.token") as infile:
             session = infile.read().strip()
         submit(part_a, part="a", session=session)
-        submit(part_b, part="b", session=session)
+        # submit(part_b, part="b", session=session)
     except AocdError as e:
         pass
