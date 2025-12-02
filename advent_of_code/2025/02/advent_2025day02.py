@@ -15,8 +15,10 @@ def is_invalid(n: int) -> bool:
 def is_invalid_p2(n: int) -> bool:
     n = str(n)
     for i in range(1, len(n)):
-        components = textwrap.wrap(n, i)
-        if len(set(components)) == 1:
+        if len(n) % i != 0:
+            continue
+        chunk = n[:i]
+        if n == chunk * (len(n) // i):
             return True
     else:
         return False
