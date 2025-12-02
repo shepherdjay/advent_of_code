@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout Code 
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Lint
@@ -27,53 +27,23 @@ jobs:
 
     steps:
     - name: Checkout Code 
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v4
+      uses: astral-sh/setup-uv@v7
       with:
-        enable-cache: true
-        cache-dependency-glob: "uv.lock"
+        activate-environment: true
 
     - name: Install Project
       run: uv sync --all-extras --dev
 
-    - name: Activate virtualenv
-      run: |
-        . .venv/bin/activate
-        echo PATH=$PATH >> $GITHUB_ENV
-
-    - name: Run ATS
-      uses: codecov/codecov-ats@v0
-      id: ats
-      continue-on-error: true
-      env:
-        CODECOV_STATIC_TOKEN: ${{ secrets.CODECOV_STATIC_TOKEN }}
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-    - name: Test with pytest - ATS
-      if: steps.ats.outcome == 'success'
-      run: |
-        cat codecov_ats/tests_to_run.txt | xargs pytest --cov=advent_of_code --cov-branch --junitxml=junit.xml -o junit_family=legacy
-
-    - name: Pytest Run All - ATS Failed
-      if: steps.ats.outcome != 'success'
+    - name: Pytest Run All
       run: |
         pytest --cov=advent_of_code --cov-branch --junitxml=junit.xml -o junit_family=legacy
 
-    - name: Upload coverage to Codecov - ATS
-      if: steps.ats.outcome == 'success'
-      uses: codecov/codecov-action@v5
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      with:
-        flags: smart-tests
-        plugins: pycoverage,compress-pycoverage
-
-    - name: Upload coverage to Codecov - ATS Failed
-      if: steps.ats.outcome != 'success'
+    - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
