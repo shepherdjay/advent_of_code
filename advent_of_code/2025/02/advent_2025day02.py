@@ -3,30 +3,34 @@ import textwrap
 
 BASEPATH = Path(__file__).parent.resolve()
 
+
 def is_invalid(n: int) -> bool:
     n = str(n)
     if len(n) % 2 != 0:
         return False
-    first_part, second_part = n[:len(n)//2], n[len(n)//2:]
+    first_part, second_part = n[: len(n) // 2], n[len(n) // 2 :]
     return first_part == second_part
+
 
 def is_invalid_p2(n: int) -> bool:
     n = str(n)
-    for i in range(1,len(n)):
+    for i in range(1, len(n)):
         components = textwrap.wrap(n, i)
         if len(set(components)) == 1:
             return True
     else:
         return False
 
+
 def find_invalids(start: int, stop: int, part2: bool = False) -> list[int]:
     invalids = []
-    for n in range(start, stop+1):
+    for n in range(start, stop + 1):
         if not part2 and is_invalid(n):
             invalids.append(n)
         elif part2 and is_invalid_p2(n):
             invalids.append(n)
     return invalids
+
 
 def solve_puzzle(puzzle_input, part2=False):
     sum_of_invalids = 0
@@ -36,12 +40,13 @@ def solve_puzzle(puzzle_input, part2=False):
         sum_of_invalids += sum(invalids)
     return sum_of_invalids
 
+
 if __name__ == "__main__":  # pragma: no cover
     from aocd import submit
     from aocd.exceptions import AocdError
 
     with open(f"{BASEPATH}/input.txt") as infile:
-        puzzle_input = infile.read().strip('\n')
+        puzzle_input = infile.read().strip("\n")
 
     part_a = solve_puzzle(puzzle_input)
     print(part_a)
