@@ -23,8 +23,8 @@ def get_neighbors(origin, diagonals=False):
     else:
         return [up, down, left, right]
 
-def get_inbounds_neighbors(origin, grid_width, grid_height):
-    neighbors = get_neighbors(origin)
+def get_inbounds_neighbors(origin, grid_width, grid_height, diagonals=False):
+    neighbors = get_neighbors(origin, diagonals)
     inbound_neighbors = []
     for neighbor in neighbors:
         n_row, n_col = neighbor
