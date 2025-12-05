@@ -1,9 +1,10 @@
 def parse_grid(grid_str):
     grid = []
-    for row in grid_str.split('\n'):
+    for row in grid_str.split("\n"):
         new_row = [char for char in row]
         grid.append(new_row)
     return grid
+
 
 def get_neighbors(origin, diagonals=False):
     n_row, n_col = origin
@@ -22,6 +23,7 @@ def get_neighbors(origin, diagonals=False):
         return [up, down, left, right, up_left, up_right, down_left, down_right]
     else:
         return [up, down, left, right]
+
 
 def get_inbounds_neighbors(origin, grid_width, grid_height, diagonals=False):
     neighbors = get_neighbors(origin, diagonals)
